@@ -7,10 +7,11 @@ x-logging: &default-logging
 services:
 
   # ========================
-  # PostgreSQL + pgvector
+  # PostgreSQL + pgvector1
   # ========================
   db:
     image: pgvector/pgvector:pg18
+    profiles: ["local"]
     restart: unless-stopped
 
     ports:
@@ -56,8 +57,8 @@ services:
       DEMO_USERS_ENABLED: ${DEMO_USERS_ENABLED:-false}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,[::1]}
 
-      # Docker 내부에서는 db 서비스명으로 접근
-      DB_HOST: db
+      # 로컬에서는 db 컨테이너, 서버에서는 RDS (.env의 DB_HOST) 사용
+      DB_HOST: ${DB_HOST:-db}
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
@@ -94,12 +95,13 @@ services:
     depends_on:
       db:
         condition: service_started
+        required: false
       minio:
         condition: service_healthy
 
+    # python manage.py provision_baseball_reader --prepare-db-permissions &&
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py provision_baseball_reader --prepare-db-permissions &&
              python manage.py runserver 0.0.0.0:8000"
 
     logging: *default-logging

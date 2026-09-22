@@ -3,7 +3,7 @@ from django.urls import path
 from .views import LogoutView, RefreshView, SignInView, change_password, get_user, request_email_change, request_username, set_password, signup, verify_email_change
 
 """
-    Django 직접 호출은 /v1/auth/, Nginx 경유는 /api/v1/auth/입니다.
+    Django 직접 호출과 Nginx 경유 모두 /api/v1/auth/입니다.
     
     POST /api/v1/auth/signin
     POST /api/v1/auth/token/refresh/

@@ -60,7 +60,7 @@ backend/
 | 요청 형식 | 일반적으로 JSON. 이미지 업로드는 multipart, 채팅 스트리밍 응답은 SSE |
 | 끝 슬래시 | URL마다 다릅니다. `/auth/signin`과 `/auth/signup/`처럼 문서의 경로를 그대로 사용합니다 |
 | 응답·오류 | 앱별 형식이 다릅니다. 모든 API가 같은 래퍼·페이지네이션·오류 구조를 쓴다고 가정하지 않습니다 |
-| OpenAPI | Django `GET /v1/schema/`, Nginx `GET /api/v1/schema/`; 저장된 계약은 [contracts/openapi.yaml](../contracts/openapi.yaml) |
+| OpenAPI | Django·Nginx `GET /api/v1/schema/`; 저장된 계약은 [contracts/openapi.yaml](../contracts/openapi.yaml) |
 
 JWT access 수명은 5분, refresh 수명은 1일이며 refresh rotation은 사용하지 않습니다. 로그아웃은 제출한 refresh만 폐기하고 기존 access를 즉시 폐기하지 않습니다. 비밀번호 변경·재설정 시 토큰의 비밀번호 해시 검증이 적용됩니다. 상세 계약은 [accounts README](../docs/api/accounts.md)를 참고합니다.
 

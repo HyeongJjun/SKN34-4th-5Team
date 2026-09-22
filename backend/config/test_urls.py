@@ -13,11 +13,11 @@ class RootUrlResolutionTests(SimpleTestCase):
     def test_feature_routes_resolve_to_expected_views(self):
         turn_id = uuid.uuid4()
         cases = (
-            ("/courses/", CourseListCreateView),
-            ("/community/posts/", CommunityPostListCreateView),
-            ("/baseball/manage/teams/", RESOURCE_VIEWSETS["teams"]),
-            (f"/chat/turns/{turn_id}/finalize/", ChatFinalizeView),
-            ("/chat/guest/", GuestChatView),
+            ("/api/v1/courses/", CourseListCreateView),
+            ("/api/v1/community/posts/", CommunityPostListCreateView),
+            ("/api/v1/baseball/manage/teams/", RESOURCE_VIEWSETS["teams"]),
+            (f"/api/v1/chat/turns/{turn_id}/finalize/", ChatFinalizeView),
+            ("/api/v1/chat/guest/", GuestChatView),
         )
 
         for path, view_class in cases:

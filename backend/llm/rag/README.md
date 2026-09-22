@@ -82,7 +82,7 @@ reply = result["answer"]                          # 프론트 reply 에 그대�
 ```
 
 - 인증: `ChatView` 는 JWT 없이 받는다 (Next 서버 간 중계용. 기존 `chat/sessions/…` 는 JWT 그대로).
-- 프론트 설정: `frontend/.env.local` 에 `CHAT_PROVIDER=backend`, `CHAT_BACKEND_URL=http://backend:8000/v1/chat/` (Django 직접 호출이라 `/api/` 접두어 없음) → 프론트 컨테이너 재시작.
+- 프론트 설정: `frontend/.env.local` 에 `CHAT_PROVIDER=backend`, `CHAT_BACKEND_URL=http://backend:8000/api/v1/chat/` → 프론트 컨테이너 재시작.
 - 환경변수: `OPENAI_API_KEY`, `EMBEDDING_MODEL`(적재 때와 동일) 은 compose 에 이미 있음. `LLM_MODEL` 은 없어도 기본값 gpt-5.6-luna.
 - 패키지: `requirements.txt` 에 `langchain` 추가됨(venue 의 create_agent) → `docker compose up -d --build backend` 로 재빌드 필요.
 - 예외: `answer()` 는 도메인 내부 예외를 잡아 사용자용 문구를 돌려주므로 뷰에서 500 이 나지 않는다. 네트워크·키 문제는 로그로 확인.

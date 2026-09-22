@@ -16,16 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.http import JsonResponse
-from django.urls import path, include
+from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView
-from llm.views import (
-    ChatFinalizeView,
-    ChatMessageView,
-    ChatRoomDetailView,
-    ChatRoomView,
-    ChatTurnListView,
-    GuestChatView,
-)
 
 
 def health_check(request):
@@ -33,26 +25,9 @@ def health_check(request):
 
 
 urlpatterns = [
-    path("healthz/", health_check, name="health-check"),
-    path("schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    path("v1/healthz/", health_check, name="health-check"),
+    path("v1/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path("admin/", admin.site.urls),
-    path("", include("travel.urls")),
-    path("community/", include("community.urls")),
-    path("chat/sessions/", ChatRoomView.as_view()),
-
-    path(
-        "chat/sessions/<int:session_id>/",
-        ChatRoomDetailView.as_view(),
-    ),
-
-    path(
-        "chat/sessions/<int:session_id>/messages/",
-        ChatMessageView.as_view(),
-    ),
-    path("chat/sessions/<int:session_id>/turns/", ChatTurnListView.as_view()),
-    path("chat/turns/<uuid:turn_id>/finalize/", ChatFinalizeView.as_view()),
-    path("chat/guest/", GuestChatView.as_view()),
-    path('auth/',include('accounts.urls')),
-    path('baseball/', include('baseball.urls')),
-    path('tving/', include('tving.urls')),
+    path("v1/", include("config.urls_v1")),
+    path("v2/", include("config.urls_v2")),
 ]

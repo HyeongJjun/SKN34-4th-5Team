@@ -255,7 +255,7 @@ class ProgressApiTest(TransactionTestCase):
         self.assertEqual(first.json()["count"], 21)
         self.assertEqual(
             first.json()["next"],
-            f"/api/chat/sessions/{self.session.pk}/turns/?page=2",
+            f"/api/v1/chat/sessions/{self.session.pk}/turns/?page=2",
         )
         second = self.client.get(f"/chat/sessions/{self.session.pk}/turns/?page=2")
         self.assertEqual((second.status_code, len(second.json()["results"])), (200, 1))

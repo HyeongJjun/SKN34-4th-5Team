@@ -3,7 +3,7 @@ info:
   title: KBO Journey API
   version: 1.0.0
 paths:
-  /api/auth/admin/members/:
+  /api/v1/auth/admin/members/:
     get:
       operationId: auth_admin_members_list
       parameters:
@@ -24,7 +24,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedAdminMemberList'
           description: ''
-  /api/auth/admin/members/{id}/role/:
+  /api/v1/auth/admin/members/{id}/role/:
     patch:
       operationId: auth_admin_members_role_partial_update
       parameters:
@@ -55,7 +55,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminMember'
           description: ''
-  /api/auth/email/request:
+  /api/v1/auth/email/request:
     post:
       operationId: auth_email_request_create
       tags:
@@ -81,7 +81,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailChangeRequestResponse'
           description: ''
-  /api/auth/email/verify:
+  /api/v1/auth/email/verify:
     post:
       operationId: auth_email_verify_create
       tags:
@@ -107,7 +107,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailVerificationResponse'
           description: ''
-  /api/auth/logout:
+  /api/v1/auth/logout:
     post:
       operationId: auth_logout_create
       description: |-
@@ -136,7 +136,7 @@ paths:
                 properties: {}
                 additionalProperties: false
           description: ''
-  /api/auth/password:
+  /api/v1/auth/password:
     post:
       operationId: auth_password_create
       description: |-
@@ -169,12 +169,12 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/auth/password/request:
+  /api/v1/auth/password/request:
     post:
       operationId: auth_password_request_create
       description: |-
         사용자 비밀번호 재설정 url 을 이메일로 전송합니다.
-        Url: /api/auth/password/request
+        Url: /api/v1/auth/password/request
         Args:
             - email
         Return:
@@ -199,7 +199,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/auth/signin:
+  /api/v1/auth/signin:
     post:
       operationId: auth_signin_create
       description: |-
@@ -226,12 +226,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenPair'
           description: ''
-  /api/auth/signup/:
+  /api/v1/auth/signup/:
     post:
       operationId: auth_signup_create
       description: |-
         회원가입하는 함수입니다.
-        Url : /api/auth/signup/
+        Url : /api/v1/auth/signup/
         Args:
             - username
             - email, first_name, birth_date, gender
@@ -256,7 +256,7 @@ paths:
       responses:
         '201':
           description: No response body
-  /api/auth/token/refresh/:
+  /api/v1/auth/token/refresh/:
     post:
       operationId: auth_token_refresh_create
       description: |-
@@ -283,12 +283,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenRefreshResponse'
           description: ''
-  /api/auth/user:
+  /api/v1/auth/user:
     get:
       operationId: auth_user_retrieve
       description: |-
         로그인한 사용자 정보를 조회합니다.
-        Url: GET /auth/user (Nginx 경유: /api/auth/user)
+        Url: GET /v1/auth/user (Nginx 경유: /api/v1/auth/user)
         Headers: Authorization: Bearer <access_token>
         Return:
             - HTTP_200_OK
@@ -308,7 +308,7 @@ paths:
       operationId: auth_user_partial_update
       description: |-
         로그인한 사용자 정보를 조회합니다.
-        Url: GET /auth/user (Nginx 경유: /api/auth/user)
+        Url: GET /v1/auth/user (Nginx 경유: /api/v1/auth/user)
         Headers: Authorization: Bearer <access_token>
         Return:
             - HTTP_200_OK
@@ -335,7 +335,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MemberUser'
           description: ''
-  /api/auth/username/request:
+  /api/v1/auth/username/request:
     post:
       operationId: auth_username_request_create
       tags:
@@ -359,7 +359,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UsernameRequestResponse'
           description: ''
-  /api/baseball/games/:
+  /api/v1/baseball/games/:
     get:
       operationId: baseball_games_list
       parameters:
@@ -387,7 +387,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedGameList'
           description: ''
-  /api/baseball/manage/facilities/:
+  /api/v1/baseball/manage/facilities/:
     get:
       operationId: baseball_manage_facilities_list
       parameters:
@@ -451,7 +451,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/facilities/{id}/:
+  /api/v1/baseball/manage/facilities/{id}/:
     get:
       operationId: baseball_manage_facilities_retrieve
       parameters:
@@ -579,7 +579,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/food-store-locations/:
+  /api/v1/baseball/manage/food-store-locations/:
     get:
       operationId: baseball_manage_food_store_locations_list
       parameters:
@@ -643,7 +643,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/food-store-locations/{id}/:
+  /api/v1/baseball/manage/food-store-locations/{id}/:
     get:
       operationId: baseball_manage_food_store_locations_retrieve
       parameters:
@@ -771,7 +771,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/food-store-menus/:
+  /api/v1/baseball/manage/food-store-menus/:
     get:
       operationId: baseball_manage_food_store_menus_list
       parameters:
@@ -835,7 +835,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/food-store-menus/{id}/:
+  /api/v1/baseball/manage/food-store-menus/{id}/:
     get:
       operationId: baseball_manage_food_store_menus_retrieve
       parameters:
@@ -963,7 +963,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/food-stores/:
+  /api/v1/baseball/manage/food-stores/:
     get:
       operationId: baseball_manage_food_stores_list
       parameters:
@@ -1027,7 +1027,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/food-stores/{id}/:
+  /api/v1/baseball/manage/food-stores/{id}/:
     get:
       operationId: baseball_manage_food_stores_retrieve
       parameters:
@@ -1155,7 +1155,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/games/:
+  /api/v1/baseball/manage/games/:
     get:
       operationId: baseball_manage_games_list
       parameters:
@@ -1219,7 +1219,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/games/{id}/:
+  /api/v1/baseball/manage/games/{id}/:
     get:
       operationId: baseball_manage_games_retrieve
       parameters:
@@ -1347,7 +1347,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/home-contexts/:
+  /api/v1/baseball/manage/home-contexts/:
     get:
       operationId: baseball_manage_home_contexts_list
       parameters:
@@ -1411,7 +1411,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/home-contexts/{id}/:
+  /api/v1/baseball/manage/home-contexts/{id}/:
     get:
       operationId: baseball_manage_home_contexts_retrieve
       parameters:
@@ -1539,7 +1539,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/postseason-stages/:
+  /api/v1/baseball/manage/postseason-stages/:
     get:
       operationId: baseball_manage_postseason_stages_list
       parameters:
@@ -1603,7 +1603,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/postseason-stages/{id}/:
+  /api/v1/baseball/manage/postseason-stages/{id}/:
     get:
       operationId: baseball_manage_postseason_stages_retrieve
       parameters:
@@ -1731,7 +1731,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-map-assets/:
+  /api/v1/baseball/manage/seat-map-assets/:
     get:
       operationId: baseball_manage_seat_map_assets_list
       parameters:
@@ -1795,7 +1795,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-map-assets/{id}/:
+  /api/v1/baseball/manage/seat-map-assets/{id}/:
     get:
       operationId: baseball_manage_seat_map_assets_retrieve
       parameters:
@@ -1923,7 +1923,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-maps/:
+  /api/v1/baseball/manage/seat-maps/:
     get:
       operationId: baseball_manage_seat_maps_list
       parameters:
@@ -1987,7 +1987,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-maps/{id}/:
+  /api/v1/baseball/manage/seat-maps/{id}/:
     get:
       operationId: baseball_manage_seat_maps_retrieve
       parameters:
@@ -2115,7 +2115,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-scopes/:
+  /api/v1/baseball/manage/seat-scopes/:
     get:
       operationId: baseball_manage_seat_scopes_list
       parameters:
@@ -2179,7 +2179,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-scopes/{id}/:
+  /api/v1/baseball/manage/seat-scopes/{id}/:
     get:
       operationId: baseball_manage_seat_scopes_retrieve
       parameters:
@@ -2307,7 +2307,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-views/:
+  /api/v1/baseball/manage/seat-views/:
     get:
       operationId: baseball_manage_seat_views_list
       parameters:
@@ -2371,7 +2371,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-views/{id}/:
+  /api/v1/baseball/manage/seat-views/{id}/:
     get:
       operationId: baseball_manage_seat_views_retrieve
       parameters:
@@ -2499,7 +2499,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-zones/:
+  /api/v1/baseball/manage/seat-zones/:
     get:
       operationId: baseball_manage_seat_zones_list
       parameters:
@@ -2563,7 +2563,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/seat-zones/{id}/:
+  /api/v1/baseball/manage/seat-zones/{id}/:
     get:
       operationId: baseball_manage_seat_zones_retrieve
       parameters:
@@ -2691,7 +2691,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/stadium-contents/:
+  /api/v1/baseball/manage/stadium-contents/:
     get:
       operationId: baseball_manage_stadium_contents_list
       parameters:
@@ -2755,7 +2755,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/stadium-contents/{id}/:
+  /api/v1/baseball/manage/stadium-contents/{id}/:
     get:
       operationId: baseball_manage_stadium_contents_retrieve
       parameters:
@@ -2883,7 +2883,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/stadiums/:
+  /api/v1/baseball/manage/stadiums/:
     get:
       operationId: baseball_manage_stadiums_list
       parameters:
@@ -2947,7 +2947,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/stadiums/{id}/:
+  /api/v1/baseball/manage/stadiums/{id}/:
     get:
       operationId: baseball_manage_stadiums_retrieve
       parameters:
@@ -3075,7 +3075,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/standing-histories/:
+  /api/v1/baseball/manage/standing-histories/:
     get:
       operationId: baseball_manage_standing_histories_list
       parameters:
@@ -3139,7 +3139,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/standing-histories/{id}/:
+  /api/v1/baseball/manage/standing-histories/{id}/:
     get:
       operationId: baseball_manage_standing_histories_retrieve
       parameters:
@@ -3267,7 +3267,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/teams/:
+  /api/v1/baseball/manage/teams/:
     get:
       operationId: baseball_manage_teams_list
       parameters:
@@ -3331,7 +3331,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/teams/{id}/:
+  /api/v1/baseball/manage/teams/{id}/:
     get:
       operationId: baseball_manage_teams_retrieve
       parameters:
@@ -3459,7 +3459,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/ticket-policies/:
+  /api/v1/baseball/manage/ticket-policies/:
     get:
       operationId: baseball_manage_ticket_policies_list
       parameters:
@@ -3523,7 +3523,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/ticket-policies/{id}/:
+  /api/v1/baseball/manage/ticket-policies/{id}/:
     get:
       operationId: baseball_manage_ticket_policies_retrieve
       parameters:
@@ -3651,7 +3651,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/ticket-prices/:
+  /api/v1/baseball/manage/ticket-prices/:
     get:
       operationId: baseball_manage_ticket_prices_list
       parameters:
@@ -3715,7 +3715,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/ticket-prices/{id}/:
+  /api/v1/baseball/manage/ticket-prices/{id}/:
     get:
       operationId: baseball_manage_ticket_prices_retrieve
       parameters:
@@ -3843,7 +3843,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/transports/:
+  /api/v1/baseball/manage/transports/:
     get:
       operationId: baseball_manage_transports_list
       parameters:
@@ -3907,7 +3907,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/manage/transports/{id}/:
+  /api/v1/baseball/manage/transports/{id}/:
     get:
       operationId: baseball_manage_transports_retrieve
       parameters:
@@ -4035,7 +4035,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BaseballError'
           description: ''
-  /api/baseball/postseason-stages/:
+  /api/v1/baseball/postseason-stages/:
     get:
       operationId: baseball_postseason_stages_list
       parameters:
@@ -4063,7 +4063,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPostseasonStageList'
           description: ''
-  /api/baseball/stadiums/:
+  /api/v1/baseball/stadiums/:
     get:
       operationId: baseball_stadiums_list
       parameters:
@@ -4091,7 +4091,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPublicStadiumList'
           description: ''
-  /api/baseball/stadiums/{code}/:
+  /api/v1/baseball/stadiums/{code}/:
     get:
       operationId: baseball_stadiums_retrieve
       parameters:
@@ -4112,7 +4112,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PublicStadium'
           description: ''
-  /api/baseball/stadiums/{code}/contents/:
+  /api/v1/baseball/stadiums/{code}/contents/:
     get:
       operationId: baseball_stadiums_contents_list
       parameters:
@@ -4145,7 +4145,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedStadiumContentList'
           description: ''
-  /api/baseball/stadiums/{code}/facilities/:
+  /api/v1/baseball/stadiums/{code}/facilities/:
     get:
       operationId: baseball_stadiums_facilities_list
       parameters:
@@ -4178,7 +4178,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedFacilityList'
           description: ''
-  /api/baseball/stadiums/{code}/food-stores/:
+  /api/v1/baseball/stadiums/{code}/food-stores/:
     get:
       operationId: baseball_stadiums_food_stores_list
       parameters:
@@ -4211,7 +4211,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPublicFoodStoreList'
           description: ''
-  /api/baseball/stadiums/{code}/seat-maps/:
+  /api/v1/baseball/stadiums/{code}/seat-maps/:
     get:
       operationId: baseball_stadiums_seat_maps_list
       parameters:
@@ -4244,7 +4244,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPublicSeatMapList'
           description: ''
-  /api/baseball/stadiums/{code}/seat-scopes/:
+  /api/v1/baseball/stadiums/{code}/seat-scopes/:
     get:
       operationId: baseball_stadiums_seat_scopes_list
       parameters:
@@ -4277,7 +4277,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPublicSeatScopeList'
           description: ''
-  /api/baseball/stadiums/{code}/seat-views/:
+  /api/v1/baseball/stadiums/{code}/seat-views/:
     get:
       operationId: baseball_stadiums_seat_views_list
       parameters:
@@ -4310,7 +4310,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedSeatViewList'
           description: ''
-  /api/baseball/stadiums/{code}/seat-zones/:
+  /api/v1/baseball/stadiums/{code}/seat-zones/:
     get:
       operationId: baseball_stadiums_seat_zones_list
       parameters:
@@ -4343,7 +4343,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedSeatZoneList'
           description: ''
-  /api/baseball/stadiums/{code}/ticket-prices/:
+  /api/v1/baseball/stadiums/{code}/ticket-prices/:
     get:
       operationId: baseball_stadiums_ticket_prices_list
       parameters:
@@ -4376,7 +4376,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPublicTicketPriceList'
           description: ''
-  /api/baseball/stadiums/{code}/transports/:
+  /api/v1/baseball/stadiums/{code}/transports/:
     get:
       operationId: baseball_stadiums_transports_list
       parameters:
@@ -4409,7 +4409,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedTransportList'
           description: ''
-  /api/baseball/standings/:
+  /api/v1/baseball/standings/:
     get:
       operationId: baseball_standings_list
       parameters:
@@ -4437,7 +4437,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedStandingHistoryList'
           description: ''
-  /api/baseball/teams/:
+  /api/v1/baseball/teams/:
     get:
       operationId: baseball_teams_list
       tags:
@@ -4454,7 +4454,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/PublicTeam'
           description: ''
-  /api/baseball/ticket-policies/:
+  /api/v1/baseball/ticket-policies/:
     get:
       operationId: baseball_ticket_policies_list
       parameters:
@@ -4482,7 +4482,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedTicketPolicyList'
           description: ''
-  /api/baseball/ticket-prices/:
+  /api/v1/baseball/ticket-prices/:
     get:
       operationId: baseball_ticket_prices_list
       parameters:
@@ -4510,7 +4510,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedPublicTicketPriceList'
           description: ''
-  /api/chat/guest/:
+  /api/v1/chat/guest/:
     post:
       operationId: chat_guest_create
       parameters:
@@ -4544,7 +4544,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GuestChatEventPayload'
           description: SSE delta, done, or error event payload
-  /api/chat/sessions/:
+  /api/v1/chat/sessions/:
     get:
       operationId: chat_sessions_list
       tags:
@@ -4584,7 +4584,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChatSession'
           description: ''
-  /api/chat/sessions/{session_id}/:
+  /api/v1/chat/sessions/{session_id}/:
     patch:
       operationId: chat_sessions_partial_update
       parameters:
@@ -4630,7 +4630,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/chat/sessions/{session_id}/messages/:
+  /api/v1/chat/sessions/{session_id}/messages/:
     get:
       operationId: chat_sessions_messages_list
       parameters:
@@ -4708,7 +4708,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MemberChatEventPayload'
           description: SSE checkpoint, delta, done, or error event payload
-  /api/chat/sessions/{session_id}/turns/:
+  /api/v1/chat/sessions/{session_id}/turns/:
     get:
       operationId: chat_sessions_turns_list
       parameters:
@@ -4734,7 +4734,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedChatTurnList'
           description: ''
-  /api/chat/turns/{turn_id}/finalize/:
+  /api/v1/chat/turns/{turn_id}/finalize/:
     post:
       operationId: chat_turns_finalize_create
       parameters:
@@ -4767,7 +4767,107 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChatFinalizeResponse'
           description: ''
-  /api/community/comments/{comment_id}/:
+  /api/v1/community/admin/posts/:
+    get:
+      operationId: community_admin_posts_list
+      description: 게시글 목록 (제목·작성자·글 번호 검색). 신고 수를 함께 준다.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+      - in: query
+        name: q
+        schema:
+          type: string
+          maxLength: 200
+      tags:
+      - community
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminPostList'
+          description: ''
+  /api/v1/community/admin/posts/{source_id}/:
+    delete:
+      operationId: community_admin_posts_destroy
+      description: 게시글 삭제 (댓글·추천·신고도 함께 삭제된다).
+      parameters:
+      - in: path
+        name: source_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - community
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/community/admin/reports/:
+    get:
+      operationId: community_admin_reports_list
+      description: 신고 목록. 처리 대기 중인 신고가 먼저, 그 안에서는 최근 신고 순.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+      tags:
+      - community
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminReportList'
+          description: ''
+  /api/v1/community/admin/reports/{report_id}/action/:
+    post:
+      operationId: community_admin_reports_action_create
+      description: |-
+        신고 처리.
+        hold: 보류(글 유지) / hide: 글 숨김(같은 글의 신고도 숨김 처리) /
+        delete: 글 삭제(신고도 함께 삭제). 화면에서 고른 처분(sanction)은 기록용으로만 받고 계정에는 적용하지 않는다.
+      parameters:
+      - in: path
+        name: report_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - community
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminReportAction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminReportAction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminReportAction'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminReportActionResult'
+          description: ''
+  /api/v1/community/comments/{comment_id}/:
     patch:
       operationId: community_comments_partial_update
       parameters:
@@ -4862,7 +4962,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/drafts/:
+  /api/v1/community/drafts/:
     get:
       operationId: community_drafts_list
       tags:
@@ -4922,7 +5022,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/drafts/{draft_id}/:
+  /api/v1/community/drafts/{draft_id}/:
     get:
       operationId: community_drafts_retrieve
       parameters:
@@ -5046,7 +5146,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/drafts/{draft_id}/publish/:
+  /api/v1/community/drafts/{draft_id}/publish/:
     post:
       operationId: community_drafts_publish_create
       parameters:
@@ -5118,7 +5218,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/images/:
+  /api/v1/community/images/:
     post:
       operationId: community_images_create
       tags:
@@ -5173,7 +5273,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/images/{image_id}/:
+  /api/v1/community/images/{image_id}/:
     get:
       operationId: community_images_retrieve
       parameters:
@@ -5262,7 +5362,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/posts/:
+  /api/v1/community/posts/:
     get:
       operationId: community_posts_list
       parameters:
@@ -5399,7 +5499,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/posts/{source_id}/:
+  /api/v1/community/posts/{source_id}/:
     get:
       operationId: community_posts_retrieve
       parameters:
@@ -5521,7 +5621,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/posts/{source_id}/comments/:
+  /api/v1/community/posts/{source_id}/comments/:
     get:
       operationId: community_posts_comments_list
       parameters:
@@ -5614,7 +5714,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/posts/{source_id}/reports/:
+  /api/v1/community/posts/{source_id}/reports/:
     post:
       operationId: community_posts_reports_create
       parameters:
@@ -5673,7 +5773,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/posts/{source_id}/vote/:
+  /api/v1/community/posts/{source_id}/vote/:
     get:
       operationId: community_posts_vote_retrieve
       parameters:
@@ -5759,7 +5859,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/predictions/games/:
+  /api/v1/community/predictions/games/:
     get:
       operationId: community_predictions_games_list
       parameters:
@@ -5800,7 +5900,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/predictions/games/{game_id}/:
+  /api/v1/community/predictions/games/{game_id}/:
     get:
       operationId: community_predictions_games_retrieve
       parameters:
@@ -5828,7 +5928,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/community/predictions/games/{game_id}/vote/:
+  /api/v1/community/predictions/games/{game_id}/vote/:
     post:
       operationId: community_predictions_games_vote_create
       parameters:
@@ -5895,7 +5995,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/courses/:
+  /api/v1/courses/:
     get:
       operationId: courses_list
       tags:
@@ -5954,7 +6054,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/courses/{id}/:
+  /api/v1/courses/{id}/:
     get:
       operationId: courses_retrieve
       parameters:
@@ -6092,7 +6192,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/courses/{id}/reaction/:
+  /api/v1/courses/{id}/reaction/:
     get:
       operationId: courses_reaction_retrieve
       parameters:
@@ -6196,7 +6296,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/courses/{id}/view/:
+  /api/v1/courses/{id}/view/:
     post:
       operationId: courses_view_create
       description: 익명 브라우저가 보낸 UUID capability마다 코스 조회를 한 번만 집계합니다. 이는 사람이나 계정 식별자가
@@ -6258,7 +6358,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/places/:
+  /api/v1/places/:
     get:
       operationId: places_list
       parameters:
@@ -6364,7 +6464,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PlaceError'
           description: ''
-  /api/places/{id}/:
+  /api/v1/places/{id}/:
     get:
       operationId: places_retrieve
       parameters:
@@ -6511,7 +6611,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PlaceError'
           description: ''
-  /api/places/search/:
+  /api/v1/places/search/:
     post:
       operationId: places_search
       tags:
@@ -6565,7 +6665,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PlaceError'
           description: ''
-  /api/tourism/:
+  /api/v1/tourism/:
     get:
       operationId: tourism_retrieve
       parameters:
@@ -6619,7 +6719,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TourismResponse'
           description: ''
-  /api/travel/directions/:
+  /api/v1/travel/directions/:
     post:
       operationId: travel_directions_create
       tags:
@@ -6673,7 +6773,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DirectionsError'
           description: ''
-  /api/tving/daily/:
+  /api/v1/tving/daily/:
     get:
       operationId: tving_daily_retrieve
       parameters:
@@ -6706,7 +6806,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/tving/details/athletes/{value}/:
+  /api/v1/tving/details/athletes/{value}/:
     get:
       operationId: tving_details_athletes_retrieve
       parameters:
@@ -6739,7 +6839,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/tving/details/status/:
+  /api/v1/tving/details/status/:
     get:
       operationId: tving_details_status_retrieve
       tags:
@@ -6760,7 +6860,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/tving/details/teams/{value}/:
+  /api/v1/tving/details/teams/{value}/:
     get:
       operationId: tving_details_teams_retrieve
       parameters:
@@ -6793,7 +6893,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/tving/entities/:
+  /api/v1/tving/entities/:
     get:
       operationId: tving_entities_retrieve
       parameters:
@@ -6851,7 +6951,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/tving/entities/players/:
+  /api/v1/tving/entities/players/:
     post:
       operationId: tving_entities_players_create
       tags:
@@ -6901,7 +7001,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/tving/entities/players/{code}/:
+  /api/v1/tving/entities/players/{code}/:
     get:
       operationId: tving_entities_players_retrieve
       parameters:
@@ -7027,7 +7127,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/tving/schedule/:
+  /api/v1/tving/schedule/:
     get:
       operationId: tving_schedule_retrieve
       parameters:
@@ -7059,7 +7159,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/tving/snapshots/:
+  /api/v1/tving/snapshots/:
     get:
       operationId: tving_snapshots_list
       parameters:
@@ -7169,7 +7269,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/tving/snapshots/{id}/:
+  /api/v1/tving/snapshots/{id}/:
     get:
       operationId: tving_snapshots_retrieve
       parameters:
@@ -7295,7 +7395,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: ''
-  /api/weather/:
+  /api/v1/weather/:
     get:
       operationId: weather_retrieve
       parameters:
@@ -7354,11 +7454,6 @@ paths:
           description: ''
 components:
   schemas:
-    ActionEnum:
-      enum:
-      - directions
-      type: string
-      description: '* `directions` - directions'
     AdminMember:
       type: object
       properties:
@@ -7398,6 +7493,222 @@ components:
       - is_staff
       - is_superuser
       - username
+    AdminPost:
+      type: object
+      properties:
+        source_id:
+          type: string
+          readOnly: true
+        post_number:
+          type: string
+          readOnly: true
+        board:
+          allOf:
+          - $ref: '#/components/schemas/BoardEnum'
+          readOnly: true
+        team_code:
+          type: string
+          readOnly: true
+        category:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        author:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        views:
+          type: integer
+          readOnly: true
+        comment_count:
+          type: integer
+          readOnly: true
+        is_sample:
+          type: boolean
+          readOnly: true
+        is_hidden:
+          type: boolean
+          readOnly: true
+        report_count:
+          type: integer
+          readOnly: true
+      required:
+      - author
+      - board
+      - category
+      - comment_count
+      - created_at
+      - is_hidden
+      - is_sample
+      - post_number
+      - report_count
+      - source_id
+      - team_code
+      - title
+      - views
+    AdminPostOwner:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        nickname:
+          type: string
+          readOnly: true
+        is_staff:
+          type: boolean
+          readOnly: true
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        is_superuser:
+          type: boolean
+          readOnly: true
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+      required:
+      - id
+      - is_staff
+      - is_superuser
+      - nickname
+      - username
+    AdminReport:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        post:
+          allOf:
+          - $ref: '#/components/schemas/AdminReportPost'
+          readOnly: true
+        reporter:
+          type: string
+          readOnly: true
+        reason:
+          allOf:
+          - $ref: '#/components/schemas/ReasonEnum'
+          readOnly: true
+        detail:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/AdminReportStatusEnum'
+          readOnly: true
+        handled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - detail
+      - handled_at
+      - id
+      - post
+      - reason
+      - reporter
+      - status
+    AdminReportAction:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/AdminReportActionActionEnum'
+        sanction:
+          allOf:
+          - $ref: '#/components/schemas/SanctionEnum'
+          default: none
+      required:
+      - action
+    AdminReportActionActionEnum:
+      enum:
+      - hold
+      - hide
+      - delete
+      type: string
+      description: |-
+        * `hold` - hold
+        * `hide` - hide
+        * `delete` - delete
+    AdminReportActionResult:
+      type: object
+      properties:
+        action:
+          type: string
+        sanction:
+          type: string
+        status:
+          type: string
+          nullable: true
+      required:
+      - action
+      - sanction
+      - status
+    AdminReportPost:
+      type: object
+      properties:
+        source_id:
+          type: string
+          readOnly: true
+        post_number:
+          type: string
+          readOnly: true
+        board:
+          allOf:
+          - $ref: '#/components/schemas/BoardEnum'
+          readOnly: true
+        team_code:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        author:
+          type: string
+          readOnly: true
+        is_hidden:
+          type: boolean
+          readOnly: true
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/AdminPostOwner'
+          readOnly: true
+          nullable: true
+      required:
+      - author
+      - board
+      - is_hidden
+      - owner
+      - post_number
+      - source_id
+      - team_code
+      - title
+    AdminReportStatusEnum:
+      enum:
+      - pending
+      - held
+      - hidden
+      type: string
+      description: |-
+        * `pending` - pending
+        * `held` - held
+        * `hidden` - hidden
     AthleteData:
       type: object
       properties:
@@ -8783,7 +9094,7 @@ components:
       type: object
       properties:
         action:
-          $ref: '#/components/schemas/ActionEnum'
+          $ref: '#/components/schemas/DirectionsRequestActionEnum'
         mode:
           $ref: '#/components/schemas/DirectionsModeEnum'
         points:
@@ -8795,6 +9106,11 @@ components:
       required:
       - mode
       - points
+    DirectionsRequestActionEnum:
+      enum:
+      - directions
+      type: string
+      description: '* `directions` - directions'
     DirectionsResponse:
       type: object
       properties:
@@ -9819,6 +10135,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AdminMember'
+    PaginatedAdminPostList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminPost'
+    PaginatedAdminReportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminReport'
     PaginatedChatTurnList:
       type: object
       required:
@@ -12003,6 +12365,18 @@ components:
         * `home` - home
         * `away` - away
         * `draw` - draw
+    SanctionEnum:
+      enum:
+      - none
+      - 7d
+      - 30d
+      - permanent
+      type: string
+      description: |-
+        * `none` - none
+        * `7d` - 7d
+        * `30d` - 30d
+        * `permanent` - permanent
     SeatMap:
       type: object
       properties:

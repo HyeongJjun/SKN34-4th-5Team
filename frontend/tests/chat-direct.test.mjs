@@ -53,7 +53,7 @@ test("member completion uses protected direct endpoints and observable finalize 
     const body = init.body && JSON.parse(init.body);
     calls.push({ url: String(url), method: init.method, body, authorization: new Headers(init.headers).get("Authorization") });
     if (init.method === "GET") return json([]);
-    if (String(url) === "/api/chat/sessions/") return json({ id: 7, title: "첫 질문", created_at: "2026-09-15T00:00:00Z", updated_at: "2026-09-15T00:00:00Z" }, 201);
+    if (String(url) === "/api/v1/chat/sessions/") return json({ id: 7, title: "첫 질문", created_at: "2026-09-15T00:00:00Z", updated_at: "2026-09-15T00:00:00Z" }, 201);
     if (String(url).includes("/finalize/")) return json({
       turn_id: "turn-1", session_id: 7, status: body.status,
       user_message_id: 11, assistant_message_id: 12, assistant_message: body.prefix,
@@ -75,8 +75,8 @@ test("member completion uses protected direct endpoints and observable finalize 
     places: [{ name: "식당" }], payload: { title: "직관 코스" }, route: "course:DOOSAN",
   });
   assert.deepEqual(calls.map(call => [call.method, call.url]), [
-    ["GET", "/api/chat/sessions/"], ["POST", "/api/chat/sessions/"],
-    ["POST", "/api/chat/sessions/7/messages/"], ["POST", "/api/chat/turns/turn-1/finalize/"],
+    ["GET", "/api/v1/chat/sessions/"], ["POST", "/api/v1/chat/sessions/"],
+    ["POST", "/api/v1/chat/sessions/7/messages/"], ["POST", "/api/v1/chat/turns/turn-1/finalize/"],
   ]);
   assert.ok(calls.every(call => call.authorization === "Bearer access-token"));
 });
@@ -134,7 +134,7 @@ test("member Stop requested before the initial checkpoint persists only the huma
   const controller = new AbortController();
   let frozen = null, finalized;
   global.fetch = async (url, init = {}) => {
-    if (String(url) === "/api/chat/sessions/") return json({ id: 10, title: "질문", created_at: "2026-09-15T00:00:00Z", updated_at: "2026-09-15T00:00:00Z" }, 201);
+    if (String(url) === "/api/v1/chat/sessions/") return json({ id: 10, title: "질문", created_at: "2026-09-15T00:00:00Z", updated_at: "2026-09-15T00:00:00Z" }, 201);
     if (String(url).includes("/finalize/")) {
       finalized = JSON.parse(init.body);
       return json({ turn_id: "turn-empty", session_id: 10, status: "stopped", user_message_id: 31, assistant_message_id: null, assistant_message: "" });
@@ -180,7 +180,7 @@ test("guest uses bounded browser history, Stop before a token stays local, and n
   const controller = new AbortController();
   let frozen = null, body, authorization;
   global.fetch = async (url, init = {}) => {
-    assert.equal(url, "/api/chat/guest/");
+    assert.equal(url, "/api/v1/chat/guest/");
     body = JSON.parse(init.body); authorization = new Headers(init.headers).get("Authorization");
     return new Response(new ReadableStream({
       start(stream) { init.signal.addEventListener("abort", () => stream.error(new DOMException("Aborted", "AbortError")), { once: true }); },
@@ -265,7 +265,7 @@ test("course parsing ignores non-course answers and builds editable stops", () =
 
 test("guest read failure is retryable while failed member auth never falls back to guest", async () => {
   global.fetch = async url => {
-    if (String(url) === "/api/chat/guest/") return new Response("broken", { headers: { "Content-Type": "text/plain" } });
+    if (String(url) === "/api/v1/chat/guest/") return new Response("broken", { headers: { "Content-Type": "text/plain" } });
     throw new Error("guest fallback must not be attempted");
   };
   await assert.rejects(sendGuestChatMessage({ messages: [{ role: "user", content: "질문" }] }), error => error instanceof ChatClientError && !error.uncertain);

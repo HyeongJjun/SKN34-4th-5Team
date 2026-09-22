@@ -23,7 +23,7 @@ class CommunityPostPaginationTests(APITestCase):
 
         self.assertEqual((first.status_code, first.data["count"], len(first.data["results"])), (200, 352, 20))
         self.assertEqual((last.status_code, last.data["count"], len(last.data["results"])), (200, 352, 12))
-        self.assertEqual(urlsplit(first.data["next"]).path, "/api/community/posts/")
+        self.assertEqual(urlsplit(first.data["next"]).path, "/api/v1/community/posts/")
         self.assertEqual(parse_qs(urlsplit(first.data["next"]).query)["page"], ["2"])
         self.assertTrue(
             {post["id"] for post in first.data["results"]}.isdisjoint(
@@ -50,7 +50,7 @@ class CommunityPostPaginationTests(APITestCase):
         self.assertEqual((response.status_code, response.data["count"], len(response.data["results"])), (200, 30, 7))
         self.assertTrue(all(post["teamCode"] == "LT" for post in response.data["results"]))
         next_link = urlsplit(response.data["next"])
-        self.assertEqual(next_link.path, "/api/community/posts/")
+        self.assertEqual(next_link.path, "/api/v1/community/posts/")
         self.assertEqual(parse_qs(next_link.query), {"board": ["teams"], "team": ["lt"], "page": ["2"], "page_size": ["7"]})
 
         page_size_only = self.client.get("/community/posts/?page_size=7")
@@ -83,7 +83,7 @@ class CommunityPostPaginationTests(APITestCase):
 class CommunityPostPaginationSchemaTests(SimpleTestCase):
     def test_schema_describes_legacy_and_paginated_responses(self):
         schema = SchemaGenerator().get_schema(request=None, public=True)
-        operation = schema["paths"]["/api/community/posts/"]["get"]
+        operation = schema["paths"]["/api/v1/community/posts/"]["get"]
         parameters = {parameter["name"]: parameter["schema"] for parameter in operation["parameters"]}
         response = operation["responses"]["200"]["content"]["application/json"]["schema"]
 

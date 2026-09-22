@@ -226,7 +226,7 @@ class ChatApiTest(APITestCase):
             "#/components/schemas/GuestChatMessage",
             schemas["GuestChat"]["properties"]["messages"]["items"]["$ref"],
         )
-        member = schema["paths"]["/api/chat/sessions/{session_id}/messages/"]["post"]["responses"]
+        member = schema["paths"]["/api/v1/chat/sessions/{session_id}/messages/"]["post"]["responses"]
         self.assertEqual(
             "#/components/schemas/MemberChatEventPayload",
             member["200"]["content"]["text/event-stream"]["schema"]["$ref"],

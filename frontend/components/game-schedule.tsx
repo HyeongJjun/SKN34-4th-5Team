@@ -50,7 +50,7 @@ function useKboSnapshot() {
       }, 65_000);
 
       try {
-        const response = await fetch("/api/tving/daily/", { cache: "no-store", signal: controller.signal });
+        const response = await fetch("/api/v1/tving/daily/", { cache: "no-store", signal: controller.signal });
         const result: KboApiResponse = await response.json();
         if (!response.ok || !result.data || !Array.isArray(result.data.games) || !Array.isArray(result.data.standings)) {
           throw new Error("일정과 순위를 불러오지 못했어요.");

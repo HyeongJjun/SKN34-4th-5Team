@@ -107,7 +107,7 @@ function courseMetadata(value: Record<string, unknown>): ChatCourseMetadataDto {
 
 async function finalizeMemberTurn(sessionId: number, checkpoint: ChatCheckpoint, status: "completed" | "stopped", callbacks: ChatStreamCallbacks) {
   if (callbacks.isCurrent && !callbacks.isCurrent()) throw new ChatClientError("계정이 변경되어 저장을 중단했어요.", 409);
-  const value = await memberRequest(`/api/chat/turns/${checkpoint.turnId}/finalize/`, {
+  const value = await memberRequest(`/api/v1/chat/turns/${checkpoint.turnId}/finalize/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ receipt: checkpoint.receipt, prefix: checkpoint.prefix, status }),
@@ -284,7 +284,7 @@ async function readGuestStream(response: Response, callbacks: ChatStreamCallback
 }
 
 export async function listChatSessions(signal?: AbortSignal): Promise<ChatSessionDto[]> {
-  const sessions = await memberRequest("/api/chat/sessions/", { method: "GET" }, signal, readJson);
+  const sessions = await memberRequest("/api/v1/chat/sessions/", { method: "GET" }, signal, readJson);
   if (!Array.isArray(sessions) || sessions.some(item => !isRecord(item) || !Number.isSafeInteger(item.id) || typeof item.title !== "string")) {
     throw new ChatClientError("채팅방 목록 응답을 확인하지 못했어요.", 502);
   }
@@ -292,7 +292,7 @@ export async function listChatSessions(signal?: AbortSignal): Promise<ChatSessio
 }
 
 export async function createChatSession(title: string, signal?: AbortSignal): Promise<ChatSessionDto> {
-  const room = await memberRequest("/api/chat/sessions/", {
+  const room = await memberRequest("/api/v1/chat/sessions/", {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title }),
   }, signal, readJson);
   if (!isRecord(room) || !Number.isSafeInteger(room.id) || Number(room.id) < 1 || typeof room.title !== "string") {
@@ -302,7 +302,7 @@ export async function createChatSession(title: string, signal?: AbortSignal): Pr
 }
 
 export async function renameChatSession(sessionId: number, title: string, signal?: AbortSignal): Promise<ChatSessionDto> {
-  const room = await memberRequest(`/api/chat/sessions/${sessionId}/`, {
+  const room = await memberRequest(`/api/v1/chat/sessions/${sessionId}/`, {
     method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title }),
   }, signal, readJson);
   if (!isRecord(room) || room.id !== sessionId || typeof room.title !== "string") throw new ChatClientError("채팅방 수정 응답을 확인하지 못했어요.", 502, true, sessionId);
@@ -310,19 +310,19 @@ export async function renameChatSession(sessionId: number, title: string, signal
 }
 
 export async function deleteChatSession(sessionId: number, signal?: AbortSignal): Promise<void> {
-  const result = await memberRequest(`/api/chat/sessions/${sessionId}/`, { method: "DELETE" }, signal, readJson);
+  const result = await memberRequest(`/api/v1/chat/sessions/${sessionId}/`, { method: "DELETE" }, signal, readJson);
   if (result !== null) throw new ChatClientError("채팅방 삭제 응답을 확인하지 못했어요.", 502, true, sessionId);
 }
 
 export async function fetchChatHistory(sessionId: number, signal?: AbortSignal): Promise<ChatMessageDto[]> {
-  const messages = await memberRequest(`/api/chat/sessions/${sessionId}/messages/`, { method: "GET" }, signal, readJson);
+  const messages = await memberRequest(`/api/v1/chat/sessions/${sessionId}/messages/`, { method: "GET" }, signal, readJson);
   if (!Array.isArray(messages) || messages.some(item => !isRecord(item) || typeof item.content !== "string")) throw new ChatClientError("대화 기록 응답을 확인하지 못했어요.", 502, false, sessionId);
   return messages as ChatMessageDto[];
 }
 
 function turnPagePath(next: string, sessionId: number): string {
   const origin = window.location?.origin ?? "http://localhost";
-  const expected = `/api/chat/sessions/${sessionId}/turns/`;
+  const expected = `/api/v1/chat/sessions/${sessionId}/turns/`;
   let url: URL;
   try { url = new URL(next, `${origin}${expected}`); } catch { throw new ChatClientError("대화 진행 기록 다음 페이지 주소가 올바르지 않아요.", 502, false, sessionId); }
   const page = url.searchParams.get("page");
@@ -357,7 +357,7 @@ function parseTurnPage(value: unknown, sessionId: number): ChatTurnPageDto {
 
 export async function fetchChatTurns(sessionId: number, signal?: AbortSignal): Promise<ChatTurnHistoryDto[]> {
   const turns: ChatTurnHistoryDto[] = [];
-  let path = `/api/chat/sessions/${sessionId}/turns/?page=1`;
+  let path = `/api/v1/chat/sessions/${sessionId}/turns/?page=1`;
   const seen = new Set<string>();
   let expectedCount: number | undefined;
   do {
@@ -375,7 +375,7 @@ export async function fetchChatTurns(sessionId: number, signal?: AbortSignal): P
 }
 
 export async function sendNonStreamChatMessage(sessionId: number, content: string, signal?: AbortSignal): Promise<ChatNonStreamResponseDto> {
-  const result = await memberRequest(`/api/chat/sessions/${sessionId}/messages/`, {
+  const result = await memberRequest(`/api/v1/chat/sessions/${sessionId}/messages/`, {
     method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ content }),
   }, signal, readJson);
   if (!isRecord(result) || result.session_id !== sessionId || result.status !== "completed" || typeof result.assistant_message !== "string") {
@@ -417,7 +417,7 @@ export async function sendChatMessage(body: ChatRequest, signal?: AbortSignal, c
   }
   const content = `${contextPrefix(input.context)}${question}`;
   try {
-    return await memberRequest(`/api/chat/sessions/${sessionId}/messages/`, {
+    return await memberRequest(`/api/v1/chat/sessions/${sessionId}/messages/`, {
       method: "POST", headers: { "Content-Type": "application/json", Accept: "text/event-stream" }, body: JSON.stringify({ content }),
     }, signal, response => readMemberStream(response, sessionId!, callbacks));
   } catch (error) {
@@ -432,7 +432,7 @@ export async function sendGuestChatMessage(body: ChatRequest, signal?: AbortSign
     ...message,
     content: index === input.messages.length - 1 ? `${contextPrefix(input.context)}${message.content}` : message.content,
   }));
-  return guestRequest("/api/chat/guest/", {
+  return guestRequest("/api/v1/chat/guest/", {
     method: "POST", headers: { "Content-Type": "application/json", Accept: "text/event-stream" }, body: JSON.stringify({ messages }),
   }, signal, response => readGuestStream(response, callbacks));
 }

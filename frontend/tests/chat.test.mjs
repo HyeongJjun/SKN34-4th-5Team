@@ -215,9 +215,9 @@ test("invalid JSON and network exceptions expose no upstream details", async () 
 test("backend adapter forwards the same request contract without OpenAI credentials", async () => {
   const request = { ...question, context: { stadium: "고척", intent: "route" } };
   const result = await createChatReply(request, {
-    env: { ...openaiEnv, CHAT_PROVIDER: "backend", CHAT_BACKEND_URL: "http://backend:8000/api/chat/" },
+    env: { ...openaiEnv, CHAT_PROVIDER: "backend", CHAT_BACKEND_URL: "http://backend:8000/api/v1/chat/" },
     fetcher: async (url, init) => {
-      assert.equal(url, "http://backend:8000/api/chat/");
+      assert.equal(url, "http://backend:8000/api/v1/chat/");
       assert.equal(init.headers.Authorization, undefined);
       assert.deepEqual(JSON.parse(init.body), request);
       return jsonResponse({ reply: "  팀 챗봇의 답변입니다.  ", internalField: "not exposed" });
@@ -237,7 +237,7 @@ test("backend rejects missing or unsafe endpoint configurations before fetching"
 test("backend rejects malformed replies", async () => {
   for (const body of [null, {}, { reply: 42 }, { reply: " " }, { reply: "x".repeat(MAX_REPLY_LENGTH + 1) }]) {
     await assert.rejects(createChatReply(question, {
-      env: { CHAT_PROVIDER: "backend", CHAT_BACKEND_URL: "http://backend:8000/api/chat/" },
+      env: { CHAT_PROVIDER: "backend", CHAT_BACKEND_URL: "http://backend:8000/api/v1/chat/" },
       fetcher: async () => jsonResponse(body),
     }), chatError(502));
   }

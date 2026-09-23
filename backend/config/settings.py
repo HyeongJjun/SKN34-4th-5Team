@@ -237,7 +237,7 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'KBO Journey API',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    'SCHEMA_PATH_PREFIX_INSERT': '/api',
+    'SCHEMA_PATH_PREFIX_INSERT': '',
     'ENUM_NAME_OVERRIDES': {
         'ChatFinalizeStatusEnum': [('completed', 'completed'), ('stopped', 'stopped')],
         'CompletedStatusEnum': [('completed', 'completed')],

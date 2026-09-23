@@ -252,14 +252,14 @@ test("turn history follows only same-origin pages on the same session endpoint",
     calls.push(String(url));
     const second = String(url).endsWith("?page=2");
     const indexes = second ? [20] : Array.from({ length: 20 }, (_, index) => index);
-    return json({ count: 21, next: second ? null : "/api/chat/sessions/7/turns/?page=2", previous: second ? "/api/chat/sessions/7/turns/?page=1" : null, results: indexes.map(index => ({ id: `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`, question: `질문 ${index + 1}`, status: "completed", base_sequence: index * 2, human_message_id: null, assistant_message_id: null, progress: [] })) });
+    return json({ count: 21, next: second ? null : "/api/v1/chat/sessions/7/turns/?page=2", previous: second ? "/api/v1/chat/sessions/7/turns/?page=1" : null, results: indexes.map(index => ({ id: `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`, question: `질문 ${index + 1}`, status: "completed", base_sequence: index * 2, human_message_id: null, assistant_message_id: null, progress: [] })) });
   };
   const turns = await fetchChatTurns(7);
   assert.equal(turns.length, 21);
   assert.equal(restoreChatMessages([], turns).at(-1).content, "질문 21");
-  assert.deepEqual(calls, ["/api/chat/sessions/7/turns/?page=1", "/api/chat/sessions/7/turns/?page=2"]);
+  assert.deepEqual(calls, ["/api/v1/chat/sessions/7/turns/?page=1", "/api/v1/chat/sessions/7/turns/?page=2"]);
 
-  global.fetch = async () => json({ count: 1, next: "https://evil.example/api/chat/sessions/7/turns/?page=2", previous: null, results: [{ id: TURN, question: "질문", status: "failed", base_sequence: 0, human_message_id: null, assistant_message_id: null, progress: [] }] });
+  global.fetch = async () => json({ count: 1, next: "https://evil.example/api/v1/chat/sessions/7/turns/?page=2", previous: null, results: [{ id: TURN, question: "질문", status: "failed", base_sequence: 0, human_message_id: null, assistant_message_id: null, progress: [] }] });
   await assert.rejects(fetchChatTurns(7), error => error instanceof ChatClientError && /다음 페이지/.test(error.message));
 });
 

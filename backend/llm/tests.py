@@ -149,10 +149,10 @@ class DocumentChatCoexistenceTest(APITestCase):
         chunk = DocumentChunk.objects.create(
             document=document, content="원문", chunk_index=0, embedding=[1.0] * 1536
         )
-        session = self.client.post("/chat/sessions/", {"title": "채팅"}, format="json")
+        session = self.client.post("/api/v1/chat/sessions/", {"title": "채팅"}, format="json")
         self.assertEqual(session.status_code, 201)
         self.assertEqual(
-            self.client.delete(f"/chat/sessions/{session.json()['id']}/").status_code, 204
+            self.client.delete(f"/api/v1/chat/sessions/{session.json()['id']}/").status_code, 204
         )
         chunk.refresh_from_db()
         self.assertEqual(chunk.content, "원문")
@@ -176,42 +176,42 @@ class ChatApiTest(APITestCase):
         self.addCleanup(patcher.stop)
 
     def test_session_and_message_crud(self):
-        room = self.client.post("/chat/sessions/", {"title": "test"}, format="json")
+        room = self.client.post("/api/v1/chat/sessions/", {"title": "test"}, format="json")
         self.assertEqual(room.status_code, 201)
         session_id = room.json()["id"]
 
         updated = self.client.patch(
-            f"/chat/sessions/{session_id}/",
+            f"/api/v1/chat/sessions/{session_id}/",
             {"title": "updated"},
             format="json",
         )
         self.assertEqual(updated.json()["title"], "updated")
 
         message = self.client.post(
-            f"/chat/sessions/{session_id}/messages/",
+            f"/api/v1/chat/sessions/{session_id}/messages/",
             {"content": "hello"},
             format="json",
         )
         self.assertEqual(message.status_code, 201)
         self.assertEqual(message.json()["assistant_message"], "테스트 답변")
         self.assertEqual(
-            self.client.get(f"/chat/sessions/{session_id}/messages/").json()[0]["content"],
+            self.client.get(f"/api/v1/chat/sessions/{session_id}/messages/").json()[0]["content"],
             "hello",
         )
 
         second = self.client.post(
-            f"/chat/sessions/{session_id}/messages/", {"content": "두 번째 질문"}, format="json"
+            f"/api/v1/chat/sessions/{session_id}/messages/", {"content": "두 번째 질문"}, format="json"
         )
         self.assertEqual(second.status_code, 201)
         self.assertEqual(
             [(m.type, m.content) for m in self.prompts[1][1:]],
             [("human", "hello"), ("ai", "테스트 답변"), ("human", "두 번째 질문")],
         )
-        messages = self.client.get(f"/chat/sessions/{session_id}/messages/").json()
+        messages = self.client.get(f"/api/v1/chat/sessions/{session_id}/messages/").json()
         self.assertEqual([m["role"] for m in messages], ["human", "ai", "human", "ai"])
         self.assertEqual([m["sequence_no"] for m in messages], [1, 2, 3, 4])
 
-        self.assertEqual(self.client.delete(f"/chat/sessions/{session_id}/").status_code, 204)
+        self.assertEqual(self.client.delete(f"/api/v1/chat/sessions/{session_id}/").status_code, 204)
         self.assertFalse(ChatMessage.objects.exists())
 
     def test_openapi_keeps_json_and_sse_contracts_distinct(self):
@@ -226,7 +226,7 @@ class ChatApiTest(APITestCase):
             "#/components/schemas/GuestChatMessage",
             schemas["GuestChat"]["properties"]["messages"]["items"]["$ref"],
         )
-        member = schema["paths"]["/api/chat/sessions/{session_id}/messages/"]["post"]["responses"]
+        member = schema["paths"]["/api/v1/chat/sessions/{session_id}/messages/"]["post"]["responses"]
         self.assertEqual(
             "#/components/schemas/MemberChatEventPayload",
             member["200"]["content"]["text/event-stream"]["schema"]["$ref"],
@@ -239,7 +239,7 @@ class ChatApiTest(APITestCase):
 
     def test_invalid_input_and_other_users_session_do_not_call_llm(self):
         session = ChatSession.objects.create(user=self.user)
-        url = f"/chat/sessions/{session.pk}/messages/"
+        url = f"/api/v1/chat/sessions/{session.pk}/messages/"
         self.assertEqual(self.client.post(url, {"content": " "}, format="json").status_code, 400)
         self.client.force_authenticate(user=get_user_model().objects.create_user(username="other"))
         self.assertEqual(self.client.get(url).status_code, 404)
@@ -255,7 +255,7 @@ class ChatApiTest(APITestCase):
         self.model.return_value = RunnableLambda(fail)
         session = ChatSession.objects.create(user=self.user)
         response = self.client.post(
-            f"/chat/sessions/{session.pk}/messages/", {"content": "hello"}, format="json"
+            f"/api/v1/chat/sessions/{session.pk}/messages/", {"content": "hello"}, format="json"
         )
         self.assertEqual(response.status_code, 502)
         self.assertNotIn("upstream private error", response.content.decode())
@@ -265,7 +265,7 @@ class ChatApiTest(APITestCase):
         self.model.side_effect = OpenAIError("private missing API key detail")
         session = ChatSession.objects.create(user=self.user)
         response = self.client.post(
-            f"/chat/sessions/{session.pk}/messages/", {"content": "hello"}, format="json"
+            f"/api/v1/chat/sessions/{session.pk}/messages/", {"content": "hello"}, format="json"
         )
         self.assertEqual(response.status_code, 502)
         self.assertNotIn("private missing API key detail", response.content.decode())
@@ -276,7 +276,7 @@ class ChatApiTest(APITestCase):
         with patch("llm.chat_message_histories.ChatMessage.objects.bulk_create", side_effect=DatabaseError):
             with self.assertRaises(DatabaseError):
                 self.client.post(
-                    f"/chat/sessions/{session.pk}/messages/", {"content": "hello"}, format="json"
+                    f"/api/v1/chat/sessions/{session.pk}/messages/", {"content": "hello"}, format="json"
                 )
         self.assertFalse(session.messages.exists())
 
@@ -291,14 +291,14 @@ class ChatApiTest(APITestCase):
     def stream(self, session, question="hello", chunks=("첫 ", "답변")):
         with patch.object(ChatService, "stream_with_history", side_effect=lambda *_: iter(chunks)):
             response = self.client.post(
-                f"/chat/sessions/{session.pk}/messages/",
+                f"/api/v1/chat/sessions/{session.pk}/messages/",
                 {"content": question}, format="json", HTTP_ACCEPT="text/event-stream",
             )
             return self.events(response)
 
     def finalize(self, event, prefix, final_status):
         return self.client.post(
-            f"/chat/turns/{event['turn_id']}/finalize/",
+            f"/api/v1/chat/turns/{event['turn_id']}/finalize/",
             {"receipt": event["receipt"], "prefix": prefix, "status": final_status},
             format="json",
         )
@@ -344,7 +344,7 @@ class ChatApiTest(APITestCase):
         with patch("llm.views.last_detail", return_value=metadata):
             done = self.stream(session, chunks=("답",))[-1][1]
             non_stream = self.client.post(
-                f"/chat/sessions/{session.pk}/messages/", {"content": "다른 질문"}, format="json"
+                f"/api/v1/chat/sessions/{session.pk}/messages/", {"content": "다른 질문"}, format="json"
             ).json()
         for key in ("places", "coursePayload", "route"):
             self.assertEqual(metadata[key], done[key])
@@ -392,7 +392,7 @@ class ChatApiTest(APITestCase):
         partial = self.stream(session, question="첫 질문", chunks=("부분", " 나머지"))[1][1]
         self.finalize(partial, "부분", "stopped")
         response = self.client.post(
-            f"/chat/sessions/{session.pk}/messages/", {"content": "후속 질문"}, format="json"
+            f"/api/v1/chat/sessions/{session.pk}/messages/", {"content": "후속 질문"}, format="json"
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(
@@ -407,7 +407,7 @@ class ChatApiTest(APITestCase):
         forged = self.finalize(checkpoint, "클라이언트 위조", "stopped")
         self.assertEqual(forged.status_code, 400)
         invalid = self.client.post(
-            f"/chat/turns/{checkpoint['turn_id']}/finalize/",
+            f"/api/v1/chat/turns/{checkpoint['turn_id']}/finalize/",
             {"receipt": "not-a-server-receipt", "prefix": "서버", "status": "stopped"},
             format="json",
         )
@@ -423,7 +423,7 @@ class ChatApiTest(APITestCase):
         events = self.stream(session, chunks=("앞", "뒤"))
         self.finalize(events[-1][1], "앞뒤", "completed")
         self.client.post(
-            f"/chat/sessions/{session.pk}/messages/", {"content": "later"}, format="json"
+            f"/api/v1/chat/sessions/{session.pk}/messages/", {"content": "later"}, format="json"
         )
         result = self.finalize(events[1][1], "앞", "stopped").json()
         self.assertEqual(result["status"], "completed")
@@ -453,7 +453,7 @@ class ChatApiTest(APITestCase):
         session = ChatSession.objects.create(user=self.user)
         with patch.object(ChatService, "stream_with_history", side_effect=fail):
             response = self.client.post(
-                f"/chat/sessions/{session.pk}/messages/",
+                f"/api/v1/chat/sessions/{session.pk}/messages/",
                 {"content": "hello"}, format="json", HTTP_ACCEPT="text/event-stream",
             )
             body = b"".join(response.streaming_content).decode()
@@ -467,7 +467,7 @@ class ChatApiTest(APITestCase):
         guest = APIClient()
         with patch.object(ChatService, "stream_with_history", return_value=iter(("답",))) as model:
             response = guest.post(
-                "/chat/guest/",
+                "/api/v1/chat/guest/",
                 {"messages": [
                     {"role": "user", "content": "첫 질문"},
                     {"role": "assistant", "content": "부분 답"},

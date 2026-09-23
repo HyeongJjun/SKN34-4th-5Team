@@ -8,12 +8,12 @@ KBO 직관 가이드의 Django REST API입니다. 회원 인증, 채팅·RAG, �
 
 | 앱 | 주요 기능 | 담당 데이터·처리 | Django 직접 호출 경로 | 상세 문서 |
 | --- | --- | --- | --- | --- |
-| `accounts` | 회원가입·로그인, JWT 갱신·로그아웃, 계정 복구·정보 변경, 관리자 회원 관리 | 사용자와 권한, 이메일 인증, refresh 폐기 | `/auth/…` | [인증·회원 API](../docs/api/accounts.md) |
-| `llm` | 회원·게스트 채팅, 답변 스트리밍, 대화 기록, 답변 중단·확정, RAG·도구 호출 | 채팅방·메시지·턴, 문서 검색과 도메인 에이전트 | `/chat/…` | [채팅 API](../docs/api/llm.md) |
-| `baseball` | 구단·구장·경기·순위·티켓 등 조회, 관리자 야구 데이터 CRUD, 안전한 SQL 조회 서비스 | 야구 도메인 모델, CSV 적재, 읽기 전용 DB 조회 | `/baseball/…`, `/baseball/manage/…` | [야구 데이터 API](../docs/api/baseball.md) |
-| `travel` | 직관 코스 CRUD·반응·조회수, 장소 검색·관리, 길찾기, 구장 날씨, 관광 검색 | 코스·방문 장소, 외부 데이터 스냅샷, 지도·기상·관광 서비스 | `/courses/…`, `/places/…`, `/travel/directions/`, `/weather/`, `/tourism/` | [코스·장소·외부 정보 API](../docs/api/travel.md) |
-| `community` | 게시글·댓글, 추천·신고, 임시저장·게시, 이미지, 승부 예측 | 게시글·초안·이미지 연결, revision 충돌 및 게시 재시도 처리 | `/community/…` | [커뮤니티 API](../docs/api/community.md) |
-| `tving` | 일별·월별 경기 정보, 구단·선수 상세, 엔티티·스냅샷 관리 | TVING 응답 조회·저장과 관계형 데이터 반영 | `/tving/…` | [TVING 데이터 API](../docs/api/tving.md) |
+| `accounts` | 회원가입·로그인, JWT 갱신·로그아웃, 계정 복구·정보 변경, 관리자 회원 관리 | 사용자와 권한, 이메일 인증, refresh 폐기 | `/api/v1/auth/…` | [인증·회원 API](../docs/api/accounts.md) |
+| `llm` | 회원·게스트 채팅, 답변 스트리밍, 대화 기록, 답변 중단·확정, RAG·도구 호출 | 채팅방·메시지·턴, 문서 검색과 도메인 에이전트 | `/api/v1/chat/…` | [채팅 API](../docs/api/llm.md) |
+| `baseball` | 구단·구장·경기·순위·티켓 등 조회, 관리자 야구 데이터 CRUD, 안전한 SQL 조회 서비스 | 야구 도메인 모델, CSV 적재, 읽기 전용 DB 조회 | `/api/v1/baseball/…`, `/api/v1/baseball/manage/…` | [야구 데이터 API](../docs/api/baseball.md) |
+| `travel` | 직관 코스 CRUD·반응·조회수, 장소 검색·관리, 길찾기, 구장 날씨, 관광 검색 | 코스·방문 장소, 외부 데이터 스냅샷, 지도·기상·관광 서비스 | `/api/v1/courses/…`, `/api/v1/places/…`, `/api/v1/travel/directions/`, `/api/v1/weather/`, `/api/v1/tourism/` | [코스·장소·외부 정보 API](../docs/api/travel.md) |
+| `community` | 게시글·댓글, 추천·신고, 임시저장·게시, 이미지, 승부 예측 | 게시글·초안·이미지 연결, revision 충돌 및 게시 재시도 처리 | `/api/v1/community/…` | [커뮤니티 API](../docs/api/community.md) |
+| `tving` | 일별·월별 경기 정보, 구단·선수 상세, 엔티티·스냅샷 관리 | TVING 응답 조회·저장과 관계형 데이터 반영 | `/api/v1/tving/…` | [TVING 데이터 API](../docs/api/tving.md) |
 
 앱 등록은 [config/settings.py](config/settings.py), 실제 공개 URL은 [config/urls.py](config/urls.py)를 기준으로 합니다. 폴더에 서비스 함수나 View가 있다고 해서 모두 HTTP API로 노출되는 것은 아닙니다.
 
@@ -54,13 +54,13 @@ backend/
 | 항목 | 규칙 |
 | --- | --- |
 | Django 직접 호출 | 기본 개발 주소 `http://127.0.0.1:8000`; 예: `/auth/signin` |
-| Nginx 경유 | 기본 개발 주소 `http://localhost`; 예: `/api/auth/signin` |
+| Nginx 경유 | 기본 개발 주소 `http://localhost`; 예: `/api/v1/auth/signin` |
 | 경로 변환 | Nginx가 `/api/` 접두어를 제거해 Django에 전달합니다. [프록시 설정](../nginx/nginx.conf) 참고 |
 | 인증 | 필요한 API에 `Authorization: Bearer <access_token>` 전달 |
 | 요청 형식 | 일반적으로 JSON. 이미지 업로드는 multipart, 채팅 스트리밍 응답은 SSE |
 | 끝 슬래시 | URL마다 다릅니다. `/auth/signin`과 `/auth/signup/`처럼 문서의 경로를 그대로 사용합니다 |
 | 응답·오류 | 앱별 형식이 다릅니다. 모든 API가 같은 래퍼·페이지네이션·오류 구조를 쓴다고 가정하지 않습니다 |
-| OpenAPI | Django `GET /schema/`, Nginx `GET /api/schema/`; 저장된 계약은 [contracts/openapi.yaml](../contracts/openapi.yaml) |
+| OpenAPI | Django·Nginx `GET /api/v1/schema/`; 저장된 계약은 [contracts/openapi.yaml](../contracts/openapi.yaml) |
 
 JWT access 수명은 5분, refresh 수명은 1일이며 refresh rotation은 사용하지 않습니다. 로그아웃은 제출한 refresh만 폐기하고 기존 access를 즉시 폐기하지 않습니다. 비밀번호 변경·재설정 시 토큰의 비밀번호 해시 검증이 적용됩니다. 상세 계약은 [accounts README](../docs/api/accounts.md)를 참고합니다.
 

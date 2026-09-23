@@ -68,7 +68,7 @@ class ProgressApiTest(TransactionTestCase):
         self.addCleanup(patcher.stop)
 
     def stream(self, stream_method, *, guest=False):
-        target = "/chat/guest/" if guest else f"/chat/sessions/{self.session.pk}/messages/"
+        target = "/api/v1/chat/guest/" if guest else f"/api/v1/chat/sessions/{self.session.pk}/messages/"
         data = {"messages": [{"role": "user", "content": "질문"}]} if guest else {"content": "질문"}
         patcher = patch.object(ChatService, "stream_with_history", side_effect=stream_method)
         patcher.start()
@@ -102,7 +102,7 @@ class ProgressApiTest(TransactionTestCase):
         turn = ChatTurn.objects.get(pk=started["turn_id"])
         rows_before = turn.progress_events.count()
         payload = {"receipt": done["receipt"], "prefix": "최종 답변", "status": "completed"}
-        url = f"/chat/turns/{turn.pk}/finalize/"
+        url = f"/api/v1/chat/turns/{turn.pk}/finalize/"
         first = self.client.post(url, payload, format="json")
         second = self.client.post(url, payload, format="json")
         self.assertEqual((first.status_code, second.status_code), (200, 200))
@@ -159,7 +159,7 @@ class ProgressApiTest(TransactionTestCase):
 
         with patch.object(ChatService, "stream_with_history", side_effect=detailed_stream):
             guest = self.client.post(
-                "/chat/guest/",
+                "/api/v1/chat/guest/",
                 {"messages": [{"role": "user", "content": "질문"}], "debug": True},
                 format="json", HTTP_ACCEPT="text/event-stream", REMOTE_ADDR="203.0.113.42",
             )
@@ -177,12 +177,12 @@ class ProgressApiTest(TransactionTestCase):
             tool_name="get_games", tool_call_id="call-history",
             arguments={"team": "LG"}, result={"count": 1}, direct=True,
         )
-        ordinary = self.client.get(f"/chat/sessions/{self.session.pk}/turns/").json()["results"][0]["progress"][0]
+        ordinary = self.client.get(f"/api/v1/chat/sessions/{self.session.pk}/turns/").json()["results"][0]["progress"][0]
         self.assertFalse({"tool_call_id", "arguments", "result", "truncated"} & ordinary.keys())
 
         self.user.is_staff = True
         self.user.save(update_fields=("is_staff",))
-        admin = self.client.get(f"/chat/sessions/{self.session.pk}/turns/").json()["results"][0]["progress"][0]
+        admin = self.client.get(f"/api/v1/chat/sessions/{self.session.pk}/turns/").json()["results"][0]["progress"][0]
         self.assertEqual(admin["tool_call_id"], "call-history")
         self.assertEqual(admin["arguments"], {"team": "LG"})
         self.assertEqual(admin["result"], {"count": 1})
@@ -201,7 +201,7 @@ class ProgressApiTest(TransactionTestCase):
             patch.object(rag_pipeline.dispatcher, "stream", side_effect=fake_dispatch),
         ):
             guest = self.client.post(
-                "/chat/guest/",
+                "/api/v1/chat/guest/",
                 {"messages": [
                     {"role": "user", "content": "잠실 알려줘"},
                     {"role": "assistant", "content": "잠실 답변"},
@@ -214,7 +214,7 @@ class ProgressApiTest(TransactionTestCase):
             ChatMessage.objects.create(session=self.session, sequence_no=1, role="human", message="잠실 알려줘")
             ChatMessage.objects.create(session=self.session, sequence_no=2, role="ai", message="잠실 답변")
             member = self.client.post(
-                f"/chat/sessions/{self.session.pk}/messages/",
+                f"/api/v1/chat/sessions/{self.session.pk}/messages/",
                 {"content": "가는 법은?"}, format="json", HTTP_ACCEPT="text/event-stream",
             )
             self.assertIn("연속 답변", b"".join(member.streaming_content).decode())
@@ -231,7 +231,7 @@ class ProgressApiTest(TransactionTestCase):
         operation_id = collector.emit(kind="tool", status="started", label="조회 중")
         turn.progress_events.update(created_at=timezone.now() - timedelta(minutes=6))
 
-        own = self.client.get(f"/chat/sessions/{self.session.pk}/turns/")
+        own = self.client.get(f"/api/v1/chat/sessions/{self.session.pk}/turns/")
         self.assertEqual(own.status_code, 200)
         self.assertEqual(own.json()["results"][0]["progress"][0]["status"], "unknown")
         self.assertEqual(
@@ -241,7 +241,7 @@ class ProgressApiTest(TransactionTestCase):
         other = get_user_model().objects.create_user(username=f"other-{uuid.uuid4()}")
         self.client.force_authenticate(other)
         self.assertEqual(
-            self.client.get(f"/chat/sessions/{self.session.pk}/turns/").status_code, 404
+            self.client.get(f"/api/v1/chat/sessions/{self.session.pk}/turns/").status_code, 404
         )
 
     def test_turn_history_next_link_keeps_public_api_prefix(self):
@@ -250,14 +250,14 @@ class ProgressApiTest(TransactionTestCase):
             for index in range(21)
         ])
 
-        first = self.client.get(f"/chat/sessions/{self.session.pk}/turns/?page=1")
+        first = self.client.get(f"/api/v1/chat/sessions/{self.session.pk}/turns/?page=1")
         self.assertEqual(first.status_code, 200)
         self.assertEqual(first.json()["count"], 21)
         self.assertEqual(
             first.json()["next"],
-            f"/api/chat/sessions/{self.session.pk}/turns/?page=2",
+            f"/api/v1/chat/sessions/{self.session.pk}/turns/?page=2",
         )
-        second = self.client.get(f"/chat/sessions/{self.session.pk}/turns/?page=2")
+        second = self.client.get(f"/api/v1/chat/sessions/{self.session.pk}/turns/?page=2")
         self.assertEqual((second.status_code, len(second.json()["results"])), (200, 1))
 
     def test_nonstream_has_persistent_turn_progress_and_model_work_is_outside_atomic(self):
@@ -268,7 +268,7 @@ class ProgressApiTest(TransactionTestCase):
 
         with patch.object(ChatService, "_run", autospec=True, side_effect=run):
             response = self.client.post(
-                f"/chat/sessions/{self.session.pk}/messages/",
+                f"/api/v1/chat/sessions/{self.session.pk}/messages/",
                 {"content": "질문"}, format="json",
             )
         self.assertEqual(response.status_code, 201)
@@ -287,7 +287,7 @@ class ProgressApiTest(TransactionTestCase):
 
         with patch.object(ChatService, "_run", autospec=True, side_effect=race):
             response = self.client.post(
-                f"/chat/sessions/{self.session.pk}/messages/",
+                f"/api/v1/chat/sessions/{self.session.pk}/messages/",
                 {"content": "질문"}, format="json",
             )
         self.assertEqual(response.status_code, 409)
@@ -304,7 +304,7 @@ class ProgressApiTest(TransactionTestCase):
         ):
             with self.assertRaises(DatabaseError):
                 self.client.post(
-                    f"/chat/sessions/{self.session.pk}/messages/",
+                    f"/api/v1/chat/sessions/{self.session.pk}/messages/",
                     {"content": "저장 실패"}, format="json",
                 )
         self.assertEqual(ChatTurn.objects.get(question="저장 실패").status, "failed")

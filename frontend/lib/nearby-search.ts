@@ -6,7 +6,7 @@ type SearchPage = { places: KakaoPlace[]; hasNextPage: boolean; syncedAt?: strin
 type PlaceRequest = { method: "keyword" | "category"; keyword?: string; category?: string; lat: number; lng: number; radius?: number; page: number; size: number; sort: "accuracy" | "distance" };
 export async function searchKakaoPlaces(query: PlaceRequest, signal: AbortSignal, fetcher: typeof fetch = fetch): Promise<SearchPage> {
   signal.throwIfAborted();
-  const response = await fetcher("/api/places/search/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(query), signal: AbortSignal.any([signal, AbortSignal.timeout(8000)]) });
+  const response = await fetcher("/api/v1/places/search/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(query), signal: AbortSignal.any([signal, AbortSignal.timeout(8000)]) });
   let body: unknown;
   try { body = await response.json(); } catch { throw new Error("장소 검색 응답을 확인하지 못했어요."); }
   if (!response.ok) throw new Error(body && typeof body === "object" && typeof (body as { error?: unknown }).error === "string" ? (body as { error: string }).error : "일부 장소를 불러오지 못했어요.");

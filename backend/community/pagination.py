@@ -57,7 +57,7 @@ class PublicPageNumberPagination(PageNumberPagination):
         if link is None:
             return None
         parsed = urlsplit(link)
-        path = parsed.path if parsed.path.startswith("/api/") else f"/api{parsed.path}"
+        path = parsed.path if parsed.path.startswith("/api/v1/") else f"/api/v1{parsed.path}"
         return urlunsplit(("", "", path, parsed.query, ""))
 
     def get_next_link(self):

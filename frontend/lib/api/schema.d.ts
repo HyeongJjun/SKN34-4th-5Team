@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/api/auth/admin/members/": {
+    "/api/v1/auth/admin/members/": {
         parameters: {
             query?: never;
             header?: never;
@@ -20,7 +20,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/admin/members/{id}/role/": {
+    "/api/v1/auth/admin/members/{id}/role/": {
         parameters: {
             query?: never;
             header?: never;
@@ -36,7 +36,7 @@ export interface paths {
         patch: operations["auth_admin_members_role_partial_update"];
         trace?: never;
     };
-    "/api/auth/email/request": {
+    "/api/v1/auth/email/request": {
         parameters: {
             query?: never;
             header?: never;
@@ -52,7 +52,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/email/verify": {
+    "/api/v1/auth/email/verify": {
         parameters: {
             query?: never;
             header?: never;
@@ -68,7 +68,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/logout": {
+    "/api/v1/auth/logout": {
         parameters: {
             query?: never;
             header?: never;
@@ -88,7 +88,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/password": {
+    "/api/v1/auth/password": {
         parameters: {
             query?: never;
             header?: never;
@@ -116,7 +116,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/password/request": {
+    "/api/v1/auth/password/request": {
         parameters: {
             query?: never;
             header?: never;
@@ -127,7 +127,7 @@ export interface paths {
         put?: never;
         /**
          * @description 사용자 비밀번호 재설정 url 을 이메일로 전송합니다.
-         *     Url: /api/auth/password/request
+         *     Url: /api/v1/auth/password/request
          *     Args:
          *         - email
          *     Return:
@@ -143,7 +143,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/signin": {
+    "/api/v1/auth/signin": {
         parameters: {
             query?: never;
             header?: never;
@@ -163,7 +163,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/signup/": {
+    "/api/v1/auth/signup/": {
         parameters: {
             query?: never;
             header?: never;
@@ -174,7 +174,7 @@ export interface paths {
         put?: never;
         /**
          * @description 회원가입하는 함수입니다.
-         *     Url : /api/auth/signup/
+         *     Url : /api/v1/auth/signup/
          *     Args:
          *         - username
          *         - email, first_name, birth_date, gender
@@ -190,7 +190,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/token/refresh/": {
+    "/api/v1/auth/token/refresh/": {
         parameters: {
             query?: never;
             header?: never;
@@ -210,7 +210,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/user": {
+    "/api/v1/auth/user": {
         parameters: {
             query?: never;
             header?: never;
@@ -219,7 +219,7 @@ export interface paths {
         };
         /**
          * @description 로그인한 사용자 정보를 조회합니다.
-         *     Url: GET /auth/user (Nginx 경유: /api/auth/user)
+         *     Url: GET /v1/auth/user (Nginx 경유: /api/v1/auth/user)
          *     Headers: Authorization: Bearer <access_token>
          *     Return:
          *         - HTTP_200_OK
@@ -233,7 +233,7 @@ export interface paths {
         head?: never;
         /**
          * @description 로그인한 사용자 정보를 조회합니다.
-         *     Url: GET /auth/user (Nginx 경유: /api/auth/user)
+         *     Url: GET /v1/auth/user (Nginx 경유: /api/v1/auth/user)
          *     Headers: Authorization: Bearer <access_token>
          *     Return:
          *         - HTTP_200_OK
@@ -242,7 +242,7 @@ export interface paths {
         patch: operations["auth_user_partial_update"];
         trace?: never;
     };
-    "/api/auth/username/request": {
+    "/api/v1/auth/username/request": {
         parameters: {
             query?: never;
             header?: never;
@@ -258,7 +258,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/games/": {
+    "/api/v1/baseball/games/": {
         parameters: {
             query?: never;
             header?: never;
@@ -274,7 +274,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/facilities/": {
+    "/api/v1/baseball/manage/facilities/": {
         parameters: {
             query?: never;
             header?: never;
@@ -290,7 +290,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/facilities/{id}/": {
+    "/api/v1/baseball/manage/facilities/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -306,7 +306,7 @@ export interface paths {
         patch: operations["baseball_manage_facilities_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/food-store-locations/": {
+    "/api/v1/baseball/manage/food-store-locations/": {
         parameters: {
             query?: never;
             header?: never;
@@ -322,7 +322,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/food-store-locations/{id}/": {
+    "/api/v1/baseball/manage/food-store-locations/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -338,7 +338,7 @@ export interface paths {
         patch: operations["baseball_manage_food_store_locations_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/food-store-menus/": {
+    "/api/v1/baseball/manage/food-store-menus/": {
         parameters: {
             query?: never;
             header?: never;
@@ -354,7 +354,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/food-store-menus/{id}/": {
+    "/api/v1/baseball/manage/food-store-menus/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -370,7 +370,7 @@ export interface paths {
         patch: operations["baseball_manage_food_store_menus_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/food-stores/": {
+    "/api/v1/baseball/manage/food-stores/": {
         parameters: {
             query?: never;
             header?: never;
@@ -386,7 +386,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/food-stores/{id}/": {
+    "/api/v1/baseball/manage/food-stores/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -402,7 +402,7 @@ export interface paths {
         patch: operations["baseball_manage_food_stores_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/games/": {
+    "/api/v1/baseball/manage/games/": {
         parameters: {
             query?: never;
             header?: never;
@@ -418,7 +418,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/games/{id}/": {
+    "/api/v1/baseball/manage/games/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -434,7 +434,7 @@ export interface paths {
         patch: operations["baseball_manage_games_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/home-contexts/": {
+    "/api/v1/baseball/manage/home-contexts/": {
         parameters: {
             query?: never;
             header?: never;
@@ -450,7 +450,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/home-contexts/{id}/": {
+    "/api/v1/baseball/manage/home-contexts/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -466,7 +466,7 @@ export interface paths {
         patch: operations["baseball_manage_home_contexts_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/postseason-stages/": {
+    "/api/v1/baseball/manage/postseason-stages/": {
         parameters: {
             query?: never;
             header?: never;
@@ -482,7 +482,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/postseason-stages/{id}/": {
+    "/api/v1/baseball/manage/postseason-stages/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -498,7 +498,7 @@ export interface paths {
         patch: operations["baseball_manage_postseason_stages_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/seat-map-assets/": {
+    "/api/v1/baseball/manage/seat-map-assets/": {
         parameters: {
             query?: never;
             header?: never;
@@ -514,7 +514,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/seat-map-assets/{id}/": {
+    "/api/v1/baseball/manage/seat-map-assets/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -530,7 +530,7 @@ export interface paths {
         patch: operations["baseball_manage_seat_map_assets_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/seat-maps/": {
+    "/api/v1/baseball/manage/seat-maps/": {
         parameters: {
             query?: never;
             header?: never;
@@ -546,7 +546,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/seat-maps/{id}/": {
+    "/api/v1/baseball/manage/seat-maps/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -562,7 +562,7 @@ export interface paths {
         patch: operations["baseball_manage_seat_maps_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/seat-scopes/": {
+    "/api/v1/baseball/manage/seat-scopes/": {
         parameters: {
             query?: never;
             header?: never;
@@ -578,7 +578,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/seat-scopes/{id}/": {
+    "/api/v1/baseball/manage/seat-scopes/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -594,7 +594,7 @@ export interface paths {
         patch: operations["baseball_manage_seat_scopes_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/seat-views/": {
+    "/api/v1/baseball/manage/seat-views/": {
         parameters: {
             query?: never;
             header?: never;
@@ -610,7 +610,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/seat-views/{id}/": {
+    "/api/v1/baseball/manage/seat-views/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -626,7 +626,7 @@ export interface paths {
         patch: operations["baseball_manage_seat_views_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/seat-zones/": {
+    "/api/v1/baseball/manage/seat-zones/": {
         parameters: {
             query?: never;
             header?: never;
@@ -642,7 +642,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/seat-zones/{id}/": {
+    "/api/v1/baseball/manage/seat-zones/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -658,7 +658,7 @@ export interface paths {
         patch: operations["baseball_manage_seat_zones_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/stadium-contents/": {
+    "/api/v1/baseball/manage/stadium-contents/": {
         parameters: {
             query?: never;
             header?: never;
@@ -674,7 +674,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/stadium-contents/{id}/": {
+    "/api/v1/baseball/manage/stadium-contents/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -690,7 +690,7 @@ export interface paths {
         patch: operations["baseball_manage_stadium_contents_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/stadiums/": {
+    "/api/v1/baseball/manage/stadiums/": {
         parameters: {
             query?: never;
             header?: never;
@@ -706,7 +706,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/stadiums/{id}/": {
+    "/api/v1/baseball/manage/stadiums/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -722,7 +722,7 @@ export interface paths {
         patch: operations["baseball_manage_stadiums_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/standing-histories/": {
+    "/api/v1/baseball/manage/standing-histories/": {
         parameters: {
             query?: never;
             header?: never;
@@ -738,7 +738,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/standing-histories/{id}/": {
+    "/api/v1/baseball/manage/standing-histories/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -754,7 +754,7 @@ export interface paths {
         patch: operations["baseball_manage_standing_histories_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/teams/": {
+    "/api/v1/baseball/manage/teams/": {
         parameters: {
             query?: never;
             header?: never;
@@ -770,7 +770,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/teams/{id}/": {
+    "/api/v1/baseball/manage/teams/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -786,7 +786,7 @@ export interface paths {
         patch: operations["baseball_manage_teams_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/ticket-policies/": {
+    "/api/v1/baseball/manage/ticket-policies/": {
         parameters: {
             query?: never;
             header?: never;
@@ -802,7 +802,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/ticket-policies/{id}/": {
+    "/api/v1/baseball/manage/ticket-policies/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -818,7 +818,7 @@ export interface paths {
         patch: operations["baseball_manage_ticket_policies_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/ticket-prices/": {
+    "/api/v1/baseball/manage/ticket-prices/": {
         parameters: {
             query?: never;
             header?: never;
@@ -834,7 +834,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/ticket-prices/{id}/": {
+    "/api/v1/baseball/manage/ticket-prices/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -850,7 +850,7 @@ export interface paths {
         patch: operations["baseball_manage_ticket_prices_partial_update"];
         trace?: never;
     };
-    "/api/baseball/manage/transports/": {
+    "/api/v1/baseball/manage/transports/": {
         parameters: {
             query?: never;
             header?: never;
@@ -866,7 +866,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/manage/transports/{id}/": {
+    "/api/v1/baseball/manage/transports/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -882,7 +882,7 @@ export interface paths {
         patch: operations["baseball_manage_transports_partial_update"];
         trace?: never;
     };
-    "/api/baseball/postseason-stages/": {
+    "/api/v1/baseball/postseason-stages/": {
         parameters: {
             query?: never;
             header?: never;
@@ -898,7 +898,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/": {
+    "/api/v1/baseball/stadiums/": {
         parameters: {
             query?: never;
             header?: never;
@@ -914,7 +914,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/": {
+    "/api/v1/baseball/stadiums/{code}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -930,7 +930,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/contents/": {
+    "/api/v1/baseball/stadiums/{code}/contents/": {
         parameters: {
             query?: never;
             header?: never;
@@ -946,7 +946,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/facilities/": {
+    "/api/v1/baseball/stadiums/{code}/facilities/": {
         parameters: {
             query?: never;
             header?: never;
@@ -962,7 +962,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/food-stores/": {
+    "/api/v1/baseball/stadiums/{code}/food-stores/": {
         parameters: {
             query?: never;
             header?: never;
@@ -978,7 +978,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/seat-maps/": {
+    "/api/v1/baseball/stadiums/{code}/seat-maps/": {
         parameters: {
             query?: never;
             header?: never;
@@ -994,7 +994,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/seat-scopes/": {
+    "/api/v1/baseball/stadiums/{code}/seat-scopes/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1010,7 +1010,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/seat-views/": {
+    "/api/v1/baseball/stadiums/{code}/seat-views/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1026,7 +1026,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/seat-zones/": {
+    "/api/v1/baseball/stadiums/{code}/seat-zones/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1042,7 +1042,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/ticket-prices/": {
+    "/api/v1/baseball/stadiums/{code}/ticket-prices/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1058,7 +1058,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/stadiums/{code}/transports/": {
+    "/api/v1/baseball/stadiums/{code}/transports/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1074,7 +1074,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/standings/": {
+    "/api/v1/baseball/standings/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1090,7 +1090,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/teams/": {
+    "/api/v1/baseball/teams/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1106,7 +1106,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/ticket-policies/": {
+    "/api/v1/baseball/ticket-policies/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1122,7 +1122,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/baseball/ticket-prices/": {
+    "/api/v1/baseball/ticket-prices/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1138,7 +1138,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/chat/guest/": {
+    "/api/v1/chat/guest/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1154,7 +1154,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/chat/sessions/": {
+    "/api/v1/chat/sessions/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1170,7 +1170,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/chat/sessions/{session_id}/": {
+    "/api/v1/chat/sessions/{session_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1186,7 +1186,7 @@ export interface paths {
         patch: operations["chat_sessions_partial_update"];
         trace?: never;
     };
-    "/api/chat/sessions/{session_id}/messages/": {
+    "/api/v1/chat/sessions/{session_id}/messages/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1202,7 +1202,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/chat/sessions/{session_id}/turns/": {
+    "/api/v1/chat/sessions/{session_id}/turns/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1218,7 +1218,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/chat/turns/{turn_id}/finalize/": {
+    "/api/v1/chat/turns/{turn_id}/finalize/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1234,7 +1234,79 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/comments/{comment_id}/": {
+    "/api/v1/community/admin/posts/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 게시글 목록 (제목·작성자·글 번호 검색). 신고 수를 함께 준다. */
+        get: operations["community_admin_posts_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/admin/posts/{source_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description 게시글 삭제 (댓글·추천·신고도 함께 삭제된다). */
+        delete: operations["community_admin_posts_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/admin/reports/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 신고 목록. 처리 대기 중인 신고가 먼저, 그 안에서는 최근 신고 순. */
+        get: operations["community_admin_reports_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/admin/reports/{report_id}/action/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 신고 처리.
+         *     hold: 보류(글 유지) / hide: 글 숨김(같은 글의 신고도 숨김 처리) /
+         *     delete: 글 삭제(신고도 함께 삭제). 화면에서 고른 처분(sanction)은 기록용으로만 받고 계정에는 적용하지 않는다.
+         */
+        post: operations["community_admin_reports_action_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/comments/{comment_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1250,7 +1322,7 @@ export interface paths {
         patch: operations["community_comments_partial_update"];
         trace?: never;
     };
-    "/api/community/drafts/": {
+    "/api/v1/community/drafts/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1266,7 +1338,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/drafts/{draft_id}/": {
+    "/api/v1/community/drafts/{draft_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1282,7 +1354,7 @@ export interface paths {
         patch: operations["community_drafts_partial_update"];
         trace?: never;
     };
-    "/api/community/drafts/{draft_id}/publish/": {
+    "/api/v1/community/drafts/{draft_id}/publish/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1298,7 +1370,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/images/": {
+    "/api/v1/community/images/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1314,7 +1386,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/images/{image_id}/": {
+    "/api/v1/community/images/{image_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1330,7 +1402,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/posts/": {
+    "/api/v1/community/posts/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1346,7 +1418,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/posts/{source_id}/": {
+    "/api/v1/community/posts/{source_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1362,7 +1434,7 @@ export interface paths {
         patch: operations["community_posts_partial_update"];
         trace?: never;
     };
-    "/api/community/posts/{source_id}/comments/": {
+    "/api/v1/community/posts/{source_id}/comments/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1378,7 +1450,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/posts/{source_id}/reports/": {
+    "/api/v1/community/posts/{source_id}/reports/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1394,7 +1466,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/posts/{source_id}/vote/": {
+    "/api/v1/community/posts/{source_id}/vote/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1410,7 +1482,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/predictions/games/": {
+    "/api/v1/community/predictions/games/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1426,7 +1498,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/predictions/games/{game_id}/": {
+    "/api/v1/community/predictions/games/{game_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1442,7 +1514,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/community/predictions/games/{game_id}/vote/": {
+    "/api/v1/community/predictions/games/{game_id}/vote/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1458,7 +1530,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/courses/": {
+    "/api/v1/courses/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1474,7 +1546,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/courses/{id}/": {
+    "/api/v1/courses/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1490,7 +1562,7 @@ export interface paths {
         patch: operations["courses_partial_update"];
         trace?: never;
     };
-    "/api/courses/{id}/reaction/": {
+    "/api/v1/courses/{id}/reaction/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1507,7 +1579,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/courses/{id}/view/": {
+    "/api/v1/courses/{id}/view/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1524,7 +1596,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/places/": {
+    "/api/v1/places/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1540,7 +1612,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/places/{id}/": {
+    "/api/v1/places/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1556,7 +1628,7 @@ export interface paths {
         patch: operations["places_partial_update"];
         trace?: never;
     };
-    "/api/places/search/": {
+    "/api/v1/places/search/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1572,7 +1644,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tourism/": {
+    "/api/v1/tourism/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1588,7 +1660,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/travel/directions/": {
+    "/api/v1/travel/directions/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1604,7 +1676,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tving/daily/": {
+    "/api/v1/tving/daily/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1620,7 +1692,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tving/details/athletes/{value}/": {
+    "/api/v1/tving/details/athletes/{value}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1636,7 +1708,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tving/details/status/": {
+    "/api/v1/tving/details/status/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1652,7 +1724,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tving/details/teams/{value}/": {
+    "/api/v1/tving/details/teams/{value}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1668,7 +1740,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tving/entities/": {
+    "/api/v1/tving/entities/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1684,7 +1756,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tving/entities/players/": {
+    "/api/v1/tving/entities/players/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1700,7 +1772,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tving/entities/players/{code}/": {
+    "/api/v1/tving/entities/players/{code}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1716,7 +1788,7 @@ export interface paths {
         patch: operations["tving_entities_players_partial_update"];
         trace?: never;
     };
-    "/api/tving/schedule/": {
+    "/api/v1/tving/schedule/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1732,7 +1804,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tving/snapshots/": {
+    "/api/v1/tving/snapshots/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1748,7 +1820,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tving/snapshots/{id}/": {
+    "/api/v1/tving/snapshots/{id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1764,7 +1836,7 @@ export interface paths {
         patch: operations["tving_snapshots_partial_update"];
         trace?: never;
     };
-    "/api/weather/": {
+    "/api/v1/weather/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1784,11 +1856,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /**
-         * @description * `directions` - directions
-         * @enum {string}
-         */
-        ActionEnum: "directions";
         AdminMember: {
             readonly id: number;
             /** @description Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
@@ -1811,6 +1878,84 @@ export interface components {
             /** Format: date-time */
             readonly date_joined: string;
         };
+        AdminPost: {
+            readonly source_id: string;
+            readonly post_number: string;
+            readonly board: components["schemas"]["BoardEnum"];
+            readonly team_code: string;
+            readonly category: string;
+            readonly title: string;
+            readonly author: string;
+            /** Format: date-time */
+            readonly created_at: string | null;
+            readonly views: number;
+            readonly comment_count: number;
+            readonly is_sample: boolean;
+            readonly is_hidden: boolean;
+            readonly report_count: number;
+        };
+        AdminPostOwner: {
+            readonly id: number;
+            /** @description Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+            readonly username: string;
+            readonly nickname: string;
+            /**
+             * Staff status
+             * @description Designates whether the user can log into this admin site.
+             */
+            readonly is_staff: boolean;
+            /**
+             * Superuser status
+             * @description Designates that this user has all permissions without explicitly assigning them.
+             */
+            readonly is_superuser: boolean;
+        };
+        AdminReport: {
+            readonly id: number;
+            readonly post: components["schemas"]["AdminReportPost"];
+            readonly reporter: string;
+            readonly reason: components["schemas"]["ReasonEnum"];
+            readonly detail: string;
+            /** Format: date-time */
+            readonly created_at: string;
+            readonly status: components["schemas"]["AdminReportStatusEnum"];
+            /** Format: date-time */
+            readonly handled_at: string | null;
+        };
+        AdminReportAction: {
+            action: components["schemas"]["AdminReportActionActionEnum"];
+            /** @default none */
+            sanction: components["schemas"]["SanctionEnum"];
+        };
+        /**
+         * @description * `hold` - hold
+         *     * `hide` - hide
+         *     * `delete` - delete
+         * @enum {string}
+         */
+        AdminReportActionActionEnum: "hold" | "hide" | "delete";
+        AdminReportActionResult: {
+            action: string;
+            sanction: string;
+            status: string | null;
+        };
+        AdminReportPost: {
+            readonly source_id: string;
+            readonly post_number: string;
+            readonly board: components["schemas"]["BoardEnum"];
+            readonly team_code: string;
+            readonly title: string;
+            readonly author: string;
+            readonly is_hidden: boolean;
+            readonly owner: components["schemas"]["AdminPostOwner"] | null;
+        };
+        /**
+         * @description * `pending` - pending
+         *     * `held` - held
+         *     * `hidden` - hidden
+         * @enum {string}
+         */
+        AdminReportStatusEnum: "pending" | "held" | "hidden";
         AthleteData: {
             /** Format: date-time */
             fetchedAt: string;
@@ -2354,10 +2499,15 @@ export interface components {
          */
         DirectionsModeEnum: "walk" | "car" | "transit";
         DirectionsRequest: {
-            action?: components["schemas"]["ActionEnum"];
+            action?: components["schemas"]["DirectionsRequestActionEnum"];
             mode: components["schemas"]["DirectionsModeEnum"];
             points: components["schemas"]["TravelPoint"][];
         };
+        /**
+         * @description * `directions` - directions
+         * @enum {string}
+         */
+        DirectionsRequestActionEnum: "directions";
         DirectionsResponse: {
             mode: components["schemas"]["DirectionsModeEnum"];
             legs: components["schemas"]["DirectionsLeg"][];
@@ -2745,6 +2895,36 @@ export interface components {
              */
             previous?: string | null;
             results: components["schemas"]["AdminMember"][];
+        };
+        PaginatedAdminPostList: {
+            /** @example 123 */
+            count: number;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=4
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=2
+             */
+            previous?: string | null;
+            results: components["schemas"]["AdminPost"][];
+        };
+        PaginatedAdminReportList: {
+            /** @example 123 */
+            count: number;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=4
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=2
+             */
+            previous?: string | null;
+            results: components["schemas"]["AdminReport"][];
         };
         PaginatedChatTurnList: {
             /** @example 123 */
@@ -3734,6 +3914,14 @@ export interface components {
          * @enum {string}
          */
         ResultEnum: "home" | "away" | "draw";
+        /**
+         * @description * `none` - none
+         *     * `7d` - 7d
+         *     * `30d` - 30d
+         *     * `permanent` - permanent
+         * @enum {string}
+         */
+        SanctionEnum: "none" | "7d" | "30d" | "permanent";
         SeatMap: {
             id: number;
             home_context_id: number;
@@ -9144,6 +9332,96 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ChatFinalizeResponse"];
+                };
+            };
+        };
+    };
+    community_admin_posts_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedAdminPostList"];
+                };
+            };
+        };
+    };
+    community_admin_posts_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                source_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    community_admin_reports_list: {
+        parameters: {
+            query?: {
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedAdminReportList"];
+                };
+            };
+        };
+    };
+    community_admin_reports_action_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminReportAction"];
+                "application/x-www-form-urlencoded": components["schemas"]["AdminReportAction"];
+                "multipart/form-data": components["schemas"]["AdminReportAction"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminReportActionResult"];
                 };
             };
         };

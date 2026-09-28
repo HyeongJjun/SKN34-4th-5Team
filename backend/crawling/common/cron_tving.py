@@ -40,7 +40,13 @@ def _vector_upsert(items):
                 metadata__source_file="kbo_standing.csv",
                 metadata__team_code=item["metadata"].get("team_code"),
             ).first()
+        if old is None and item.get("metadata", {}).get("category") == "TICKET_POLICY":
+            old = DocumentChunk.objects.filter(content=item["content"]).first()
         if old and old.metadata.get("content_hash") == digest:
+            metadata = {**item.get("metadata", {}), "doc_id": item["doc_id"], "content_hash": digest}
+            if old.metadata != metadata:
+                old.metadata = metadata
+                old.save(update_fields=("metadata",))
             skipped += 1
         else:
             pending.append((item, digest, old))

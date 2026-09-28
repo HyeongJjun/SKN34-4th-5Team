@@ -13,6 +13,7 @@ STARTED_AT="$(date '+%Y-%m-%d %H:%M:%S KST')"
 CRAWLERS=(
   "kbo_schedule.py"
   "kbo_standing.py"
+  "kbo_ticket_db.py"
 )
 
 log() {

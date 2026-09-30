@@ -103,8 +103,8 @@ class DomainToolsTest(TestCase):
     def test_deterministic_invoke_keeps_canonical_schemas_and_dict_results(self):
         fresh = {"stale": False, "warning": None}
         with (
-            patch("tving.service.ensure_game_range_fresh", return_value=fresh),
-            patch("tving.service.ensure_standings_fresh", return_value=fresh),
+            patch("tving.service.get_game_range_freshness", return_value=fresh),
+            patch("tving.service.get_standings_freshness", return_value=fresh),
         ):
             games = domain_tools.invoke("course", "get_games", {
                 "start_date": "2099-09-15", "end_date": "2099-09-15", "team_code": "LG",
@@ -214,7 +214,7 @@ class DomainToolsTest(TestCase):
             )
             return {"stale": False, "warning": None}
 
-        with patch("tving.service.ensure_game_range_fresh", side_effect=sync_games) as games_sync, patch("tving.service.ensure_standings_fresh", side_effect=sync_standings) as standings_sync:
+        with patch("tving.service.get_game_range_freshness", side_effect=sync_games) as games_sync, patch("tving.service.get_standings_freshness", side_effect=sync_standings) as standings_sync:
             games = self.tools["get_games"].invoke({"start_date": game_day.isoformat(), "end_date": game_day.isoformat(), "team_code": "LG"})
             standings = self.tools["get_standings"].invoke({"snapshot_date": game_day.isoformat()})
         games_sync.assert_called_once_with(game_day, game_day)

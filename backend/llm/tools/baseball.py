@@ -75,7 +75,7 @@ get_baseball_schema, execute_baseball_select = create_baseball_tools()
 from datetime import date
 from pydantic import Field, StrictInt, model_validator
 
-from .common import LimitInput, _json, _result, _rows, _tool
+from .common import LimitInput, _json, _result, _rows, _tool, db_team_code
 
 class StandingsInput(LimitInput):
     snapshot_date: date | None = None
@@ -126,7 +126,8 @@ def create_baseball_domain_tools():
         freshness = tving_service.get_game_range_freshness(start_date, end_date)
         query = Game.objects.filter(game_date__range=(start_date, end_date))
         if team_code:
-            query = query.filter(Q(home_team__team_code=team_code) | Q(away_team__team_code=team_code))
+            code = db_team_code(team_code)
+            query = query.filter(Q(home_team__team_code=code) | Q(away_team__team_code=code))
         if stadium_id is not None:
             query = query.filter(stadium_id=stadium_id)
         return _result(_rows(query.order_by("game_date", "game_time", "game_code"), (

@@ -113,7 +113,7 @@ def create_baseball_domain_tools():
 
     def get_standings(snapshot_date=None, limit=20):
         """정확한 날짜 또는 저장된 최신 날짜의 KBO 순위를 조회한다."""
-        freshness = tving_service.ensure_standings_fresh(snapshot_date)
+        freshness = tving_service.get_standings_freshness(snapshot_date)
         actual = snapshot_date or StandingHistory.objects.order_by("-snapshot_date").values_list("snapshot_date", flat=True).first()
         rows = [] if actual is None else _rows(
             StandingHistory.objects.filter(snapshot_date=actual).order_by("rank", "team__team_code"),
@@ -123,7 +123,7 @@ def create_baseball_domain_tools():
 
     def get_games(start_date, end_date, team_code=None, stadium_id=None, limit=20):
         """날짜 범위의 일정과 결과를 팀/구장으로 필터링한다."""
-        freshness = tving_service.ensure_game_range_fresh(start_date, end_date)
+        freshness = tving_service.get_game_range_freshness(start_date, end_date)
         query = Game.objects.filter(game_date__range=(start_date, end_date))
         if team_code:
             query = query.filter(Q(home_team__team_code=team_code) | Q(away_team__team_code=team_code))

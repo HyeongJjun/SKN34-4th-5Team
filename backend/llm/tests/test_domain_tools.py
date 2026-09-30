@@ -185,6 +185,9 @@ class DomainToolsTest(TestCase):
         policies = self.tools["get_ticket_policies"].invoke({"team_code": "OB"})
         self.assertIn("TEST-OB-GENERAL", [item["policy_code"] for item in policies["items"]])
         self.assertEqual({item["team__team_code"] for item in policies["items"]}, {"DOOSAN"})
+        # get_games 결과의 표준 코드(DOOSAN)를 LLM이 그대로 넘겨도 같은 결과여야 한다.
+        standard = self.tools["get_ticket_policies"].invoke({"team_code": "DOOSAN"})
+        self.assertEqual([item["policy_code"] for item in standard["items"]], [item["policy_code"] for item in policies["items"]])
         games = self.tools["get_games"].invoke({"start_date": "2099-09-15", "end_date": "2099-09-15", "team_code": "OB"})
         self.assertIn("TEST-G1", [item["game_code"] for item in games["items"]])
         for name, args in (

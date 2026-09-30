@@ -26,6 +26,21 @@ def db_team_code(code):
     return TEAM_MAP.get(code, code)
 
 
+def tving_team_code(code):
+    """표준 코드(DOOSAN…)를 TVING 약어(OB…)로 바꾼다. 약어가 들어오면 그대로 둔다."""
+    from tving.relational import TEAM_MAP
+    return {standard: short for short, standard in TEAM_MAP.items()}.get(code, code)
+
+
+def is_team_code(code):
+    """약어(OB)와 표준 코드(DOOSAN) 둘 다 허용한다.
+
+    get_games·get_standings 결과에는 표준 코드가 나와서 LLM이 그 값을 다음 도구에 그대로 넘긴다.
+    """
+    from tving.relational import TEAM_MAP
+    return code in TEAM_MAP or code in TEAM_MAP.values()
+
+
 def _json(value):
     if isinstance(value, (UUID, Decimal)):
         return str(value)

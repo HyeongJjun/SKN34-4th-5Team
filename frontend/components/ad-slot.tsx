@@ -2,12 +2,15 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { deliveryLifetime, safeAdUrl, type AdDelivery, type AdPlacement } from "@/lib/ads";
+import { AD_MODE, deliveryLifetime, safeAdUrl, type AdDelivery, type AdPlacement } from "@/lib/ads";
+import { ClubAdCarousel, SupplierAdCarousel } from "./club-ad-carousel";
 import { loadHomeAd, trackHomeAd } from "@/lib/api/ads";
 import { observeAdImpression } from "@/lib/ad-visibility";
 import styles from "./ad-slot.module.css";
 
 export function AdSlot({ placement, routeIds = [] }: { placement: AdPlacement; routeIds?: string[] }) {
+  if (AD_MODE === "mock" && placement === "home-club-banner") return <ClubAdCarousel />;
+  if (AD_MODE === "mock" && placement === "home-route-partner-banner") return <SupplierAdCarousel />;
   const routeKey = JSON.stringify([...new Set(routeIds)].sort().slice(0, 3));
   return <AdLoader key={`${placement}:${routeKey}`} placement={placement} routeKey={routeKey} />;
 }

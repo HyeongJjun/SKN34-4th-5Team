@@ -16,7 +16,7 @@ const stadium = { code: "JAMSIL", name: "잠실", lat: 37.5, lng: 127 };
 const stop = name => ({ name, category: "직접 지정", lat: 37.5, lng: 127, isMapPoint: true });
 const scratch = mkdtempSync(join(tmpdir(), "kbo-writer-access-test-"));
 after(() => rmSync(scratch, { recursive: true }));
-for (const name of ["client-id", "route-draft", "stadiums", "community-rich-content"]) {
+for (const name of ["client-id", "route-draft", "stadiums", "stadium-locations", "google-lodging", "community-rich-content"]) {
   const source = readFileSync(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
   writeFileSync(join(scratch, `${name}.js`), ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText);
 }

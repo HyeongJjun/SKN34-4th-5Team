@@ -4,14 +4,14 @@
  */
 
 export interface paths {
-    "/api/v1/auth/admin/members/": {
+    "/api/{version}/chat/admin/feedback/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["auth_admin_members_list"];
+        get: operations["chat_admin_feedback_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -20,197 +20,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/auth/admin/members/{id}/role/": {
+    "/api/{version}/chat/admin/feedback/{id}/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["chat_admin_feedback_retrieve"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["auth_admin_members_role_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/auth/email/request": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["auth_email_request_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/auth/email/verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["auth_email_verify_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Takes a token and blacklists it. Must be used with the
-         *     `rest_framework_simplejwt.token_blacklist` app installed.
-         */
-        post: operations["auth_logout_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/password": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 사용자 비밀번호를 변경합니다.
-         *     Url: POST /auth/password
-         *     Query (이메일 재설정): uid, token
-         *     Headers (로그인 상태): Authorization: Bearer <access_token>
-         *     Args:
-         *         - current_password: 기존 비밀번호 (로그인 상태에서 필수)
-         *         - new_password: 새 비밀번호
-         *         - new_password_confirm: 새 비밀번호 확인
-         *     기존 old_password, password, re_password 필드명도 지원합니다.
-         *     Return: HTTP_200_OK
-         */
-        post: operations["auth_password_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/password/request": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 사용자 비밀번호 재설정 url 을 이메일로 전송합니다.
-         *     Url: /api/v1/auth/password/request
-         *     Args:
-         *         - email
-         *     Return:
-         *         - HTTP_200_OK
-         *     1. 검증
-         *     2. 비밀번호 재설정용 토큰 발급
-         *     3. 이메일 전송
-         */
-        post: operations["auth_password_request_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/signin": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Takes a set of user credentials and returns an access and refresh JSON web
-         *     token pair to prove the authentication of those credentials.
-         */
-        post: operations["auth_signin_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/signup/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 회원가입하는 함수입니다.
-         *     Url : /api/v1/auth/signup/
-         *     Args:
-         *         - username
-         *         - email, first_name, birth_date, gender
-         *         - password
-         *         - re_password
-         *     Return:
-         *         - HTTP_201_CREATED
-         */
-        post: operations["auth_signup_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/token/refresh/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Takes a refresh type JSON web token and returns an access type JSON web
-         *     token if the refresh token is valid.
-         */
-        post: operations["auth_token_refresh_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/user": {
+    "/api/{version}/chat/sessions/": {
         parameters: {
             query?: never;
             header?: never;
@@ -218,967 +44,23 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * @description 로그인한 사용자 정보를 조회합니다.
-         *     Url: GET /api/v1/auth/user
-         *     Headers: Authorization: Bearer <access_token>
-         *     Return:
-         *         - HTTP_200_OK
-         *         - HTTP_401_UNAUTHORIZED (토큰 미전달 또는 JWT 인증 실패)
+         * @description 채팅방 리스트 조회 View
+         *     URL: /api/v2/chat/sessions/
+         *
+         *     GET: 회원/비회원 모두 자신의 대화방 목록을 조회합니다.
+         *             return list_대화방
+         *     POST: 회원/비회원 모두 새 대화방을 생성합니다. 비회원은 guest_id 쿠키로 식별합니다.
          */
-        get: operations["auth_user_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * @description 로그인한 사용자 정보를 조회합니다.
-         *     Url: GET /api/v1/auth/user
-         *     Headers: Authorization: Bearer <access_token>
-         *     Return:
-         *         - HTTP_200_OK
-         *         - HTTP_401_UNAUTHORIZED (토큰 미전달 또는 JWT 인증 실패)
-         */
-        patch: operations["auth_user_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/auth/username/request": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["auth_username_request_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/users/{member_id}/public/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["auth_users_public_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/games/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_games_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/facilities/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_facilities_list"];
-        put?: never;
-        post: operations["baseball_manage_facilities_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/facilities/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_facilities_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_facilities_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_facilities_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/food-store-locations/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_food_store_locations_list"];
-        put?: never;
-        post: operations["baseball_manage_food_store_locations_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/food-store-locations/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_food_store_locations_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_food_store_locations_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_food_store_locations_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/food-store-menus/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_food_store_menus_list"];
-        put?: never;
-        post: operations["baseball_manage_food_store_menus_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/food-store-menus/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_food_store_menus_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_food_store_menus_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_food_store_menus_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/food-stores/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_food_stores_list"];
-        put?: never;
-        post: operations["baseball_manage_food_stores_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/food-stores/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_food_stores_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_food_stores_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_food_stores_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/games/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_games_list"];
-        put?: never;
-        post: operations["baseball_manage_games_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/games/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_games_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_games_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_games_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/home-contexts/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_home_contexts_list"];
-        put?: never;
-        post: operations["baseball_manage_home_contexts_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/home-contexts/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_home_contexts_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_home_contexts_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_home_contexts_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/postseason-stages/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_postseason_stages_list"];
-        put?: never;
-        post: operations["baseball_manage_postseason_stages_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/postseason-stages/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_postseason_stages_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_postseason_stages_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_postseason_stages_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-map-assets/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_map_assets_list"];
-        put?: never;
-        post: operations["baseball_manage_seat_map_assets_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-map-assets/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_map_assets_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_seat_map_assets_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_seat_map_assets_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-maps/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_maps_list"];
-        put?: never;
-        post: operations["baseball_manage_seat_maps_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-maps/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_maps_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_seat_maps_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_seat_maps_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-scopes/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_scopes_list"];
-        put?: never;
-        post: operations["baseball_manage_seat_scopes_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-scopes/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_scopes_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_seat_scopes_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_seat_scopes_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-views/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_views_list"];
-        put?: never;
-        post: operations["baseball_manage_seat_views_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-views/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_views_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_seat_views_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_seat_views_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-zones/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_zones_list"];
-        put?: never;
-        post: operations["baseball_manage_seat_zones_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/seat-zones/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_seat_zones_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_seat_zones_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_seat_zones_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/stadium-contents/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_stadium_contents_list"];
-        put?: never;
-        post: operations["baseball_manage_stadium_contents_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/stadium-contents/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_stadium_contents_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_stadium_contents_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_stadium_contents_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/stadiums/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_stadiums_list"];
-        put?: never;
-        post: operations["baseball_manage_stadiums_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/stadiums/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_stadiums_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_stadiums_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_stadiums_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/standing-histories/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_standing_histories_list"];
-        put?: never;
-        post: operations["baseball_manage_standing_histories_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/standing-histories/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_standing_histories_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_standing_histories_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_standing_histories_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/teams/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_teams_list"];
-        put?: never;
-        post: operations["baseball_manage_teams_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/teams/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_teams_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_teams_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_teams_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/ticket-policies/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_ticket_policies_list"];
-        put?: never;
-        post: operations["baseball_manage_ticket_policies_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/ticket-policies/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_ticket_policies_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_ticket_policies_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_ticket_policies_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/ticket-prices/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_ticket_prices_list"];
-        put?: never;
-        post: operations["baseball_manage_ticket_prices_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/ticket-prices/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_ticket_prices_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_ticket_prices_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_ticket_prices_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/transports/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_transports_list"];
-        put?: never;
-        post: operations["baseball_manage_transports_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/manage/transports/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_manage_transports_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["baseball_manage_transports_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["baseball_manage_transports_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/baseball/postseason-stages/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_postseason_stages_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/contents/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_contents_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/facilities/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_facilities_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/food-stores/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_food_stores_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/seat-maps/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_seat_maps_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/seat-scopes/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_seat_scopes_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/seat-views/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_seat_views_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/seat-zones/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_seat_zones_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/ticket-prices/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_ticket_prices_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/stadiums/{code}/transports/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_stadiums_transports_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/standings/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_standings_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/teams/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_teams_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/ticket-policies/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_ticket_policies_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/baseball/ticket-prices/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["baseball_ticket_prices_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/chat/guest/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["chat_guest_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/chat/sessions/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
         get: operations["chat_sessions_list"];
         put?: never;
+        /**
+         * @description 채팅방 리스트 조회 View
+         *     URL: /api/v2/chat/sessions/
+         *
+         *     GET: 회원/비회원 모두 자신의 대화방 목록을 조회합니다.
+         *             return list_대화방
+         *     POST: 회원/비회원 모두 새 대화방을 생성합니다. 비회원은 guest_id 쿠키로 식별합니다.
+         */
         post: operations["chat_sessions_create"];
         delete?: never;
         options?: never;
@@ -1186,7 +68,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/chat/sessions/{session_id}/": {
+    "/api/{version}/chat/sessions/{session_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1194,688 +76,77 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put?: never;
+        /**
+         * @description URL: /api/v2/chat/sessions/<session_id>/
+         *
+         *     PATCH: 대화방 정보를 수정합니다.
+         *     DELETE: 대화방을 삭제합니다. 대화 checkpoint 는 commit 뒤 지운다(llm.apps 의 post_delete outbox, 실패 시 재시도).
+         */
+        put: operations["chat_sessions_update"];
         post?: never;
+        /**
+         * @description URL: /api/v2/chat/sessions/<session_id>/
+         *
+         *     PATCH: 대화방 정보를 수정합니다.
+         *     DELETE: 대화방을 삭제합니다. 대화 checkpoint 는 commit 뒤 지운다(llm.apps 의 post_delete outbox, 실패 시 재시도).
+         */
         delete: operations["chat_sessions_destroy"];
         options?: never;
         head?: never;
+        /**
+         * @description URL: /api/v2/chat/sessions/<session_id>/
+         *
+         *     PATCH: 대화방 정보를 수정합니다.
+         *     DELETE: 대화방을 삭제합니다. 대화 checkpoint 는 commit 뒤 지운다(llm.apps 의 post_delete outbox, 실패 시 재시도).
+         */
         patch: operations["chat_sessions_partial_update"];
         trace?: never;
     };
-    "/api/v1/chat/sessions/{session_id}/messages/": {
+    "/api/{version}/chat/sessions/{session_id}/feedback/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["chat_sessions_messages_list"];
-        put?: never;
+        get?: never;
+        put: operations["chat_sessions_feedback_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/{version}/chat/sessions/{session_id}/messages/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 해당 세션의 채팅목록을 가져온다. 소유하지 않은/존재하지 않는 세션이면 404. */
+        get: operations["chat_sessions_messages_retrieve"];
+        /** @description 이후 채팅목록을 수정 + LLM 호출. version 으로 chat_v1/chat_v2 의 실제 구현을 직접 고른다. */
+        put: operations["chat_sessions_messages_update"];
+        /** @description LLM 호출 (SSE 스트리밍). version 으로 chat_v1/chat_v2 의 실제 구현을 직접 고른다. */
         post: operations["chat_sessions_messages_create"];
-        delete?: never;
+        /** @description 이후 채팅목록을 삭제한다. */
+        delete: operations["chat_sessions_messages_destroy"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/chat/sessions/{session_id}/turns/": {
+    "/api/{version}/chat/usage/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["chat_sessions_turns_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/chat/turns/{turn_id}/finalize/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["chat_turns_finalize_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/admin/posts/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description 게시글 목록 (제목·작성자·글 번호 검색). 신고 수를 함께 준다. */
-        get: operations["community_admin_posts_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/admin/posts/{source_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** @description 게시글 삭제 (댓글·추천·신고도 함께 삭제된다). */
-        delete: operations["community_admin_posts_destroy"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/admin/reports/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description 신고 목록. 처리 대기 중인 신고가 먼저, 그 안에서는 최근 신고 순. */
-        get: operations["community_admin_reports_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/admin/reports/{report_id}/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 신고 처리.
-         *     hold: 보류(글 유지) / hide: 글 숨김(같은 글의 신고도 숨김 처리) /
-         *     delete: 글 삭제(신고도 함께 삭제). 화면에서 고른 처분(sanction)은 기록용으로만 받고 계정에는 적용하지 않는다.
-         */
-        post: operations["community_admin_reports_action_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/comments/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_comments_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/comments/{comment_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["community_comments_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["community_comments_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/community/drafts/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_drafts_list"];
-        put?: never;
-        post: operations["community_drafts_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/drafts/{draft_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_drafts_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["community_drafts_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["community_drafts_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/community/drafts/{draft_id}/publish/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["community_drafts_publish_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/images/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["community_images_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/images/{image_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_images_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["community_images_destroy"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/posts/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_posts_list"];
-        put?: never;
-        post: operations["community_posts_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/posts/{source_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_posts_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["community_posts_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["community_posts_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/community/posts/{source_id}/comments/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_posts_comments_list"];
-        put?: never;
-        post: operations["community_posts_comments_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/posts/{source_id}/reports/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["community_posts_reports_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/posts/{source_id}/vote/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_posts_vote_retrieve"];
-        put?: never;
-        post: operations["community_posts_vote_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/predictions/games/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_predictions_games_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/predictions/games/{game_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["community_predictions_games_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/community/predictions/games/{game_id}/vote/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["community_predictions_games_vote_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/courses/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["courses_list"];
-        put?: never;
-        post: operations["courses_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/courses/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["courses_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["courses_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["courses_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/courses/{id}/reaction/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["courses_reaction_retrieve"];
-        put?: never;
-        /** @description JWT 회원 단위로 원하는 좋아요 상태를 멱등 적용합니다. */
-        post: operations["courses_reaction_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/courses/{id}/view/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description 익명 브라우저가 보낸 UUID capability마다 코스 조회를 한 번만 집계합니다. 이는 사람이나 계정 식별자가 아닙니다. */
-        post: operations["courses_view_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/places/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["places_list"];
-        put?: never;
-        post: operations["places_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/places/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["places_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["places_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["places_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/places/search/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["places_search"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tourism/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tourism_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/travel/directions/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["travel_directions_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tving/daily/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tving_daily_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tving/details/athletes/{value}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tving_details_athletes_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tving/details/status/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tving_details_status_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tving/details/teams/{value}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tving_details_teams_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tving/entities/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tving_entities_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tving/entities/players/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["tving_entities_players_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tving/entities/players/{code}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tving_entities_players_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["tving_entities_players_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["tving_entities_players_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/tving/schedule/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tving_schedule_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tving/snapshots/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tving_snapshots_list"];
-        put?: never;
-        post: operations["tving_snapshots_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tving/snapshots/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["tving_snapshots_retrieve"];
-        put?: never;
-        post?: never;
-        delete: operations["tving_snapshots_destroy"];
-        options?: never;
-        head?: never;
-        patch: operations["tving_snapshots_partial_update"];
-        trace?: never;
-    };
-    "/api/v1/weather/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["weather_retrieve"];
+        /** @description 본인 토큰/크레딧 잔액. 조회로 차감하지 않습니다. */
+        get: operations["chat_usage_retrieve"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1948,68 +219,1918 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/admin/members/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_auth_admin_members_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/admin/members/{id}/role/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["v1_auth_admin_members_role_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/auth/email/request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_auth_email_request_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/email/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_auth_email_verify_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Takes a token and blacklists it. Must be used with the
+         *     `rest_framework_simplejwt.token_blacklist` app installed.
+         */
+        post: operations["v1_auth_logout_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 사용자 비밀번호를 변경합니다.
+         *     Url: POST /auth/password
+         *     Query (이메일 재설정): uid, token
+         *     Headers (로그인 상태): Authorization: Bearer <access_token>
+         *     Args:
+         *         - current_password: 기존 비밀번호 (로그인 상태에서 필수)
+         *         - new_password: 새 비밀번호
+         *         - new_password_confirm: 새 비밀번호 확인
+         *     기존 old_password, password, re_password 필드명도 지원합니다.
+         *     Return: HTTP_200_OK
+         */
+        post: operations["v1_auth_password_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/password/request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 사용자 비밀번호 재설정 url 을 이메일로 전송합니다.
+         *     Url: /api/v1/auth/password/request
+         *     Args:
+         *         - email
+         *     Return:
+         *         - HTTP_200_OK
+         *     1. 검증
+         *     2. 비밀번호 재설정용 토큰 발급
+         *     3. 이메일 전송
+         */
+        post: operations["v1_auth_password_request_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/signin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Takes a set of user credentials and returns an access and refresh JSON web
+         *     token pair to prove the authentication of those credentials.
+         */
+        post: operations["v1_auth_signin_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/signup/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 회원가입하는 함수입니다.
+         *     Url : /api/v1/auth/signup/
+         *     Args:
+         *         - username
+         *         - email, first_name, birth_date, gender
+         *         - password
+         *         - re_password
+         *     Return:
+         *         - HTTP_201_CREATED
+         */
+        post: operations["v1_auth_signup_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/token/refresh/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Takes a refresh type JSON web token and returns an access type JSON web
+         *     token if the refresh token is valid.
+         */
+        post: operations["v1_auth_token_refresh_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description 로그인한 사용자 정보를 조회합니다.
+         *     Url: GET /api/v1/auth/user
+         *     Headers: Authorization: Bearer <access_token>
+         *     Return:
+         *         - HTTP_200_OK
+         *         - HTTP_401_UNAUTHORIZED (토큰 미전달 또는 JWT 인증 실패)
+         */
+        get: operations["v1_auth_user_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * @description 로그인한 사용자 정보를 조회합니다.
+         *     Url: GET /api/v1/auth/user
+         *     Headers: Authorization: Bearer <access_token>
+         *     Return:
+         *         - HTTP_200_OK
+         *         - HTTP_401_UNAUTHORIZED (토큰 미전달 또는 JWT 인증 실패)
+         */
+        patch: operations["v1_auth_user_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/auth/username/request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_auth_username_request_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/users/{member_id}/public/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_auth_users_public_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/games/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_games_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/facilities/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_facilities_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_facilities_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/facilities/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_facilities_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_facilities_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_facilities_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/food-store-locations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_food_store_locations_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_food_store_locations_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/food-store-locations/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_food_store_locations_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_food_store_locations_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_food_store_locations_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/food-store-menus/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_food_store_menus_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_food_store_menus_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/food-store-menus/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_food_store_menus_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_food_store_menus_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_food_store_menus_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/food-stores/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_food_stores_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_food_stores_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/food-stores/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_food_stores_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_food_stores_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_food_stores_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/games/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_games_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_games_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/games/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_games_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_games_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_games_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/home-contexts/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_home_contexts_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_home_contexts_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/home-contexts/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_home_contexts_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_home_contexts_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_home_contexts_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/postseason-stages/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_postseason_stages_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_postseason_stages_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/postseason-stages/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_postseason_stages_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_postseason_stages_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_postseason_stages_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-map-assets/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_map_assets_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_seat_map_assets_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-map-assets/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_map_assets_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_seat_map_assets_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_seat_map_assets_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-maps/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_maps_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_seat_maps_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-maps/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_maps_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_seat_maps_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_seat_maps_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-scopes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_scopes_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_seat_scopes_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-scopes/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_scopes_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_seat_scopes_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_seat_scopes_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-views/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_views_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_seat_views_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-views/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_views_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_seat_views_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_seat_views_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-zones/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_zones_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_seat_zones_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/seat-zones/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_seat_zones_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_seat_zones_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_seat_zones_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/stadium-contents/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_stadium_contents_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_stadium_contents_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/stadium-contents/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_stadium_contents_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_stadium_contents_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_stadium_contents_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/stadiums/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_stadiums_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_stadiums_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/stadiums/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_stadiums_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_stadiums_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_stadiums_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/standing-histories/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_standing_histories_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_standing_histories_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/standing-histories/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_standing_histories_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_standing_histories_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_standing_histories_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/teams/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_teams_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_teams_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/teams/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_teams_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_teams_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_teams_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/ticket-policies/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_ticket_policies_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_ticket_policies_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/ticket-policies/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_ticket_policies_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_ticket_policies_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_ticket_policies_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/ticket-prices/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_ticket_prices_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_ticket_prices_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/ticket-prices/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_ticket_prices_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_ticket_prices_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_ticket_prices_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/transports/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_transports_list"];
+        put?: never;
+        post: operations["v1_baseball_manage_transports_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/manage/transports/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_manage_transports_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_baseball_manage_transports_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_baseball_manage_transports_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/baseball/postseason-stages/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_postseason_stages_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/contents/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_contents_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/facilities/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_facilities_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/food-stores/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_food_stores_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/seat-maps/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_seat_maps_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/seat-scopes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_seat_scopes_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/seat-views/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_seat_views_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/seat-zones/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_seat_zones_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/ticket-prices/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_ticket_prices_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/stadiums/{code}/transports/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_stadiums_transports_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/standings/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_standings_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/teams/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_teams_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/ticket-policies/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_ticket_policies_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/baseball/ticket-prices/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_baseball_ticket_prices_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/admin/posts/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 게시글 목록 (제목·작성자·글 번호 검색). 신고 수를 함께 준다. */
+        get: operations["v1_community_admin_posts_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/admin/posts/{source_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description 게시글 삭제 (댓글·추천·신고도 함께 삭제된다). */
+        delete: operations["v1_community_admin_posts_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/admin/reports/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 신고 목록. 처리 대기 중인 신고가 먼저, 그 안에서는 최근 신고 순. */
+        get: operations["v1_community_admin_reports_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/admin/reports/{report_id}/action/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 신고 처리.
+         *     hold: 보류(글 유지) / hide: 글 숨김(같은 글의 신고도 숨김 처리) /
+         *     delete: 글 삭제(신고도 함께 삭제). 화면에서 고른 처분(sanction)은 기록용으로만 받고 계정에는 적용하지 않는다.
+         */
+        post: operations["v1_community_admin_reports_action_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/comments/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_community_comments_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/comments/{comment_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["v1_community_comments_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_community_comments_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/community/drafts/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["community_drafts_list"];
+        put?: never;
+        post: operations["community_drafts_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/drafts/{draft_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["community_drafts_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["community_drafts_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["community_drafts_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/community/drafts/{draft_id}/publish/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_community_drafts_publish_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/images/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_community_images_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/images/{image_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_community_images_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_community_images_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/posts/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_community_posts_list"];
+        put?: never;
+        post: operations["v1_community_posts_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/posts/{source_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_community_posts_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_community_posts_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_community_posts_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/community/posts/{source_id}/comments/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_community_posts_comments_list"];
+        put?: never;
+        post: operations["v1_community_posts_comments_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/posts/{source_id}/reports/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_community_posts_reports_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/posts/{source_id}/vote/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_community_posts_vote_retrieve"];
+        put?: never;
+        post: operations["v1_community_posts_vote_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/predictions/games/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_community_predictions_games_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/predictions/games/{game_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_community_predictions_games_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/community/predictions/games/{game_id}/vote/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_community_predictions_games_vote_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/courses/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_courses_list"];
+        put?: never;
+        post: operations["v1_courses_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/courses/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_courses_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_courses_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_courses_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/courses/{id}/reaction/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_courses_reaction_retrieve"];
+        put?: never;
+        /** @description JWT 회원 단위로 원하는 좋아요 상태를 멱등 적용합니다. */
+        post: operations["v1_courses_reaction_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/courses/{id}/view/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 익명 브라우저가 보낸 UUID capability마다 코스 조회를 한 번만 집계합니다. 이는 사람이나 계정 식별자가 아닙니다. */
+        post: operations["v1_courses_view_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/places/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["places_list"];
+        put?: never;
+        post: operations["places_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/places/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["places_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["places_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["places_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/places/collected/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["collected_places_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/places/live/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 카카오 주변 장소를 실시간 조회합니다. 응답을 장소 DB에 저장하지 않습니다. */
+        post: operations["places_live_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/places/lodging/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 카카오 AD5 숙박만 실시간 검색합니다. 응답을 장소 DB에 저장하지 않습니다. */
+        post: operations["lodging_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/places/search/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["places_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/places/stadium-facilities/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["stadium_facilities_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tourism/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_tourism_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/travel/directions/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_travel_directions_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tving/daily/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_tving_daily_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tving/details/athletes/{value}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_tving_details_athletes_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tving/details/status/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_tving_details_status_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tving/details/teams/{value}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_tving_details_teams_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tving/entities/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_tving_entities_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tving/entities/players/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["v1_tving_entities_players_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tving/entities/players/{code}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_tving_entities_players_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_tving_entities_players_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_tving_entities_players_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/tving/schedule/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_tving_schedule_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tving/snapshots/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["tving_snapshots_list"];
+        put?: never;
+        post: operations["v1_tving_snapshots_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tving/snapshots/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["tving_snapshots_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["v1_tving_snapshots_destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["v1_tving_snapshots_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/weather/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["v1_weather_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         AdAdmin: {
-            /** 활성 */
-            active?: boolean;
+            readonly id: number;
             /** 광고주 */
             advertiser: string;
-            /** 버튼 문구 */
-            button_label?: string;
-            /** 지역·분류 */
-            context_label?: string;
-            /** 노출 대상 코스 */
-            courses?: string[];
-            /** Format: date-time */
-            readonly created_at: string;
+            /** 제목 */
+            title: string;
             /** 설명 */
             description?: string;
-            /**
-             * 이동 URL
-             * Format: uri
-             */
-            destination_url: string;
-            /**
-             * 종료 일시
-             * Format: date-time
-             */
-            ends_at: string;
-            readonly id: number;
-            /** 이미지 설명 */
-            image_alt?: string;
             /**
              * 이미지 URL
              * Format: uri
              */
             image_url: string;
-            /** 테스트 광고 */
-            is_test?: boolean;
-            /** 제휴 장소 */
-            place?: number | null;
+            /** 이미지 설명 */
+            image_alt?: string;
+            /**
+             * 이동 URL
+             * Format: uri
+             */
+            destination_url: string;
+            /** 버튼 문구 */
+            button_label?: string;
+            /** 지역·분류 */
+            context_label?: string;
             /** 위치 */
             placement: components["schemas"]["PlacementEnum"];
-            /** 우선순위 */
-            priority?: number;
             /**
              * 시작 일시
              * Format: date-time
              */
             starts_at: string;
+            /**
+             * 종료 일시
+             * Format: date-time
+             */
+            ends_at: string;
+            /** 활성 */
+            active?: boolean;
+            /** 테스트 광고 */
+            is_test?: boolean;
+            /** 우선순위 */
+            priority?: number;
             /** 구단 코드 */
             team_code?: string;
-            /** 제목 */
-            title: string;
+            /** 제휴 장소 */
+            place?: number | null;
+            /** 노출 대상 코스 */
+            courses?: string[];
+            /** Format: date-time */
+            readonly created_at: string;
             /** Format: date-time */
             readonly updated_at: string;
         };
         AdEventInput: {
             /** Format: uuid */
             event_id: string;
-            kind: components["schemas"]["AdEventInputKindEnum"];
             token: string;
+            kind: components["schemas"]["AdEventInputKindEnum"];
         };
         /**
          * @description * `impression` - 노출
@@ -2022,34 +2143,29 @@ export interface components {
             duplicate: boolean;
         };
         AdPublic: {
-            /** 활성 */
-            readonly active: boolean;
+            readonly id: number;
             /** 광고주 */
             readonly advertiser: string;
-            /** 버튼 문구 */
-            readonly button_label: string;
-            /** 지역·분류 */
-            readonly context_label: string;
+            /** 제목 */
+            readonly title: string;
             /** 설명 */
             readonly description: string;
-            /**
-             * 이동 URL
-             * Format: uri
-             */
-            readonly destination_url: string;
-            /**
-             * 종료 일시
-             * Format: date-time
-             */
-            readonly ends_at: string;
-            readonly id: number;
-            /** 이미지 설명 */
-            readonly image_alt: string;
             /**
              * 이미지 URL
              * Format: uri
              */
             readonly image_url: string;
+            /** 이미지 설명 */
+            readonly image_alt: string;
+            /**
+             * 이동 URL
+             * Format: uri
+             */
+            readonly destination_url: string;
+            /** 버튼 문구 */
+            readonly button_label: string;
+            /** 지역·분류 */
+            readonly context_label: string;
             /** 위치 */
             readonly placement: components["schemas"]["PlacementEnum"];
             /**
@@ -2057,93 +2173,47 @@ export interface components {
              * Format: date-time
              */
             readonly starts_at: string;
-            /** 제목 */
-            readonly title: string;
-        };
-        AdSlotResponse: {
-            ad: components["schemas"]["AdPublic"] | null;
-            /** Format: uuid */
-            exposure_id: string | null;
-            /** Format: date-time */
-            server_now: string;
-            token: string;
-            /** Format: date-time */
-            valid_until: string | null;
-        };
-        PaginatedAdAdminList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next?: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous?: string | null;
-            results: components["schemas"]["AdAdmin"][];
-        };
-        PatchedAdAdmin: {
-            /** 활성 */
-            active?: boolean;
-            /** 광고주 */
-            advertiser?: string;
-            /** 버튼 문구 */
-            button_label?: string;
-            /** 지역·분류 */
-            context_label?: string;
-            /** 노출 대상 코스 */
-            courses?: string[];
-            /** Format: date-time */
-            readonly created_at?: string;
-            /** 설명 */
-            description?: string;
-            /**
-             * 이동 URL
-             * Format: uri
-             */
-            destination_url?: string;
             /**
              * 종료 일시
              * Format: date-time
              */
-            ends_at?: string;
-            readonly id?: number;
-            /** 이미지 설명 */
-            image_alt?: string;
-            /**
-             * 이미지 URL
-             * Format: uri
-             */
-            image_url?: string;
-            /** 테스트 광고 */
-            is_test?: boolean;
-            /** 제휴 장소 */
-            place?: number | null;
-            /** 위치 */
-            placement?: components["schemas"]["PlacementEnum"];
-            /** 우선순위 */
-            priority?: number;
-            /**
-             * 시작 일시
-             * Format: date-time
-             */
-            starts_at?: string;
-            /** 구단 코드 */
-            team_code?: string;
-            /** 제목 */
-            title?: string;
+            readonly ends_at: string;
+            /** 활성 */
+            readonly active: boolean;
+        };
+        AdSlotResponse: {
+            ad: components["schemas"]["AdPublic"] | null;
+            token: string;
+            /** Format: uuid */
+            exposure_id: string | null;
             /** Format: date-time */
-            readonly updated_at?: string;
+            server_now: string;
+            /** Format: date-time */
+            valid_until: string | null;
+        };
+        AdminFeedback: {
+            readonly id: number;
+            /** Format: uuid */
+            readonly session_id: string;
+            readonly answer_id: string;
+            readonly message_id: number;
+            readonly rating: components["schemas"]["AdminFeedbackRatingEnum"];
+            readonly reason: string;
+            readonly comment: string;
+            readonly question: string;
+            readonly answer: string;
+            readonly metadata: unknown;
+            /** Format: date-time */
+            readonly created_at: string;
+            /** Format: date-time */
+            readonly updated_at: string;
         };
         /**
-         * @description * `home-club-banner` - 홈 구단 광고
-         *     * `home-route-partner-banner` - 홈 음식점·시설 광고
+         * @description * `up` - 좋아요
+         *     * `down` - 아쉬워요
          * @enum {string}
          */
-        PlacementEnum: "home-club-banner" | "home-route-partner-banner";
+        AdminFeedbackRatingEnum: "up" | "down";
         AdminMember: {
             readonly id: number;
             /** @description Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
@@ -2202,7 +2272,7 @@ export interface components {
             readonly id: number;
             readonly post: components["schemas"]["AdminReportPost"];
             readonly reporter: string;
-            readonly reason: components["schemas"]["ReasonEnum"];
+            readonly reason: components["schemas"]["ReasonF32Enum"];
             readonly detail: string;
             /** Format: date-time */
             readonly created_at: string;
@@ -2296,188 +2366,44 @@ export interface components {
          * @enum {string}
          */
         BoardEnum: "free" | "teams";
-        ChatCheckpointEvent: {
-            /** Format: uuid */
-            turn_id: string;
-            receipt: string;
-        };
-        ChatCoursePayload: {
-            title: string;
-            stadium: string;
+        /** @description POST /messages/ 요청 바디 검증 (content + 선택 사항 context). */
+        ChatMessageInput: {
             content: string;
-            contentFormat: components["schemas"]["ContentFormatEnum"] | components["schemas"]["BlankEnum"];
-            duration: string;
-            tags: string[];
-            /** Format: double */
-            startLat: number | null;
-            /** Format: double */
-            startLng: number | null;
-            stops: components["schemas"]["ChatCourseStop"][];
-        };
-        ChatCoursePlace: {
-            phase: components["schemas"]["PhaseEnum"];
-            name: string;
-            /** Format: double */
-            lat: number;
-            /** Format: double */
-            lng: number;
-            category: string;
-            placeId: string | null;
-            address: string;
-            placeUrl: string;
-            /** Format: double */
-            distance: number;
-            reason: string;
-            time: string;
-            stayMin: number;
-        };
-        ChatCourseStop: {
-            position: number;
-            name: string;
-            /** Format: double */
-            lat: number;
-            /** Format: double */
-            lng: number;
-            category: string;
-            placeId: string | null;
-            address: string | null;
-            isMapPoint: boolean;
-        };
-        ChatDeltaEvent: {
-            /** Format: uuid */
-            turn_id: string;
-            receipt: string;
-            text: string;
-        };
-        ChatDoneEvent: {
-            places?: components["schemas"]["ChatCoursePlace"][];
-            coursePayload?: components["schemas"]["ChatCoursePayload"] | null;
-            route?: string;
-            /** Format: uuid */
-            turn_id: string;
-            receipt: string;
-        };
-        ChatErrorEvent: {
-            detail: string;
-        };
-        ChatFinalize: {
-            receipt: string;
-            prefix: string;
-            status: components["schemas"]["ChatFinalizeStatusEnum"];
-        };
-        ChatFinalizeResponse: {
-            /** Format: uuid */
-            turn_id: string;
-            session_id: number;
-            status: components["schemas"]["ChatFinalizeStatusEnum"];
-            user_message_id: number;
-            assistant_message_id: number | null;
-            user_message: string;
-            assistant_message: string;
-        };
-        /**
-         * @description * `completed` - completed
-         *     * `stopped` - stopped
-         * @enum {string}
-         */
-        ChatFinalizeStatusEnum: "completed" | "stopped";
-        ChatMessage: {
-            readonly id: number;
-            readonly sequence_no: number;
-            readonly role: components["schemas"]["ChatMessageRoleEnum"];
-            content: string;
-            readonly status: components["schemas"]["ChatMessageStatusEnum"];
-            /** Format: date-time */
-            readonly created_at: string;
-            /** Format: date-time */
-            readonly updated_at: string;
-        };
-        /**
-         * @description * `human` - 사용자
-         *     * `ai` - AI
-         * @enum {string}
-         */
-        ChatMessageRoleEnum: "human" | "ai";
-        /**
-         * @description * `completed` - 완료
-         *     * `stopped` - 중단
-         * @enum {string}
-         */
-        ChatMessageStatusEnum: "completed" | "stopped";
-        ChatNonStreamResponse: {
-            places?: components["schemas"]["ChatCoursePlace"][];
-            coursePayload?: components["schemas"]["ChatCoursePayload"] | null;
-            route?: string;
-            /** Format: uuid */
-            turn_id: string;
-            progress: components["schemas"]["ChatProgressEvent"][];
-            session_id: number;
-            user_message: string;
-            assistant_message: string;
-            status: components["schemas"]["CompletedStatusEnum"];
-            user_message_id: number;
-            assistant_message_id: number;
-        };
-        ChatProgressEvent: {
-            /** Format: uuid */
-            turn_id: string;
-            sequence_no: number;
-            /** Format: uuid */
-            operation_id: string;
-            /** Format: uuid */
-            parent_operation_id: string | null;
-            kind: components["schemas"]["ChatProgressEventKindEnum"];
-            status: components["schemas"]["ChatProgressEventStatusEnum"];
-            label: string;
-            /** Format: date-time */
-            readonly created_at: string;
-            readonly tool_name: string | null;
-            readonly summary: {
+            context?: {
                 [key: string]: unknown;
             } | null;
         };
-        /**
-         * @description * `phase` - 처리
-         *     * `retrieval` - 검색
-         *     * `tool` - 도구
-         * @enum {string}
-         */
-        ChatProgressEventKindEnum: "phase" | "retrieval" | "tool";
-        /**
-         * @description * `started` - 시작
-         *     * `completed` - 완료
-         *     * `failed` - 실패
-         *     * `interrupted` - 중단
-         *     * `unknown` - 확인 불가
-         * @enum {string}
-         */
-        ChatProgressEventStatusEnum: "started" | "completed" | "failed" | "interrupted" | "unknown";
+        /** @description PUT /messages/ 요청 바디 검증 (content + message_id + 선택 사항 context). */
+        ChatMessageUpdate: {
+            content: string;
+            context?: {
+                [key: string]: unknown;
+            } | null;
+            message_id: number | string;
+        };
         ChatSession: {
-            readonly id: number;
+            /** Format: uuid */
+            readonly id: string;
             title?: string;
             /** Format: date-time */
             readonly created_at: string;
             /** Format: date-time */
             readonly updated_at: string;
         };
-        ChatTurn: {
-            /** Format: uuid */
-            readonly id: string;
-            readonly question: string;
-            readonly status: components["schemas"]["ChatTurnStatusEnum"];
-            readonly base_sequence: number;
-            readonly human_message_id: number | null;
-            readonly assistant_message_id: number | null;
-            readonly progress: components["schemas"]["ChatProgressEvent"][];
+        CollectedPlaceCatalogue: {
+            status: string;
+            snapshotId: string;
+            stadium: string;
+            radiusM: number;
+            count: number;
+            warning: string;
+            places: {
+                [key: string]: unknown;
+            }[];
+            lodging: {
+                [key: string]: unknown;
+            };
         };
-        /**
-         * @description * `pending` - pending
-         *     * `completed` - completed
-         *     * `stopped` - stopped
-         *     * `failed` - failed
-         * @enum {string}
-         */
-        ChatTurnStatusEnum: "pending" | "completed" | "stopped" | "failed";
         /**
          * @description * `질문` - 질문
          *     * `잡담` - 잡담
@@ -2567,7 +2493,7 @@ export interface components {
             created: boolean;
         };
         CommunityReportWrite: {
-            reason: components["schemas"]["ReasonEnum"];
+            reason: components["schemas"]["ReasonF32Enum"];
             detail: string;
         };
         CommunityVoteState: {
@@ -2579,13 +2505,7 @@ export interface components {
             vote: (components["schemas"]["VoteEnum"] | components["schemas"]["NullEnum"]) | null;
         };
         /**
-         * @description * `completed` - completed
-         * @enum {string}
-         */
-        CompletedStatusEnum: "completed";
-        /**
-         * @description * `` -
-         *     * `html` - html
+         * @description * `html` - html
          * @enum {string}
          */
         ContentFormatEnum: "html";
@@ -2685,9 +2605,9 @@ export interface components {
             position: number;
             name: string;
             /** Format: double */
-            lat: number;
+            lat: number | null;
             /** Format: double */
-            lng: number;
+            lng: number | null;
             category: string;
             placeId?: string;
             visitId?: string;
@@ -2700,9 +2620,9 @@ export interface components {
             position: number;
             name: string;
             /** Format: double */
-            lat: number;
+            lat: number | null;
             /** Format: double */
-            lng: number;
+            lng: number | null;
             category: string;
             placeId?: string | null;
             visitId?: string | null;
@@ -2925,6 +2845,23 @@ export interface components {
             /** etag */
             readonly _etag: string;
         };
+        FeedbackInput: {
+            message_id: number | string;
+            rating: (components["schemas"]["Rating224Enum"] | components["schemas"]["NullEnum"]) | null;
+            /** @default  */
+            reason: components["schemas"]["FeedbackInputReasonEnum"] | components["schemas"]["BlankEnum"];
+            /** @default  */
+            comment: string;
+        };
+        /**
+         * @description * `` -
+         *     * `incorrect` - incorrect
+         *     * `irrelevant` - irrelevant
+         *     * `incomplete` - incomplete
+         *     * `other` - other
+         * @enum {string}
+         */
+        FeedbackInputReasonEnum: "incorrect" | "irrelevant" | "incomplete" | "other";
         FoodStore: {
             id: number;
             record_code: string;
@@ -3017,29 +2954,6 @@ export interface components {
          * @enum {string}
          */
         GenderEnum: "M" | "F";
-        GuestChat: {
-            messages: components["schemas"]["GuestChatMessage"][];
-        };
-        GuestChatDeltaEvent: {
-            text: string;
-        };
-        GuestChatDoneEvent: {
-            places?: components["schemas"]["ChatCoursePlace"][];
-            coursePayload?: components["schemas"]["ChatCoursePayload"] | null;
-            route?: string;
-            assistant_message: string;
-        };
-        GuestChatEventPayload: components["schemas"]["GuestChatDeltaEvent"] | components["schemas"]["GuestChatDoneEvent"] | components["schemas"]["ChatProgressEvent"] | components["schemas"]["ChatErrorEvent"];
-        GuestChatMessage: {
-            role: components["schemas"]["GuestChatMessageRoleEnum"];
-            content: string;
-        };
-        /**
-         * @description * `user` - user
-         *     * `assistant` - assistant
-         * @enum {string}
-         */
-        GuestChatMessageRoleEnum: "user" | "assistant";
         HomeContext: {
             id: number;
             season: number;
@@ -3088,6 +3002,10 @@ export interface components {
             phone: string;
             x: string;
             y: string;
+            /** @description scope: internal(초록 내부) 또는 external. stadium: 해당 구장 코드 또는 null. 빨강 전용 구역은 반환하지 않습니다. */
+            readonly stadiumArea: {
+                [key: string]: string | null;
+            };
         };
         /**
          * @description * `SS` - SS
@@ -3106,7 +3024,6 @@ export interface components {
         LogoutRequest: {
             refresh: string;
         };
-        MemberChatEventPayload: components["schemas"]["ChatCheckpointEvent"] | components["schemas"]["ChatDeltaEvent"] | components["schemas"]["ChatDoneEvent"] | components["schemas"]["ChatProgressEvent"] | components["schemas"]["ChatErrorEvent"];
         MemberUser: {
             readonly id: number;
             /** @description Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
@@ -3179,6 +3096,36 @@ export interface components {
         };
         /** @enum {unknown} */
         NullEnum: null;
+        PaginatedAdAdminList: {
+            /** @example 123 */
+            count: number;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=4
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=2
+             */
+            previous?: string | null;
+            results: components["schemas"]["AdAdmin"][];
+        };
+        PaginatedAdminFeedbackList: {
+            /** @example 123 */
+            count: number;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=4
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=2
+             */
+            previous?: string | null;
+            results: components["schemas"]["AdminFeedback"][];
+        };
         PaginatedAdminMemberList: {
             /** @example 123 */
             count: number;
@@ -3224,20 +3171,20 @@ export interface components {
             previous?: string | null;
             results: components["schemas"]["AdminReport"][];
         };
-        PaginatedChatTurnList: {
+        PaginatedChatSessionList: {
             /** @example 123 */
             count: number;
             /**
              * Format: uri
              * @example http://api.example.org/accounts/?page=4
              */
-            next: string | null;
+            next?: string | null;
             /**
              * Format: uri
              * @example http://api.example.org/accounts/?page=2
              */
-            previous: string | null;
-            results: components["schemas"]["ChatTurn"][];
+            previous?: string | null;
+            results: components["schemas"]["ChatSession"][];
         };
         PaginatedCommunityMemberCommentList: {
             /** @example 123 */
@@ -3624,8 +3571,62 @@ export interface components {
             password?: string;
             re_password?: string;
         };
-        PatchedChatSession: {
+        PatchedAdAdmin: {
             readonly id?: number;
+            /** 광고주 */
+            advertiser?: string;
+            /** 제목 */
+            title?: string;
+            /** 설명 */
+            description?: string;
+            /**
+             * 이미지 URL
+             * Format: uri
+             */
+            image_url?: string;
+            /** 이미지 설명 */
+            image_alt?: string;
+            /**
+             * 이동 URL
+             * Format: uri
+             */
+            destination_url?: string;
+            /** 버튼 문구 */
+            button_label?: string;
+            /** 지역·분류 */
+            context_label?: string;
+            /** 위치 */
+            placement?: components["schemas"]["PlacementEnum"];
+            /**
+             * 시작 일시
+             * Format: date-time
+             */
+            starts_at?: string;
+            /**
+             * 종료 일시
+             * Format: date-time
+             */
+            ends_at?: string;
+            /** 활성 */
+            active?: boolean;
+            /** 테스트 광고 */
+            is_test?: boolean;
+            /** 우선순위 */
+            priority?: number;
+            /** 구단 코드 */
+            team_code?: string;
+            /** 제휴 장소 */
+            place?: number | null;
+            /** 노출 대상 코스 */
+            courses?: string[];
+            /** Format: date-time */
+            readonly created_at?: string;
+            /** Format: date-time */
+            readonly updated_at?: string;
+        };
+        PatchedChatSession: {
+            /** Format: uuid */
+            readonly id?: string;
             title?: string;
             /** Format: date-time */
             readonly created_at?: string;
@@ -3932,13 +3933,6 @@ export interface components {
             /** Format: date-time */
             collected_at?: string;
         };
-        /**
-         * @description * `BEFORE` - BEFORE
-         *     * `GAME` - GAME
-         *     * `AFTER` - AFTER
-         * @enum {string}
-         */
-        PhaseEnum: "BEFORE" | "GAME" | "AFTER";
         Place: {
             readonly id: number;
             kakao_place_id?: string | null;
@@ -4007,6 +4001,12 @@ export interface components {
             lng: number;
             url?: string;
         };
+        /**
+         * @description * `home-club-banner` - 홈 구단 광고
+         *     * `home-route-partner-banner` - 홈 음식점·시설 광고
+         * @enum {string}
+         */
+        PlacementEnum: "home-club-banner" | "home-route-partner-banner";
         PlayerEntity: {
             externalCode: string;
             teamCode: string;
@@ -4209,6 +4209,12 @@ export interface components {
             readonly seat_zone_name: string;
         };
         /**
+         * @description * `up` - up
+         *     * `down` - down
+         * @enum {string}
+         */
+        Rating224Enum: "up" | "down";
+        /**
          * @description * `spam` - spam
          *     * `abuse` - abuse
          *     * `inappropriate` - inappropriate
@@ -4216,7 +4222,7 @@ export interface components {
          *     * `other` - other
          * @enum {string}
          */
-        ReasonEnum: "spam" | "abuse" | "inappropriate" | "privacy" | "other";
+        ReasonF32Enum: "spam" | "abuse" | "inappropriate" | "privacy" | "other";
         /**
          * @description * `daily` - Daily
          *     * `month` - Month
@@ -4453,6 +4459,19 @@ export interface components {
             collected_at: string;
             /** etag */
             readonly _etag: string;
+        };
+        StadiumFacilityCatalogue: {
+            stadium: string;
+            count: number;
+            pinCount: number;
+            checkedAt: string;
+            warning: string;
+            review: {
+                [key: string]: unknown;
+            };
+            records: {
+                [key: string]: unknown;
+            }[];
         };
         StandingHistory: {
             id: number;
@@ -4738,7 +4757,510 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    auth_admin_members_list: {
+    chat_admin_feedback_list: {
+        parameters: {
+            query?: {
+                /** @description A page number within the paginated result set. */
+                page?: number;
+            };
+            header?: never;
+            path: {
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedAdminFeedbackList"];
+                };
+            };
+        };
+    };
+    chat_admin_feedback_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFeedback"];
+                };
+            };
+        };
+    };
+    chat_sessions_list: {
+        parameters: {
+            query?: {
+                /** @description A page number within the paginated result set. */
+                page?: number;
+            };
+            header?: never;
+            path: {
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedChatSessionList"];
+                };
+            };
+        };
+    };
+    chat_sessions_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ChatSession"];
+                "application/x-www-form-urlencoded": components["schemas"]["ChatSession"];
+                "multipart/form-data": components["schemas"]["ChatSession"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatSession"];
+                };
+            };
+        };
+    };
+    chat_sessions_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ChatSession"];
+                "application/x-www-form-urlencoded": components["schemas"]["ChatSession"];
+                "multipart/form-data": components["schemas"]["ChatSession"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatSession"];
+                };
+            };
+        };
+    };
+    chat_sessions_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    chat_sessions_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedChatSession"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedChatSession"];
+                "multipart/form-data": components["schemas"]["PatchedChatSession"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatSession"];
+                };
+            };
+        };
+    };
+    chat_sessions_feedback_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackInput"];
+                "application/x-www-form-urlencoded": components["schemas"]["FeedbackInput"];
+                "multipart/form-data": components["schemas"]["FeedbackInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackInput"];
+                };
+            };
+        };
+    };
+    chat_sessions_messages_retrieve: {
+        parameters: {
+            query?: {
+                format?: "json" | "sse";
+            };
+            header?: never;
+            path: {
+                session_id: string;
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id?: number;
+                        sequence_no?: number;
+                        role?: string;
+                        content?: string;
+                        status?: string;
+                        tools?: Record<string, never>[];
+                        steps?: Record<string, never>[];
+                        /** Format: date-time */
+                        created_at?: string;
+                        /** Format: date-time */
+                        updated_at?: string;
+                    }[];
+                    "text/event-stream": {
+                        id?: number;
+                        sequence_no?: number;
+                        role?: string;
+                        content?: string;
+                        status?: string;
+                        tools?: Record<string, never>[];
+                        steps?: Record<string, never>[];
+                        /** Format: date-time */
+                        created_at?: string;
+                        /** Format: date-time */
+                        updated_at?: string;
+                    }[];
+                };
+            };
+        };
+    };
+    chat_sessions_messages_update: {
+        parameters: {
+            query?: {
+                format?: "json" | "sse";
+            };
+            header?: never;
+            path: {
+                session_id: string;
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChatMessageUpdate"];
+                "application/x-www-form-urlencoded": components["schemas"]["ChatMessageUpdate"];
+                "multipart/form-data": components["schemas"]["ChatMessageUpdate"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+        };
+    };
+    chat_sessions_messages_create: {
+        parameters: {
+            query?: {
+                format?: "json" | "sse";
+            };
+            header?: never;
+            path: {
+                session_id: string;
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChatMessageInput"];
+                "application/x-www-form-urlencoded": components["schemas"]["ChatMessageInput"];
+                "multipart/form-data": components["schemas"]["ChatMessageInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+        };
+    };
+    chat_sessions_messages_destroy: {
+        parameters: {
+            query?: {
+                format?: "json" | "sse";
+            };
+            header?: never;
+            path: {
+                session_id: string;
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    chat_usage_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    v1_ads_admin_creatives_list: {
+        parameters: {
+            query?: {
+                /** @description A page number within the paginated result set. */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedAdAdminList"];
+                };
+            };
+        };
+    };
+    v1_ads_admin_creatives_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdAdmin"];
+                "application/x-www-form-urlencoded": components["schemas"]["AdAdmin"];
+                "multipart/form-data": components["schemas"]["AdAdmin"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdAdmin"];
+                };
+            };
+        };
+    };
+    v1_ads_admin_creatives_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdAdmin"];
+                };
+            };
+        };
+    };
+    v1_ads_admin_creatives_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedAdAdmin"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedAdAdmin"];
+                "multipart/form-data": components["schemas"]["PatchedAdAdmin"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdAdmin"];
+                };
+            };
+        };
+    };
+    v1_ads_events_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdEventInput"];
+                "application/x-www-form-urlencoded": components["schemas"]["AdEventInput"];
+                "multipart/form-data": components["schemas"]["AdEventInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdEventResult"];
+                };
+            };
+        };
+    };
+    v1_ads_slots_retrieve: {
+        parameters: {
+            query: {
+                /**
+                 * @description * `home-club-banner` - 홈 구단 광고
+                 *     * `home-route-partner-banner` - 홈 음식점·시설 광고
+                 */
+                placement: "home-club-banner" | "home-route-partner-banner";
+                route_ids?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdSlotResponse"];
+                };
+            };
+        };
+    };
+    v1_auth_admin_members_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -4760,7 +5282,7 @@ export interface operations {
             };
         };
     };
-    auth_admin_members_role_partial_update: {
+    v1_auth_admin_members_role_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -4787,7 +5309,7 @@ export interface operations {
             };
         };
     };
-    auth_email_request_create: {
+    v1_auth_email_request_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -4812,7 +5334,7 @@ export interface operations {
             };
         };
     };
-    auth_email_verify_create: {
+    v1_auth_email_verify_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -4837,7 +5359,7 @@ export interface operations {
             };
         };
     };
-    auth_logout_create: {
+    v1_auth_logout_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -4862,7 +5384,7 @@ export interface operations {
             };
         };
     };
-    auth_password_create: {
+    v1_auth_password_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -4886,7 +5408,7 @@ export interface operations {
             };
         };
     };
-    auth_password_request_create: {
+    v1_auth_password_request_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -4910,7 +5432,7 @@ export interface operations {
             };
         };
     };
-    auth_signin_create: {
+    v1_auth_signin_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -4935,7 +5457,7 @@ export interface operations {
             };
         };
     };
-    auth_signup_create: {
+    v1_auth_signup_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -4959,7 +5481,7 @@ export interface operations {
             };
         };
     };
-    auth_token_refresh_create: {
+    v1_auth_token_refresh_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -4984,7 +5506,7 @@ export interface operations {
             };
         };
     };
-    auth_user_retrieve: {
+    v1_auth_user_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -5003,7 +5525,7 @@ export interface operations {
             };
         };
     };
-    auth_user_partial_update: {
+    v1_auth_user_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -5028,7 +5550,7 @@ export interface operations {
             };
         };
     };
-    auth_username_request_create: {
+    v1_auth_username_request_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -5053,7 +5575,7 @@ export interface operations {
             };
         };
     };
-    auth_users_public_retrieve: {
+    v1_auth_users_public_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -5094,7 +5616,7 @@ export interface operations {
             };
         };
     };
-    baseball_games_list: {
+    v1_baseball_games_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -5118,7 +5640,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_facilities_list: {
+    v1_baseball_manage_facilities_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -5142,7 +5664,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_facilities_create: {
+    v1_baseball_manage_facilities_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -5183,7 +5705,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_facilities_retrieve: {
+    v1_baseball_manage_facilities_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -5213,7 +5735,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_facilities_destroy: {
+    v1_baseball_manage_facilities_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -5266,7 +5788,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_facilities_partial_update: {
+    v1_baseball_manage_facilities_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -5326,7 +5848,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_locations_list: {
+    v1_baseball_manage_food_store_locations_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -5350,7 +5872,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_locations_create: {
+    v1_baseball_manage_food_store_locations_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -5391,7 +5913,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_locations_retrieve: {
+    v1_baseball_manage_food_store_locations_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -5421,7 +5943,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_locations_destroy: {
+    v1_baseball_manage_food_store_locations_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -5474,7 +5996,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_locations_partial_update: {
+    v1_baseball_manage_food_store_locations_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -5534,7 +6056,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_menus_list: {
+    v1_baseball_manage_food_store_menus_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -5558,7 +6080,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_menus_create: {
+    v1_baseball_manage_food_store_menus_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -5599,7 +6121,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_menus_retrieve: {
+    v1_baseball_manage_food_store_menus_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -5629,7 +6151,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_menus_destroy: {
+    v1_baseball_manage_food_store_menus_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -5682,7 +6204,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_store_menus_partial_update: {
+    v1_baseball_manage_food_store_menus_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -5742,7 +6264,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_stores_list: {
+    v1_baseball_manage_food_stores_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -5766,7 +6288,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_stores_create: {
+    v1_baseball_manage_food_stores_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -5807,7 +6329,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_stores_retrieve: {
+    v1_baseball_manage_food_stores_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -5837,7 +6359,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_stores_destroy: {
+    v1_baseball_manage_food_stores_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -5890,7 +6412,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_food_stores_partial_update: {
+    v1_baseball_manage_food_stores_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -5950,7 +6472,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_games_list: {
+    v1_baseball_manage_games_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -5974,7 +6496,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_games_create: {
+    v1_baseball_manage_games_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -6015,7 +6537,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_games_retrieve: {
+    v1_baseball_manage_games_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -6045,7 +6567,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_games_destroy: {
+    v1_baseball_manage_games_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -6098,7 +6620,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_games_partial_update: {
+    v1_baseball_manage_games_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -6158,7 +6680,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_home_contexts_list: {
+    v1_baseball_manage_home_contexts_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -6182,7 +6704,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_home_contexts_create: {
+    v1_baseball_manage_home_contexts_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -6223,7 +6745,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_home_contexts_retrieve: {
+    v1_baseball_manage_home_contexts_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -6253,7 +6775,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_home_contexts_destroy: {
+    v1_baseball_manage_home_contexts_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -6306,7 +6828,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_home_contexts_partial_update: {
+    v1_baseball_manage_home_contexts_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -6366,7 +6888,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_postseason_stages_list: {
+    v1_baseball_manage_postseason_stages_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -6390,7 +6912,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_postseason_stages_create: {
+    v1_baseball_manage_postseason_stages_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -6431,7 +6953,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_postseason_stages_retrieve: {
+    v1_baseball_manage_postseason_stages_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -6461,7 +6983,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_postseason_stages_destroy: {
+    v1_baseball_manage_postseason_stages_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -6514,7 +7036,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_postseason_stages_partial_update: {
+    v1_baseball_manage_postseason_stages_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -6574,7 +7096,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_map_assets_list: {
+    v1_baseball_manage_seat_map_assets_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -6598,7 +7120,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_map_assets_create: {
+    v1_baseball_manage_seat_map_assets_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -6639,7 +7161,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_map_assets_retrieve: {
+    v1_baseball_manage_seat_map_assets_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -6669,7 +7191,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_map_assets_destroy: {
+    v1_baseball_manage_seat_map_assets_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -6722,7 +7244,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_map_assets_partial_update: {
+    v1_baseball_manage_seat_map_assets_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -6782,7 +7304,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_maps_list: {
+    v1_baseball_manage_seat_maps_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -6806,7 +7328,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_maps_create: {
+    v1_baseball_manage_seat_maps_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -6847,7 +7369,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_maps_retrieve: {
+    v1_baseball_manage_seat_maps_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -6877,7 +7399,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_maps_destroy: {
+    v1_baseball_manage_seat_maps_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -6930,7 +7452,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_maps_partial_update: {
+    v1_baseball_manage_seat_maps_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -6990,7 +7512,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_scopes_list: {
+    v1_baseball_manage_seat_scopes_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -7014,7 +7536,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_scopes_create: {
+    v1_baseball_manage_seat_scopes_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -7055,7 +7577,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_scopes_retrieve: {
+    v1_baseball_manage_seat_scopes_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -7085,7 +7607,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_scopes_destroy: {
+    v1_baseball_manage_seat_scopes_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -7138,7 +7660,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_scopes_partial_update: {
+    v1_baseball_manage_seat_scopes_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -7198,7 +7720,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_views_list: {
+    v1_baseball_manage_seat_views_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -7222,7 +7744,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_views_create: {
+    v1_baseball_manage_seat_views_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -7263,7 +7785,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_views_retrieve: {
+    v1_baseball_manage_seat_views_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -7293,7 +7815,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_views_destroy: {
+    v1_baseball_manage_seat_views_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -7346,7 +7868,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_views_partial_update: {
+    v1_baseball_manage_seat_views_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -7406,7 +7928,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_zones_list: {
+    v1_baseball_manage_seat_zones_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -7430,7 +7952,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_zones_create: {
+    v1_baseball_manage_seat_zones_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -7471,7 +7993,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_zones_retrieve: {
+    v1_baseball_manage_seat_zones_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -7501,7 +8023,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_zones_destroy: {
+    v1_baseball_manage_seat_zones_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -7554,7 +8076,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_seat_zones_partial_update: {
+    v1_baseball_manage_seat_zones_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -7614,7 +8136,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadium_contents_list: {
+    v1_baseball_manage_stadium_contents_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -7638,7 +8160,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadium_contents_create: {
+    v1_baseball_manage_stadium_contents_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -7679,7 +8201,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadium_contents_retrieve: {
+    v1_baseball_manage_stadium_contents_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -7709,7 +8231,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadium_contents_destroy: {
+    v1_baseball_manage_stadium_contents_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -7762,7 +8284,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadium_contents_partial_update: {
+    v1_baseball_manage_stadium_contents_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -7822,7 +8344,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadiums_list: {
+    v1_baseball_manage_stadiums_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -7846,7 +8368,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadiums_create: {
+    v1_baseball_manage_stadiums_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -7887,7 +8409,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadiums_retrieve: {
+    v1_baseball_manage_stadiums_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -7917,7 +8439,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadiums_destroy: {
+    v1_baseball_manage_stadiums_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -7970,7 +8492,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_stadiums_partial_update: {
+    v1_baseball_manage_stadiums_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -8030,7 +8552,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_standing_histories_list: {
+    v1_baseball_manage_standing_histories_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -8054,7 +8576,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_standing_histories_create: {
+    v1_baseball_manage_standing_histories_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -8095,7 +8617,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_standing_histories_retrieve: {
+    v1_baseball_manage_standing_histories_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -8125,7 +8647,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_standing_histories_destroy: {
+    v1_baseball_manage_standing_histories_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -8178,7 +8700,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_standing_histories_partial_update: {
+    v1_baseball_manage_standing_histories_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -8238,7 +8760,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_teams_list: {
+    v1_baseball_manage_teams_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -8262,7 +8784,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_teams_create: {
+    v1_baseball_manage_teams_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -8303,7 +8825,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_teams_retrieve: {
+    v1_baseball_manage_teams_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -8333,7 +8855,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_teams_destroy: {
+    v1_baseball_manage_teams_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -8386,7 +8908,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_teams_partial_update: {
+    v1_baseball_manage_teams_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -8446,7 +8968,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_policies_list: {
+    v1_baseball_manage_ticket_policies_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -8470,7 +8992,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_policies_create: {
+    v1_baseball_manage_ticket_policies_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -8511,7 +9033,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_policies_retrieve: {
+    v1_baseball_manage_ticket_policies_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -8541,7 +9063,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_policies_destroy: {
+    v1_baseball_manage_ticket_policies_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -8594,7 +9116,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_policies_partial_update: {
+    v1_baseball_manage_ticket_policies_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -8654,7 +9176,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_prices_list: {
+    v1_baseball_manage_ticket_prices_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -8678,7 +9200,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_prices_create: {
+    v1_baseball_manage_ticket_prices_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -8719,7 +9241,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_prices_retrieve: {
+    v1_baseball_manage_ticket_prices_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -8749,7 +9271,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_prices_destroy: {
+    v1_baseball_manage_ticket_prices_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -8802,7 +9324,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_ticket_prices_partial_update: {
+    v1_baseball_manage_ticket_prices_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -8862,7 +9384,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_transports_list: {
+    v1_baseball_manage_transports_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -8886,7 +9408,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_transports_create: {
+    v1_baseball_manage_transports_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -8927,7 +9449,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_transports_retrieve: {
+    v1_baseball_manage_transports_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -8957,7 +9479,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_transports_destroy: {
+    v1_baseball_manage_transports_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -9010,7 +9532,7 @@ export interface operations {
             };
         };
     };
-    baseball_manage_transports_partial_update: {
+    v1_baseball_manage_transports_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -9070,7 +9592,7 @@ export interface operations {
             };
         };
     };
-    baseball_postseason_stages_list: {
+    v1_baseball_postseason_stages_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9094,7 +9616,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_list: {
+    v1_baseball_stadiums_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9118,7 +9640,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_retrieve: {
+    v1_baseball_stadiums_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -9139,7 +9661,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_contents_list: {
+    v1_baseball_stadiums_contents_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9165,7 +9687,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_facilities_list: {
+    v1_baseball_stadiums_facilities_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9191,7 +9713,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_food_stores_list: {
+    v1_baseball_stadiums_food_stores_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9217,7 +9739,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_seat_maps_list: {
+    v1_baseball_stadiums_seat_maps_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9243,7 +9765,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_seat_scopes_list: {
+    v1_baseball_stadiums_seat_scopes_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9269,7 +9791,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_seat_views_list: {
+    v1_baseball_stadiums_seat_views_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9295,7 +9817,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_seat_zones_list: {
+    v1_baseball_stadiums_seat_zones_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9321,7 +9843,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_ticket_prices_list: {
+    v1_baseball_stadiums_ticket_prices_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9347,7 +9869,7 @@ export interface operations {
             };
         };
     };
-    baseball_stadiums_transports_list: {
+    v1_baseball_stadiums_transports_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9373,7 +9895,7 @@ export interface operations {
             };
         };
     };
-    baseball_standings_list: {
+    v1_baseball_standings_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9397,7 +9919,7 @@ export interface operations {
             };
         };
     };
-    baseball_teams_list: {
+    v1_baseball_teams_list: {
         parameters: {
             query?: never;
             header?: never;
@@ -9416,7 +9938,7 @@ export interface operations {
             };
         };
     };
-    baseball_ticket_policies_list: {
+    v1_baseball_ticket_policies_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9440,7 +9962,7 @@ export interface operations {
             };
         };
     };
-    baseball_ticket_prices_list: {
+    v1_baseball_ticket_prices_list: {
         parameters: {
             query?: {
                 /** @description A page number within the paginated result set. */
@@ -9464,239 +9986,7 @@ export interface operations {
             };
         };
     };
-    chat_guest_create: {
-        parameters: {
-            query?: {
-                format?: "json" | "sse";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GuestChat"];
-                "application/x-www-form-urlencoded": components["schemas"]["GuestChat"];
-                "multipart/form-data": components["schemas"]["GuestChat"];
-            };
-        };
-        responses: {
-            /** @description SSE delta, done, or error event payload */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "text/event-stream": components["schemas"]["GuestChatEventPayload"];
-                };
-            };
-        };
-    };
-    chat_sessions_list: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatSession"][];
-                };
-            };
-        };
-    };
-    chat_sessions_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ChatSession"];
-                "application/x-www-form-urlencoded": components["schemas"]["ChatSession"];
-                "multipart/form-data": components["schemas"]["ChatSession"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatSession"];
-                };
-            };
-        };
-    };
-    chat_sessions_destroy: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                session_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    chat_sessions_partial_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                session_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedChatSession"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedChatSession"];
-                "multipart/form-data": components["schemas"]["PatchedChatSession"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatSession"];
-                };
-            };
-        };
-    };
-    chat_sessions_messages_list: {
-        parameters: {
-            query?: {
-                format?: "json" | "sse";
-            };
-            header?: never;
-            path: {
-                session_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatMessage"][];
-                    "text/event-stream": components["schemas"]["ChatMessage"][];
-                };
-            };
-        };
-    };
-    chat_sessions_messages_create: {
-        parameters: {
-            query?: {
-                format?: "json" | "sse";
-            };
-            header?: never;
-            path: {
-                session_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChatMessage"];
-                "application/x-www-form-urlencoded": components["schemas"]["ChatMessage"];
-                "multipart/form-data": components["schemas"]["ChatMessage"];
-            };
-        };
-        responses: {
-            /** @description SSE checkpoint, delta, done, or error event payload */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "text/event-stream": components["schemas"]["MemberChatEventPayload"];
-                };
-            };
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatNonStreamResponse"];
-                };
-            };
-        };
-    };
-    chat_sessions_turns_list: {
-        parameters: {
-            query?: {
-                /** @description A page number within the paginated result set. */
-                page?: number;
-            };
-            header?: never;
-            path: {
-                session_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedChatTurnList"];
-                };
-            };
-        };
-    };
-    chat_turns_finalize_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                turn_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChatFinalize"];
-                "application/x-www-form-urlencoded": components["schemas"]["ChatFinalize"];
-                "multipart/form-data": components["schemas"]["ChatFinalize"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatFinalizeResponse"];
-                };
-            };
-        };
-    };
-    community_admin_posts_list: {
+    v1_community_admin_posts_list: {
         parameters: {
             query?: {
                 page?: number;
@@ -9718,7 +10008,7 @@ export interface operations {
             };
         };
     };
-    community_admin_posts_destroy: {
+    v1_community_admin_posts_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -9738,7 +10028,7 @@ export interface operations {
             };
         };
     };
-    community_admin_reports_list: {
+    v1_community_admin_reports_list: {
         parameters: {
             query?: {
                 page?: number;
@@ -9759,7 +10049,7 @@ export interface operations {
             };
         };
     };
-    community_admin_reports_action_create: {
+    v1_community_admin_reports_action_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -9786,7 +10076,7 @@ export interface operations {
             };
         };
     };
-    community_comments_list: {
+    v1_community_comments_list: {
         parameters: {
             query: {
                 author_id: number;
@@ -9849,7 +10139,7 @@ export interface operations {
             };
         };
     };
-    community_comments_destroy: {
+    v1_community_comments_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -9899,7 +10189,7 @@ export interface operations {
             };
         };
     };
-    community_comments_partial_update: {
+    v1_community_comments_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -10188,7 +10478,7 @@ export interface operations {
             };
         };
     };
-    community_drafts_publish_create: {
+    v1_community_drafts_publish_create: {
         parameters: {
             query?: never;
             header: {
@@ -10265,7 +10555,7 @@ export interface operations {
             };
         };
     };
-    community_images_create: {
+    v1_community_images_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -10338,7 +10628,7 @@ export interface operations {
             };
         };
     };
-    community_images_retrieve: {
+    v1_community_images_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -10380,7 +10670,7 @@ export interface operations {
             };
         };
     };
-    community_images_destroy: {
+    v1_community_images_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -10450,7 +10740,7 @@ export interface operations {
             };
         };
     };
-    community_posts_list: {
+    v1_community_posts_list: {
         parameters: {
             query?: {
                 /** @description 작성자 활동 목록. JWT 인증 필요, 본인 또는 공개 설정된 회원만 조회 가능. */
@@ -10519,7 +10809,7 @@ export interface operations {
             };
         };
     };
-    community_posts_create: {
+    v1_community_posts_create: {
         parameters: {
             query?: never;
             header: {
@@ -10584,7 +10874,7 @@ export interface operations {
             };
         };
     };
-    community_posts_retrieve: {
+    v1_community_posts_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -10615,7 +10905,7 @@ export interface operations {
             };
         };
     };
-    community_posts_destroy: {
+    v1_community_posts_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -10665,7 +10955,7 @@ export interface operations {
             };
         };
     };
-    community_posts_partial_update: {
+    v1_community_posts_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -10732,7 +11022,7 @@ export interface operations {
             };
         };
     };
-    community_posts_comments_list: {
+    v1_community_posts_comments_list: {
         parameters: {
             query?: {
                 order?: "newest" | "oldest";
@@ -10775,7 +11065,7 @@ export interface operations {
             };
         };
     };
-    community_posts_comments_create: {
+    v1_community_posts_comments_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -10832,7 +11122,7 @@ export interface operations {
             };
         };
     };
-    community_posts_reports_create: {
+    v1_community_posts_reports_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -10897,7 +11187,7 @@ export interface operations {
             };
         };
     };
-    community_posts_vote_retrieve: {
+    v1_community_posts_vote_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -10938,7 +11228,7 @@ export interface operations {
             };
         };
     };
-    community_posts_vote_create: {
+    v1_community_posts_vote_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -10995,7 +11285,7 @@ export interface operations {
             };
         };
     };
-    community_predictions_games_list: {
+    v1_community_predictions_games_list: {
         parameters: {
             query?: {
                 date?: string;
@@ -11037,7 +11327,7 @@ export interface operations {
             };
         };
     };
-    community_predictions_games_retrieve: {
+    v1_community_predictions_games_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -11068,7 +11358,7 @@ export interface operations {
             };
         };
     };
-    community_predictions_games_vote_create: {
+    v1_community_predictions_games_vote_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -11145,7 +11435,7 @@ export interface operations {
             };
         };
     };
-    courses_list: {
+    v1_courses_list: {
         parameters: {
             query?: never;
             header?: never;
@@ -11164,7 +11454,7 @@ export interface operations {
             };
         };
     };
-    courses_create: {
+    v1_courses_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -11227,7 +11517,7 @@ export interface operations {
             };
         };
     };
-    courses_retrieve: {
+    v1_courses_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -11258,7 +11548,7 @@ export interface operations {
             };
         };
     };
-    courses_destroy: {
+    v1_courses_destroy: {
         parameters: {
             query?: never;
             header: {
@@ -11321,7 +11611,7 @@ export interface operations {
             };
         };
     };
-    courses_partial_update: {
+    v1_courses_partial_update: {
         parameters: {
             query?: never;
             header: {
@@ -11399,7 +11689,7 @@ export interface operations {
             };
         };
     };
-    courses_reaction_retrieve: {
+    v1_courses_reaction_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -11440,7 +11730,7 @@ export interface operations {
             };
         };
     };
-    courses_reaction_create: {
+    v1_courses_reaction_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -11525,7 +11815,7 @@ export interface operations {
             };
         };
     };
-    courses_view_create: {
+    v1_courses_view_create: {
         parameters: {
             query?: never;
             header: {
@@ -11904,6 +12194,169 @@ export interface operations {
             };
         };
     };
+    collected_places_list: {
+        parameters: {
+            query: {
+                stadium: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectedPlaceCatalogue"];
+                };
+            };
+        };
+    };
+    places_live_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlaceSearch"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceSearchResponse"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+        };
+    };
+    lodging_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlaceSearch"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceSearchResponse"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceError"];
+                };
+            };
+        };
+    };
     places_search: {
         parameters: {
             query?: never;
@@ -11975,7 +12428,28 @@ export interface operations {
             };
         };
     };
-    tourism_retrieve: {
+    stadium_facilities_list: {
+        parameters: {
+            query: {
+                stadium: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StadiumFacilityCatalogue"];
+                };
+            };
+        };
+    };
+    v1_tourism_retrieve: {
         parameters: {
             query: {
                 lat: number;
@@ -12030,7 +12504,7 @@ export interface operations {
             };
         };
     };
-    travel_directions_create: {
+    v1_travel_directions_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -12101,7 +12575,7 @@ export interface operations {
             };
         };
     };
-    tving_daily_retrieve: {
+    v1_tving_daily_retrieve: {
         parameters: {
             query?: {
                 date?: string;
@@ -12138,7 +12612,7 @@ export interface operations {
             };
         };
     };
-    tving_details_athletes_retrieve: {
+    v1_tving_details_athletes_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -12175,7 +12649,7 @@ export interface operations {
             };
         };
     };
-    tving_details_status_retrieve: {
+    v1_tving_details_status_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -12202,7 +12676,7 @@ export interface operations {
             };
         };
     };
-    tving_details_teams_retrieve: {
+    v1_tving_details_teams_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -12239,7 +12713,7 @@ export interface operations {
             };
         };
     };
-    tving_entities_retrieve: {
+    v1_tving_entities_retrieve: {
         parameters: {
             query: {
                 date?: string;
@@ -12282,7 +12756,7 @@ export interface operations {
             };
         };
     };
-    tving_entities_players_create: {
+    v1_tving_entities_players_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -12339,7 +12813,7 @@ export interface operations {
             };
         };
     };
-    tving_entities_players_retrieve: {
+    v1_tving_entities_players_retrieve: {
         parameters: {
             query?: never;
             header?: never;
@@ -12376,7 +12850,7 @@ export interface operations {
             };
         };
     };
-    tving_entities_players_destroy: {
+    v1_tving_entities_players_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -12420,7 +12894,7 @@ export interface operations {
             };
         };
     };
-    tving_entities_players_partial_update: {
+    v1_tving_entities_players_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -12487,7 +12961,7 @@ export interface operations {
             };
         };
     };
-    tving_schedule_retrieve: {
+    v1_tving_schedule_retrieve: {
         parameters: {
             query?: {
                 month?: string;
@@ -12568,7 +13042,7 @@ export interface operations {
             };
         };
     };
-    tving_snapshots_create: {
+    v1_tving_snapshots_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -12662,7 +13136,7 @@ export interface operations {
             };
         };
     };
-    tving_snapshots_destroy: {
+    v1_tving_snapshots_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -12706,7 +13180,7 @@ export interface operations {
             };
         };
     };
-    tving_snapshots_partial_update: {
+    v1_tving_snapshots_partial_update: {
         parameters: {
             query?: never;
             header?: never;
@@ -12773,7 +13247,7 @@ export interface operations {
             };
         };
     };
-    weather_retrieve: {
+    v1_weather_retrieve: {
         parameters: {
             query: {
                 /** @description KST date (YYYY-MM-DD) */
@@ -12827,152 +13301,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WeatherErrorResponse"];
-                };
-            };
-        };
-    };
-    v1_ads_admin_creatives_list: {
-        parameters: {
-            query?: {
-                /** @description A page number within the paginated result set. */
-                page?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedAdAdminList"];
-                };
-            };
-        };
-    };
-    v1_ads_admin_creatives_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AdAdmin"];
-                "application/x-www-form-urlencoded": components["schemas"]["AdAdmin"];
-                "multipart/form-data": components["schemas"]["AdAdmin"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdAdmin"];
-                };
-            };
-        };
-    };
-    v1_ads_admin_creatives_retrieve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdAdmin"];
-                };
-            };
-        };
-    };
-    v1_ads_admin_creatives_partial_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedAdAdmin"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedAdAdmin"];
-                "multipart/form-data": components["schemas"]["PatchedAdAdmin"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdAdmin"];
-                };
-            };
-        };
-    };
-    v1_ads_events_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AdEventInput"];
-                "application/x-www-form-urlencoded": components["schemas"]["AdEventInput"];
-                "multipart/form-data": components["schemas"]["AdEventInput"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdEventResult"];
-                };
-            };
-        };
-    };
-    v1_ads_slots_retrieve: {
-        parameters: {
-            query: {
-                /**
-                 * @description * `home-club-banner` - 홈 구단 광고
-                 *     * `home-route-partner-banner` - 홈 음식점·시설 광고
-                 */
-                placement: "home-club-banner" | "home-route-partner-banner";
-                route_ids?: string[];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdSlotResponse"];
                 };
             };
         };

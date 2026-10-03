@@ -112,7 +112,6 @@ def classify(question: str, history=None, context=None) -> dict:
 
     TypeSafeClassifier 는 LangChain llm 콜백(on_llm_end) 을 내지 않으므로 사용량은 응답 usage 로 직접 계량한다."""
     from llm.service import usage
-    usage.check_external()
     client = _client()
     payload = {
         "state": state_text(question, history, context),

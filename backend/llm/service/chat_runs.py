@@ -158,7 +158,7 @@ def stream_turn(thread, prefix, turns, human, produce, run, on_stop=None, label=
     meter, owner_started = None, [False]
     if charge is not None:  # 토큰 계량: produce 를 worker 안에서 Meter 로 감싸고 끝나면 여기(요청 스레드)서 정산
         from llm.service import usage
-        meter, source = usage.Meter(charge.reserved_tokens), produce
+        meter, source = usage.Meter(), produce
         produce = lambda: usage.metered(source, meter, charge)  # noqa: E731
     owner = register(thread.thread_id)
     try:
@@ -202,9 +202,6 @@ def stream_turn(thread, prefix, turns, human, produce, run, on_stop=None, label=
             log.exception("%s chat save failed", label)
         if done:
             yield PublicChatEvent.DONE.value, done
-        elif meter is not None and meter.exhausted:  # 이 턴 예약을 다 써서 다음 model 호출을 막았다
-            from llm.service.usage import EXHAUSTED_CODE, EXHAUSTED_MESSAGE
-            yield PublicChatEvent.ERROR.value, {"detail": EXHAUSTED_MESSAGE, "code": EXHAUSTED_CODE}
         else:
             yield PublicChatEvent.ERROR.value, error_payload()
     finally:

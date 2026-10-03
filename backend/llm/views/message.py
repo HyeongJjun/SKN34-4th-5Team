@@ -142,6 +142,9 @@ class ChatMessageView(GenericAPIView):
             events = send(session, data["content"], data.get("context"))
         except usage.InsufficientCredits:
             return _insufficient()
+        except usage.WalletBusy:
+            return Response({"code": usage.BUSY_CODE, "detail": usage.BUSY_MESSAGE},
+                            status=http_status.HTTP_409_CONFLICT)
         return event_stream_response(_role_stream(request, events))
 
     def put(self, request, *args, **kwargs):
@@ -155,6 +158,9 @@ class ChatMessageView(GenericAPIView):
             events = update(session, data["message_id"], data["content"], data.get("context"))
         except usage.InsufficientCredits:
             return _insufficient()
+        except usage.WalletBusy:
+            return Response({"code": usage.BUSY_CODE, "detail": usage.BUSY_MESSAGE},
+                            status=http_status.HTTP_409_CONFLICT)
         return event_stream_response(_role_stream(request, events))
 
     def delete(self, request, *args, **kwargs):

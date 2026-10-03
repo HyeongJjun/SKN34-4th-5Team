@@ -124,8 +124,8 @@ class UsageWallet(models.Model):
 
 
 class UsageCharge(models.Model):
-    """턴 하나의 예약·정산 원장. reserved 상태 합계가 지갑의 사용 가능량에서 빠진다."""
-    RESERVED, SETTLED = "reserved", "settled"
+    """턴 하나의 후불 원장. reserved는 지갑 active guard, unknown_calls는 미확인 사용량."""
+    RESERVED, SETTLED, SETTLED_UNKNOWN = "reserved", "settled", "settled_unknown"
     wallet = models.ForeignKey(UsageWallet, on_delete=models.CASCADE, related_name="charges")
     session_id = models.UUIDField(null=True)  # FK 아님: 세션이 지워져도 원장은 남는다
     period = models.CharField(max_length=16)

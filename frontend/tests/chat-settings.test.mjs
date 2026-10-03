@@ -86,7 +86,7 @@ function find(tree, predicate) {
   }
 }
 
-const allowance = { plan: "member", remaining_credits: "4", limit_tokens: 10000, remaining_tokens: 4000, tokens_per_credit: 1000, used_tokens: 5000, reserved_tokens: 1000, resets_at: null, can_send: true };
+const allowance = { plan: "member", remaining_credits: "4", limit_tokens: 10000, remaining_tokens: 4000, tokens_per_credit: 1000, used_tokens: 5000, reserved_tokens: 1000, resets_at: null, can_send: true, active_turn: false, unknown_calls: 0, accounting_state: "known" };
 
 test("remaining allowance meter renders full, partial, reserved, zero and bounded balances", async () => {
   for (const [remaining, limit, expected] of [[10000, 10000, 100], [4000, 10000, 40], [2900, 10000, 29], [2901, 10000, 29.01], [0, 10000, 0], [200, 0, 0], [12000, 10000, 100], [-100, 10000, 0]]) {
@@ -101,7 +101,7 @@ test("remaining allowance meter renders full, partial, reserved, zero and bounde
     assert.equal(meter.props.min, 0);
     assert.equal(meter.props.max, 100);
     assert.match(meter.props["aria-label"], /남은/);
-    assert.match(meter.props["aria-valuetext"], /진행 중.*1,000/);
+    assert.match(meter.props["aria-valuetext"], /실제 사용량 정산.*1,000/);
     assert.equal(find(tree, node => node.props?.href), undefined);
     view.unmount();
   }
@@ -400,4 +400,19 @@ test("workspace settings use existing identity, native dialog handoff and preser
     assert.match(link.getText(ast), new RegExp(`Icon name="${icon}"`));
   }
   for (const retained of ["value={chat.draft}", "chat.onSend()", "chat.onCancel", "chat.onSelectConversation", "chat.error", "chat.streaming"]) assert.ok(workspace.includes(retained));
+});
+
+
+test("positive fractional credit is sendable; busy and unknown are not exhausted", async () => {
+  for (const active of [false, true]) {
+    global.__usageFetch = async () => ({ ...allowance, remaining_tokens: 1, remaining_credits: "0.001",
+      active_turn: active, can_send: !active, unknown_calls: 1, accounting_state: "unknown" });
+    const view = runner();
+    view.render({ mode: "guest", refreshKey: 0 }); view.flush(); await tick();
+    const tree = view.render({ mode: "guest", refreshKey: 0 });
+    assert.match(JSON.stringify(tree), /확인된 토큰만/);
+    assert.doesNotMatch(JSON.stringify(tree), /사용 가능한 제공량이 없어요|예약된 양/);
+    assert.equal(/진행 중인 답변이 끝나면/.test(JSON.stringify(tree)), active);
+    view.unmount();
+  }
 });

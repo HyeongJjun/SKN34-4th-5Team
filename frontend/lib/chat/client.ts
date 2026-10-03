@@ -34,13 +34,16 @@ export class ChatClientError extends Error {
 export type ChatUsageDto = {
   plan: "member" | "guest"; period: string; timezone: string | null; resets_at: string | null; tokens_per_credit: number;
   limit_tokens: number; used_tokens: number; reserved_tokens: number; remaining_tokens: number; remaining_credits: string; can_send: boolean;
+  active_turn: boolean; unknown_calls: number; accounting_state: "known" | "unknown";
 };
 export const USAGE_EXHAUSTED = "usage_exhausted";
+export const USAGE_BUSY = "usage_busy";
 const isCount = (value: unknown) => Number.isSafeInteger(value) && Number(value) >= 0;
 const isUsage = (value: unknown): value is ChatUsageDto => isRecord(value) && (value.plan === "member" || value.plan === "guest") &&
   typeof value.period === "string" && (value.timezone === null || typeof value.timezone === "string") && (value.resets_at === null || typeof value.resets_at === "string") &&
   ["tokens_per_credit", "limit_tokens", "used_tokens", "reserved_tokens", "remaining_tokens"].every(key => isCount(value[key])) &&
-  typeof value.remaining_credits === "string" && /^\d+\.\d{3}$/.test(value.remaining_credits) && typeof value.can_send === "boolean";
+  typeof value.remaining_credits === "string" && /^\d+\.\d{3}$/.test(value.remaining_credits) && typeof value.can_send === "boolean" && typeof value.active_turn === "boolean" && isCount(value.unknown_calls) &&
+  (value.accounting_state === "known" || value.accounting_state === "unknown");
 
 export async function fetchChatUsage(mode: ChatMode, signal?: AbortSignal): Promise<ChatUsageDto> {
   const value = await request(mode, "/api/v2/chat/usage/", { method: "GET" }, signal, readJson);
@@ -86,7 +89,7 @@ async function request<T>(mode: ChatMode, path: string, init: RequestInit, signa
         response.status,
         response.status >= 500 && mutating,
         undefined,
-        isRecord(data) && data.code === USAGE_EXHAUSTED ? USAGE_EXHAUSTED : undefined,
+        isRecord(data) && (data.code === USAGE_EXHAUSTED || data.code === USAGE_BUSY) ? data.code : undefined,
       );
     }
     return await read(response);

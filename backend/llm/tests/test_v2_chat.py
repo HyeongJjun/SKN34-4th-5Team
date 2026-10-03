@@ -922,9 +922,8 @@ class PausingChain(FakeChain):
     def __init__(self, chunks=("안", "녕")):
         super().__init__(chunks)
 
-@override_settings(USAGE_TURN_RESERVE_TOKENS=1000)  # 동시 스트림 여러 개가 비회원 10,000 토큰 안에 들어가게
 class StreamConcurrencyTest(CheckpointTestCase):
-    """같은 대화 동시 요청은 직렬화하지 않는다(ChatThread 의 ponytail). 스트림 종료/실패/취소 경로만 확인한다."""
+    """지갑별 active guard와 스트림 종료/실패/취소 경로."""
 
     def setUp(self):
         self.client_a = APIClient()
@@ -932,8 +931,8 @@ class StreamConcurrencyTest(CheckpointTestCase):
         self.session = ChatSession.objects.create(guest="99999999-9999-9999-9999-999999999999")
         self.url = f"/api/v2/chat/sessions/{self.session.id}/messages/"
 
-    def test_other_session_is_not_blocked(self):
-        other = ChatSession.objects.create(guest="99999999-9999-9999-9999-999999999999")
+    def test_other_wallet_is_not_blocked(self):
+        other = ChatSession.objects.create(guest="88888888-8888-8888-8888-888888888888")
         with patch_chain(return_value=PausingChain()):
             events = chat_service.send_message(self.session, "질문")
             next(events)

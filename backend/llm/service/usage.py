@@ -1,22 +1,11 @@
-"""채팅 토큰 사용량: 지갑 예약 → 모든 model 호출 계량 → 실제 토큰 정산. 1 credit = 1000 토큰(입력+출력 같은 비율).
+"""채팅 후불 사용량. 1 credit = provider 입력+출력 1000 토큰.
 
-- 주인은 항상 ChatSession 에서 나온다(회원 user / 비회원 guest UUID). 클라이언트가 주인·잔액·비용을 보내지 않는다.
-- 회원: USAGE_TIMEZONE 달마다 USAGE_MEMBER_MONTHLY_TOKENS. 비회원: USAGE_GUEST_TOKENS 한 번, 충전 없음.
-- 예약: 세션 질문 저장(ask/edit) 전에 지갑 행 잠금 안에서 min(남은 양, USAGE_TURN_RESERVE_TOKENS) 을 잡는다(동시 초과 방지).
-  provider 호출은 이 transaction 밖에서만 일어난다.
-- 계량: register_configure_hook 의 ContextVar 로 이 턴 안의 모든 LangChain model run(v1 중첩, v2 하위 Agent, 재시도 run)에
-  Meter 가 붙는다. run_id 로 한 번만 센다. JEV 분류기는 LangChain llm 콜백을 안 내므로 classify() 가 응답 usage 를 직접 넘긴다.
-- 정산: 알려진 토큰. usage 를 모르는 호출(응답에 usage 없음, 오류·중단(Stop) 으로 끝나 usage 가 안 온 호출 포함)이 있으면
-  예약 전체를 청구한다(무료로 새지 않게).
-- 호출 전 검사(preflight): 이미 쓴 양 + 이 호출 입력(설치된 tiktoken 으로 메시지·system·도구 schema 를 셈) + 출력 상한
-  (ChatOpenAI max_tokens == USAGE_MAX_CALL_OUTPUT_TOKENS) 이 예약을 넘으면 시작 전에 막는다(UsageExhausted).
-  토큰을 셀 수 없는 모델(tokenizer 없음, 상한 없음, chat 이 아닌 LLM)은 fail-closed 로 막는다.
-- JEV(TypeSafe SDK) 는 출력 상한·토큰 계산 API 가 없어 호출 전에는 누적 사용만 본다. 응답 usage 가 없으면 모름 → 예약 전체.
-- 정산은 provider 작업(worker)이 끝난 뒤에만. 요청 스레드가 USAGE_SETTLE_WAIT_SECONDS 안에 못 보면 worker 가 끝날 때 정산한다.
-ponytail: 프로세스가 죽어 정산 못 한 예약은 자동 만료하지 않는다(아직 쓰는 중인지 알 수 없음) → 잔액에서 잠긴 채 남는다.
-  운영자가 확인 후 settle_abandoned(charge) 로 예약 전체를 청구해 푼다. 스케줄러는 없다.
+양수 잔액이면 한 턴을 허용하고 지갑 행 잠금으로 동시 턴을 막는다. 예상 토큰은 예약하지 않는다.
+모든 중첩 model run을 run_id당 한 번 계량하고 producer 종료 후 알려진 사용량 전부를 정산한다.
+모르는 호출은 settled_unknown으로 남기며 예상 비용을 만들지 않는다. 다음 턴은 실제 잔액으로 판단한다.
+기존 reserved 원장은 금액을 차감하지 않고 active guard로 유지한다(지난 달도 포함).
+ponytail: 죽은 worker를 추측하여 자동 해제하지 않는다. 운영자가 종료 확인 후 settle_abandoned로 푼다.
 """
-import json
 import logging
 import threading
 from contextvars import ContextVar
@@ -38,6 +27,8 @@ TOKENS_PER_CREDIT = 1000
 GUEST_PERIOD = "lifetime"
 EXHAUSTED_CODE = "usage_exhausted"
 EXHAUSTED_MESSAGE = "사용 가능한 크레딧을 모두 사용했어요."
+BUSY_CODE = "usage_busy"
+BUSY_MESSAGE = "진행 중인 답변이 끝난 뒤 다시 시도해 주세요."
 
 
 def _conf(name, default):
@@ -48,8 +39,12 @@ class InsufficientCredits(Exception):
     """예약할 잔액이 없다. view 는 402 {code: usage_exhausted} 로 바꾼다."""
 
 
-class UsageExhausted(Exception):
-    """이 턴 예약을 다 써서 다음 model 호출을 시작하지 않는다."""
+class WalletBusy(Exception):
+    """같은 지갑의 provider 작업이 아직 끝나지 않았다."""
+
+
+class UnsafeOutputLimit(Exception):
+    """서버 출력 상한이 없는 호출. 잔액 부족과는 별개다."""
 
 
 def _now():
@@ -97,13 +92,9 @@ def _locked_wallet(owner):
     return wallet
 
 
-def _reserved(wallet):
-    return wallet.charges.filter(status=UsageCharge.RESERVED, period=wallet.period).aggregate(
-        total=Sum("reserved_tokens"))["total"] or 0
-
-
 def _apply(wallet, charge, tokens):
-    charge.status, charge.charged_tokens, charge.settled_at = UsageCharge.SETTLED, tokens, _now()
+    charge.status = UsageCharge.SETTLED_UNKNOWN if charge.unknown_calls else UsageCharge.SETTLED
+    charge.charged_tokens, charge.settled_at = tokens, _now()
     charge.save(update_fields=["status", "charged_tokens", "settled_at", "input_tokens", "output_tokens",
                                "calls", "unknown_calls"])
     if charge.period == wallet.period:  # 달이 넘어간 뒤 끝난 턴은 지난 달 몫이라 새 달 사용량에 넣지 않는다
@@ -112,55 +103,58 @@ def _apply(wallet, charge, tokens):
 
 
 def reserve(session):
-    """세션 주인의 지갑에서 이번 턴 예산을 잡는다. 부족하면 InsufficientCredits."""
+    """양수 잔액으로 한 턴을 시작한다. provider 호출은 transaction 밖에서만."""
     owner = _owner(session)
     with transaction.atomic():
         wallet = _locked_wallet(owner)
-        available = _limit("user_id" in owner) - wallet.used_tokens - _reserved(wallet)
-        if available < _conf("USAGE_MIN_START_TOKENS", TOKENS_PER_CREDIT):
+        if wallet.charges.filter(status=UsageCharge.RESERVED).exists():
+            raise WalletBusy
+        available = _limit("user_id" in owner) - wallet.used_tokens
+        if available <= 0:
             raise InsufficientCredits
         return UsageCharge.objects.create(
             wallet=wallet, session_id=session.id, period=wallet.period,
-            reserved_tokens=min(available, _conf("USAGE_TURN_RESERVE_TOKENS", 20_000)),
+            reserved_tokens=0,
         )
 
 
-def settle(charge, meter=None):
+def settle(charge, meter=None, *, unknown=False):
     """예약을 실제 토큰으로 정산하고 남은 예약을 푼다. 멱등(이미 정산됐으면 아무것도 안 한다)."""
     with transaction.atomic():
         wallet = UsageWallet.objects.select_for_update().get(pk=charge.wallet_id)
         charge = UsageCharge.objects.select_for_update().get(pk=charge.pk)
         if charge.status != UsageCharge.RESERVED:
             return charge
-        tokens = 0
         if meter is not None:
             charge.input_tokens, charge.output_tokens, charge.calls, charge.unknown_calls = meter.totals()
-            tokens = charge.input_tokens + charge.output_tokens
-            if charge.unknown_calls:
-                tokens = max(tokens, charge.reserved_tokens)
-        _apply(wallet, charge, tokens)
+        if unknown:
+            charge.unknown_calls = max(1, charge.unknown_calls)
+            charge.calls = max(charge.calls, charge.unknown_calls)
+        _apply(wallet, charge, charge.input_tokens + charge.output_tokens)
         return charge
 
 
 def settle_abandoned(charge):
-    """크래시로 남은 예약을 운영자가 확인 후 푼다: 사용량을 모르므로 예약 전체를 청구한다. 멱등."""
-    meter = Meter(charge.reserved_tokens)
-    meter.record(None)
-    return settle(charge, meter)
+    """운영자가 worker 종료 확인 후 해제. 기존 알려진 사용량을 보존하고 미확인으로 표시."""
+    return settle(charge, unknown=True)
 
 
 def balance(user=None, guest=None):
     """요청자 본인의 사용량 DTO. 비회원 쿠키가 없으면(아직 대화 전) 새 지갑 기준 값을 만들지 않고 계산만 한다."""
     member = user is not None
-    used = reserved = 0
+    used = reserved = unknown = 0
+    active = False
     period = period_for(member)
     if member or guest is not None:
         with transaction.atomic():
             if UsageWallet.objects.filter(**_owner(user=user, guest=guest)).exists():
                 wallet = _locked_wallet(_owner(user=user, guest=guest))
-                used, reserved, period = wallet.used_tokens, _reserved(wallet), wallet.period
+                used, period = wallet.used_tokens, wallet.period
+                active = wallet.charges.filter(status=UsageCharge.RESERVED).exists()
+                reserved = wallet.charges.filter(status=UsageCharge.RESERVED).aggregate(total=Sum("reserved_tokens"))["total"] or 0
+                unknown = wallet.charges.filter(period=period).aggregate(total=Sum("unknown_calls"))["total"] or 0
     limit = _limit(member)
-    remaining = max(0, limit - used - reserved)
+    remaining = max(0, limit - used)
     resets = _resets_at(member)
     return {
         "plan": "member" if member else "guest",
@@ -173,57 +167,53 @@ def balance(user=None, guest=None):
         "reserved_tokens": reserved,
         "remaining_tokens": remaining,
         "remaining_credits": str((Decimal(remaining) / TOKENS_PER_CREDIT).quantize(Decimal("0.001"))),
-        "can_send": remaining >= _conf("USAGE_MIN_START_TOKENS", TOKENS_PER_CREDIT),
+        "active_turn": active,
+        "unknown_calls": unknown,
+        "accounting_state": "unknown" if unknown else "known",
+        "can_send": remaining > 0 and not active,
     }
 
 
 # ── 계량 ─────────────────────────────────────────────────────────────────────
 class Meter(BaseCallbackHandler):
-    """이 턴의 모든 model run 토큰. run_id 당 한 번. 예약량에 닿으면 새 model run 을 막는다."""
-    raise_error = True  # on_*_start 의 UsageExhausted 가 호출을 실제로 막게 한다
+    """이 턴의 모든 provider 사용량. run_id 당 한 번, 예산 예측 없음."""
+    raise_error = True  # 서버 출력 상한 유지
 
-    def __init__(self, budget):
+    def __init__(self):
         super().__init__()
-        self.budget = budget
-        self.exhausted = False
         self.finished = threading.Event()  # 원본 스트림이 닫혀 더 이상 model 호출이 없다
         self._lock = threading.Lock()
         self._done = set()
         self.abandoned = False  # finish 가 포기함 → worker 가 끝날 때 정산
         self._in = self._out = self._calls = self._unknown = 0
-        self._inflight = {}  # run_id → 시작 시 잡은 최대 비용. 병렬 호출이 같은 잔액을 두 번 쓰지 않게 한다
+        self._inflight = {}  # terminal callback 없는 시작된 호출도 미확인으로 보존
 
-    def check(self, next_call=0, run_id=None):
-        """쓴 양 + 진행 중 호출 예약 + next_call 이 예약을 넘으면 막는다. run_id 가 있으면 next_call 을 잡아 둔다."""
+    def check(self, run_id=None):
+        """이미 허용된 턴은 잔액 예측으로 중단하지 않는다. 시작된 run만 추적한다."""
         with self._lock:
-            # usage 를 모르는 호출이 하나라도 끝났으면 이 턴은 예약 전체로 정산된다: 더 허용하면 공짜가 된다
-            if self._unknown or self._in + self._out + sum(self._inflight.values()) + max(next_call, 1) > self.budget:
-                self.exhausted = True
-                raise UsageExhausted
             if run_id is not None and run_id not in self._done:
-                self._inflight[run_id] = max(next_call, 1)
+                self._inflight[run_id] = None
 
     def on_chat_model_start(self, serialized, messages, *, run_id=None, **kwargs):
-        self.check(_call_cost(messages, kwargs.get("invocation_params") or {}), run_id)
+        params = kwargs.get("invocation_params") or {}
+        limit = params.get("max_completion_tokens", params.get("max_tokens", params.get("max_output_tokens")))
+        if not _valid(limit) or limit <= 0 or limit > _conf("USAGE_MAX_CALL_OUTPUT_TOKENS", 4000):
+            raise UnsafeOutputLimit
+        self.check(run_id=run_id)
 
-    def on_llm_start(self, serialized, prompts, **kwargs):
-        self._refuse()  # chat 이 아닌 LLM 은 쓰지 않는다: 셀 수 없으면 막는다
-
-    def _refuse(self):
-        with self._lock:
-            self.exhausted = True
-        raise UsageExhausted
+    def on_llm_start(self, serialized, prompts, *, run_id=None, **kwargs):
+        raise UnsafeOutputLimit
 
     def on_llm_end(self, response, *, run_id, **kwargs):
         self.record(_usage(response), run_id)
 
     def on_llm_error(self, error, *, run_id, **kwargs):
-        # 오류·중단(Stop=GeneratorExit)으로 끝난 호출: 부분 응답에 usage 가 있으면 그것, 없으면 모름(예약 전체)
+        # 오류·중단(Stop=GeneratorExit)으로 끝난 호출: 부분 응답에 usage 가 있으면 그것, 없으면 미확인
         response = kwargs.get("response")
         self.record(_usage(response) if response is not None else None, run_id)
 
     def record(self, usage, run_id=None):
-        """usage=(input, output) 또는 None(모름). 같은 run_id 는 한 번만."""
+        """usage=(input, output), 일부/전부 None이면 미확인. 같은 run_id는 한 번만."""
         with self._lock:
             if run_id is not None:
                 if run_id in self._done:
@@ -231,34 +221,15 @@ class Meter(BaseCallbackHandler):
                 self._done.add(run_id)
                 self._inflight.pop(run_id, None)
             self._calls += 1
-            if usage is None:
+            incoming, outgoing = usage or (None, None)
+            if not _valid(incoming, outgoing):
                 self._unknown += 1
-            else:
-                self._in += usage[0]
-                self._out += usage[1]
+            self._in += incoming if _valid(incoming) else 0
+            self._out += outgoing if _valid(outgoing) else 0
 
     def totals(self):
         with self._lock:
-            return self._in, self._out, self._calls, self._unknown
-
-
-def _call_cost(messages, params):
-    """이번 호출 최대 토큰 = 입력(메시지·도구 schema, tiktoken) + 출력 상한. 셀 수 없으면 UsageExhausted(fail-closed)."""
-    import tiktoken
-    cap = _conf("USAGE_MAX_CALL_OUTPUT_TOKENS", 4000)
-    limit = params.get("max_completion_tokens", params.get("max_tokens", params.get("max_output_tokens")))
-    if not _valid(limit) or limit > cap:
-        raise UsageExhausted
-    try:
-        encoding = tiktoken.encoding_for_model(params.get("model") or params.get("model_name") or "")
-    except KeyError:
-        raise UsageExhausted from None
-    tokens = len(encoding.encode(json.dumps(params.get("tools") or [], ensure_ascii=False, default=str), disallowed_special=()))
-    for batch in messages:
-        for message in batch:  # ponytail: 메시지당 +8 는 role/구분자 여유. 실제 서식보다 크게 잡는다.
-            body = [message.content, getattr(message, "tool_calls", None) or []]
-            tokens += 8 + len(encoding.encode(json.dumps(body, ensure_ascii=False, default=str), disallowed_special=()))
-    return tokens + limit
+            return self._in, self._out, self._calls + len(self._inflight), self._unknown + len(self._inflight)
 
 
 def _valid(*values):
@@ -266,15 +237,24 @@ def _valid(*values):
 
 
 def _usage(response):
-    """LLMResult → (input, output) 또는 None. AIMessage.usage_metadata 우선, 없으면 llm_output.token_usage."""
+    """각 batch의 provider usage 합계(후보 답변마다 중복하지 않음). 부분 usage도 보존."""
+    inputs, outputs = [], []
     for generations in response.generations or ():
-        for generation in generations:
-            meta = getattr(getattr(generation, "message", None), "usage_metadata", None) or {}
-            if _valid(meta.get("input_tokens"), meta.get("output_tokens")):
-                return meta["input_tokens"], meta["output_tokens"]
-    token_usage = (response.llm_output or {}).get("token_usage") or {}
-    if _valid(token_usage.get("prompt_tokens"), token_usage.get("completion_tokens")):
-        return token_usage["prompt_tokens"], token_usage["completion_tokens"]
+        if not generations:
+            continue
+        meta = getattr(getattr(generations[0], "message", None), "usage_metadata", None) or {}
+        inputs.append(meta.get("input_tokens"))
+        outputs.append(meta.get("output_tokens"))
+    if inputs and _valid(*inputs, *outputs):
+        return sum(inputs), sum(outputs)
+    fallback = (response.llm_output or {}).get("token_usage") or {}
+    if _valid(fallback.get("prompt_tokens"), fallback.get("completion_tokens")):
+        return fallback["prompt_tokens"], fallback["completion_tokens"]
+    if any(_valid(v) for v in [*inputs, *outputs]):
+        return (sum(v for v in inputs if _valid(v)) if _valid(*inputs) else None,
+                sum(v for v in outputs if _valid(v)) if _valid(*outputs) else None)
+    if any(_valid(fallback.get(key)) for key in ("prompt_tokens", "completion_tokens")):
+        return fallback.get("prompt_tokens"), fallback.get("completion_tokens")
     return None
 
 
@@ -287,18 +267,7 @@ def record_external(input_tokens, output_tokens):
     meter = _meter.get()
     if meter is None:
         return
-    if _valid(input_tokens, output_tokens):
-        meter.record((input_tokens, output_tokens))
-    else:
-        meter.record(None)
-
-
-def check_external():
-    """JEV 호출 전 예약 확인(LangChain start 콜백이 없으므로 직접).
-
-    TypeSafe SDK 는 출력 상한·토큰 계산 API 가 없어 이번 호출 크기는 셀 수 없다: 누적 사용이 예약에 닿았는지만 본다."""
-    if (meter := _meter.get()) is not None:
-        meter.check()
+    meter.record((input_tokens, output_tokens))
 
 
 def metered(produce, meter, charge):

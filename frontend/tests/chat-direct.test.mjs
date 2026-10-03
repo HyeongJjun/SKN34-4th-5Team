@@ -360,7 +360,7 @@ test("done.assistant_message longer than MAX_REPLY_LENGTH is rejected even with 
 test("usage DTO is fetched from the owner endpoint and quota errors keep a stable code", async () => {
   const { fetchChatUsage, USAGE_EXHAUSTED } = require("./lib/chat/client.js");
   const dto = { plan: "guest", period: "lifetime", timezone: null, resets_at: null, tokens_per_credit: 1000, limit_tokens: 10000,
-    used_tokens: 1235, reserved_tokens: 0, remaining_tokens: 8765, remaining_credits: "8.765", can_send: true };
+    used_tokens: 1235, reserved_tokens: 0, remaining_tokens: 8765, remaining_credits: "8.765", can_send: true, active_turn: false, unknown_calls: 0, accounting_state: "known" };
   const calls = [], log = record(calls);
   global.fetch = async (url, init = {}) => { await log(url, init); return json(dto); };
   assert.deepEqual(await fetchChatUsage("guest"), dto);
@@ -370,6 +370,9 @@ test("usage DTO is fetched from the owner endpoint and quota errors keep a stabl
 
   global.fetch = async (url, init = {}) => (init.method ?? "GET") === "GET" ? json([room()]) : json({ code: USAGE_EXHAUSTED, detail: "사용 가능한 크레딧을 모두 사용했어요." }, 402);
   await assert.rejects(sendChatMessage("guest", { sessionId: SESSION, content: "질문" }), error => error.status === 402 && error.code === USAGE_EXHAUSTED);
+  const { USAGE_BUSY } = require("./lib/chat/client.js");
+  global.fetch = async () => json({ code: USAGE_BUSY, detail: "진행 중인 답변이 끝난 뒤 다시 시도해 주세요." }, 409);
+  await assert.rejects(sendChatMessage("guest", { sessionId: SESSION, content: "질문" }), error => error.status === 409 && error.code === USAGE_BUSY && !error.uncertain);
   global.fetch = async (url, init = {}) => (init.method ?? "GET") === "GET" ? json([room()]) : sse([["delta", { text: "부분" }], ["error", { detail: "사용 가능한 크레딧을 모두 사용했어요.", code: USAGE_EXHAUSTED }]]);
   await assert.rejects(sendChatMessage("guest", { sessionId: SESSION, content: "질문" }), error => error.code === USAGE_EXHAUSTED && error.uncertain);
 });

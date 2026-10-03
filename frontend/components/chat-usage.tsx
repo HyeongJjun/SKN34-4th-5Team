@@ -29,7 +29,7 @@ export function ChatUsage({ mode, refreshKey }: { mode: ChatMode | null; refresh
 
   const remainingPercent = usage && usage.limit_tokens > 0 ? Math.min(100, Math.max(0, usage.remaining_tokens * 100 / usage.limit_tokens)) : 0;
   const refreshLabel = loading ? "사용량 확인 중" : error ? "사용량 다시 불러오기" : "사용량 새로고침";
-  const balanceDetail = usage ? `남은 양 ${usage.remaining_credits} 크레딧 · ${usage.remaining_tokens.toLocaleString()}토큰 / 제공량 ${usage.limit_tokens.toLocaleString()}토큰 · 사용 ${usage.used_tokens.toLocaleString()}토큰 · 진행 중 예약 ${usage.reserved_tokens.toLocaleString()}토큰 (예약된 양은 현재 사용할 수 없어요) · ${usage.tokens_per_credit.toLocaleString()}토큰 = 1크레딧` : "";
+  const balanceDetail = usage ? `남은 양 ${usage.remaining_credits} 크레딧 · ${usage.remaining_tokens.toLocaleString()}토큰 / 제공량 ${usage.limit_tokens.toLocaleString()}토큰 · 사용 ${usage.used_tokens.toLocaleString()}토큰 · ${usage.active_turn ? "답변 진행 중 (예상 비용 차감 없음)" : "답변 종료 후 실제 사용량 정산"} · ${usage.tokens_per_credit.toLocaleString()}토큰 = 1크레딧` : "";
 
   return (
     <section className="workspace-usage-panel" aria-labelledby="workspace-usage-title" aria-busy={Boolean(mode) && loading}>
@@ -44,7 +44,8 @@ export function ChatUsage({ mode, refreshKey }: { mode: ChatMode | null; refresh
           <div className="workspace-usage-label"><span>남은 제공량</span><strong>{Math.floor(remainingPercent)}%</strong></div>
           <meter className="workspace-usage-meter" min={0} max={100} value={remainingPercent} aria-label="남은 제공량" aria-valuetext={balanceDetail}>{remainingPercent}%</meter>
           <p className="workspace-usage-policy">{usage.resets_at ? `다음 충전: ${new Date(usage.resets_at).toLocaleDateString("ko-KR", { timeZone: usage.timezone || "Asia/Seoul" })}` : "비회원 제공량은 다시 채워지지 않아요."}</p>
-          {!usage.can_send && <p role="status">{usage.reserved_tokens > 0 ? "현재 사용 가능한 제공량이 없어요. 진행 중인 답변이 끝나면 다시 확인해 주세요." : "사용 가능한 제공량이 없어요."}</p>}
+          {usage.accounting_state === "unknown" && <p role="status">일부 호출의 사용량을 확인하지 못했어요. 표시된 사용량은 확인된 토큰만 포함해요.</p>}
+          {!usage.can_send && <p role="status">{usage.active_turn ? "진행 중인 답변이 끝나면 다시 시도해 주세요." : "사용 가능한 제공량이 없어요."}</p>}
         </>}
       </>}
     </section>

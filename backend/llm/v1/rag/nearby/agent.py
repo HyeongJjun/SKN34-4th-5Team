@@ -29,7 +29,7 @@ from .prompts import NO_KEY, NO_PLACES, SYSTEM, USER
 log = logging.getLogger(__name__)
 
 READY = True
-LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-6-luna"
+LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-5.6-luna"
 WALK_M_PER_MIN = 80
 SHOW = 8
 

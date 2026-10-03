@@ -29,7 +29,6 @@ import time
 from datetime import date, datetime, timedelta
 
 from django.db import connection, transaction
-from baseball.stadium_locations import reviewed_venue
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from django.conf import settings
 from langchain_openai import ChatOpenAI
@@ -47,7 +46,7 @@ from .prompts import NO_GAME, NO_PLACES, SYSTEM, USER_TEMPLATE, WARN_THIRD_PARTY
 log = logging.getLogger(__name__)
 
 READY = True
-LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-6-luna"
+LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-5.6-luna"
 DEFAULT_GAME_TIME = "18:30"                     # 경기 정보가 없을 때 가정하는 시작 시각 (평일 저녁)
 MAX_DISTANCE_M = 2500                           # 도보 30분 정책 (먹거리_플레이스_반경 정책 2026-09-08)
 TIGHT_DISTANCE_M = 1200                         # "퇴근하고 바로" 처럼 촉박할 때 좁히는 반경
@@ -97,15 +96,14 @@ def answer_public_course(question, history):
 
 # ── 1. DB 조회 ────────────────────────────────────────────────────────────────
 def stadium_anchor(code):
-    """RAG 설명 + 검토된 1군 시설 좌표. 오래된 임베딩의 주소 좌표는 덮어쓴다."""
+    """구장 앵커 (STADIUM 청크 metadata: stadium_name_ko · lat_y · lng_x · address). 없으면 이름만."""
     with connection.cursor() as cur:
         cur.execute("""SELECT metadata FROM llm_documentchunk
                        WHERE metadata->>'category' = 'STADIUM' AND metadata->>'stadium_code' = %s LIMIT 1""", [code])
         row = cur.fetchone()
     m = _meta(row[0]) if row else {}
-    point = reviewed_venue(code)
     return {"key": "STADIUM", "phase": "GAME", "name": m.get("stadium_name_ko") or STADIUM_KO.get(code, code),
-            "lat": point["lat"] if point else _f(m.get("lat_y")), "lng": point["lng"] if point else _f(m.get("lng_x")), "category": "STADIUM", "detail": "",
+            "lat": _f(m.get("lat_y")), "lng": _f(m.get("lng_x")), "category": "STADIUM", "detail": "",
             "placeId": None, "address": m.get("address") or "", "placeUrl": "", "distance": 0, "doc_id": m.get("doc_id")}
 
 

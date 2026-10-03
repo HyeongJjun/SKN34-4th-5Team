@@ -46,7 +46,7 @@ from .prompts import NO_GAME, NO_PLACES, SYSTEM, USER_TEMPLATE, WARN_THIRD_PARTY
 log = logging.getLogger(__name__)
 
 READY = True
-LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-5.6-luna"
+LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-6-luna"
 DEFAULT_GAME_TIME = "18:30"                     # 경기 정보가 없을 때 가정하는 시작 시각 (평일 저녁)
 MAX_DISTANCE_M = 2500                           # 도보 30분 정책 (먹거리_플레이스_반경 정책 2026-09-08)
 TIGHT_DISTANCE_M = 1200                         # "퇴근하고 바로" 처럼 촉박할 때 좁히는 반경

@@ -38,7 +38,7 @@ except ImportError:                                   # pragma: no cover
     create_agent = None
     READY = False
 
-LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-5.6-luna"
+LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-6-luna"
 RECURSION_LIMIT = int(os.getenv("AGENT_RECURSION_LIMIT", "12"))   # 도구 호출 약 4~5번까지
 HISTORY_TURNS = 8
 CONTEXT_K = 6

@@ -36,7 +36,7 @@ except ImportError:                                 # langchain 패키지가 없
     READY = False
     log.warning("langchain.agents.create_agent 를 불러올 수 없어 venue 도메인을 비활성화합니다 (pip install langchain)")
 
-LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-5.6-luna"
+LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-6-luna"
 infer_slots = knowledge.infer_slots
 transform_query = knowledge.transform_query
 search_documents_tool = knowledge.search_documents_tool

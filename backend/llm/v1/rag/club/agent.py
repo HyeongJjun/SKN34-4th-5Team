@@ -21,7 +21,7 @@ from .router import PLACE_ALIAS, TEAM_ALIAS, detect_categories, detect_stadium
 from ..domain_tools import invoke as invoke_domain_tool, run_model, visible_text
 
 READY = True
-LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-5.6-luna"
+LLM_MODEL = os.getenv("LLM_MODEL") or "gpt-6-luna"
 
 _llm = None
 

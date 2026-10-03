@@ -83,7 +83,7 @@ reply = result["answer"]                          # 프론트 reply 에 그대�
 
 - 인증: `ChatView` 는 JWT 없이 받는다 (Next 서버 간 중계용. 기존 `chat/sessions/…` 는 JWT 그대로).
 - 프론트 설정: `frontend/.env.local` 에 `CHAT_PROVIDER=backend`, `CHAT_BACKEND_URL=http://backend:8000/api/v1/chat/` → 프론트 컨테이너 재시작.
-- 환경변수: `OPENAI_API_KEY`, `EMBEDDING_MODEL`(적재 때와 동일) 은 compose 에 이미 있음. `LLM_MODEL` 은 없어도 기본값 gpt-5.6-luna.
+- 환경변수: `OPENAI_API_KEY`, `EMBEDDING_MODEL`(적재 때와 동일) 은 compose 에 이미 있음. `LLM_MODEL` 은 없어도 기본값 gpt-6-luna.
 - 패키지: `requirements.txt` 에 `langchain` 추가됨(venue 의 create_agent) → `docker compose up -d --build backend` 로 재빌드 필요.
 - 예외: `answer()` 는 도메인 내부 예외를 잡아 사용자용 문구를 돌려주므로 뷰에서 500 이 나지 않는다. 네트워크·키 문제는 로그로 확인.
 
@@ -106,7 +106,7 @@ reply = result["answer"]                          # 프론트 reply 에 그대�
 1. **자기 폴더만 고친다.** club/ 은 형준, venue/ 는 현준. 상대 폴더는 PR 리뷰로만.
 2. 말투를 바꾸고 싶으면 `persona.py` — 두 도메인에 동시에 적용된다. 바꾸기 전에 팀 채널에 한 줄.
 3. 디스패처 키워드(`VENUE_WORDS`·`CLUB_WORDS`)는 "어느 도메인이냐"만 정한다. 카테고리 세부 사전은 각자 폴더 안에.
-4. LLM 은 `langchain_openai.ChatOpenAI` (팀 기준). 모델은 `LLM_MODEL` 환경변수 (기본 gpt-5.6-luna). club 은 체인 1회 호출, venue 는 `create_agent`(도구 호출 판단 + 검색어 변환 + 답변 = 2~3회) — 기법은 각자 유지하고 골든셋으로 비교한다.
+4. LLM 은 `langchain_openai.ChatOpenAI` (팀 기준). 모델은 `LLM_MODEL` 환경변수 (기본 gpt-6-luna). club 은 체인 1회 호출, venue 는 `create_agent`(도구 호출 판단 + 검색어 변환 + 답변 = 2~3회) — 기법은 각자 유지하고 골든셋으로 비교한다.
 5. 임베딩 모델은 `EMBEDDING_MODEL` — 적재(build_index) 때와 같아야 한다.
 
 ## 로컬 실행 (뷰 없이 패키지만 확인)

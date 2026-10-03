@@ -69,7 +69,7 @@ class PricedModel:
 
     @property
     def _identifying_params(self):
-        return {"model_name": "gpt-5.6-luna", "max_tokens": 4000}
+        return {"model_name": "gpt-6-luna", "max_tokens": 4000}
 
 
 @contextmanager

@@ -18,8 +18,9 @@ class ResponsesPayloadTest(TestCase):
             "v1/rag/course/agent.py", "v1/rag/club/agent.py",
             "v1/rag/assistant/pipeline.py",
         ]
-        for configured, expected in [("gpt-6-luna", "gpt-6-luna"), ("", "gpt-5.6-luna")]:
-            with patch.dict(os.environ, {"LLM_MODEL": configured}, clear=True):
+        for configured, expected in [(None, "gpt-6-luna"), ("", "gpt-6-luna"), ("override-model", "override-model")]:
+            env = {} if configured is None else {"LLM_MODEL": configured}
+            with patch.dict(os.environ, env, clear=True):
                 for path in paths:
                     with self.subTest(model=expected, path=path):
                         tree = ast.parse((root / path).read_text())

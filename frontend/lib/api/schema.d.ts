@@ -3854,6 +3854,11 @@ export interface components {
             phone_general?: string | null;
             phone_facility?: string | null;
             phone_ticket?: string | null;
+            image_url?: string | null;
+            image_source_url?: (string) | null;
+            image_credit?: string | null;
+            image_credit_url?: (string) | null;
+            image_license_url?: (string) | null;
             /** Format: date-time */
             collected_at?: string;
         };
@@ -4166,6 +4171,38 @@ export interface components {
             scope_name: string;
             readonly seat_views: components["schemas"]["SeatView"][];
         };
+        ParkingMap: {
+            imageUrl: string;
+            /** Format: uri */
+            sourceUrl?: string;
+            credit?: string;
+            title?: string;
+            summary?: string;
+            kind?: components["schemas"]["ParkingMapKindEnum"];
+            visualNotes?: string[];
+            /** Format: date */
+            capturedAt?: string;
+            width?: number;
+            height?: number;
+        };
+        /**
+         * @description * `entrance` - entrance
+         *     * `preferred-area` - preferred-area
+         *     * `nearby-alternatives` - nearby-alternatives
+         *     * `access-gates` - access-gates
+         * @enum {string}
+         */
+        ParkingMapKindEnum: "entrance" | "preferred-area" | "nearby-alternatives" | "access-gates";
+        SeatingMap: {
+            imageUrl: string;
+            /** Format: uri */
+            sourceUrl?: string;
+            title: string;
+            home_context_id: number;
+            season: number;
+            team_code: string;
+        };
+        /** @description 이메일을 검증합니다. */
         PublicStadium: {
             id: number;
             stadium_code: string;
@@ -4181,9 +4218,16 @@ export interface components {
             phone_general?: string | null;
             phone_facility?: string | null;
             phone_ticket?: string | null;
+            image_url?: string | null;
+            image_source_url?: (string) | null;
+            image_credit?: string | null;
+            image_credit_url?: (string) | null;
+            image_license_url?: (string) | null;
             /** Format: date-time */
             collected_at: string;
             readonly home_teams: components["schemas"]["PublicHomeTeam"][];
+            readonly parkingMap: components["schemas"]["ParkingMap"] | null;
+            readonly seatingMap: components["schemas"]["SeatingMap"] | null;
         };
         PublicTeam: {
             id: number;
@@ -4258,6 +4302,7 @@ export interface components {
             asset_no: number;
             asset_url: string;
             asset_role: string;
+            source_url?: (string) | null;
         };
         SeatMapAssetDetail: {
             id: number;
@@ -4265,6 +4310,7 @@ export interface components {
             asset_no: number;
             asset_url: string;
             asset_role: string;
+            source_url?: (string) | null;
             /** etag */
             readonly _etag: string;
         };
@@ -4409,6 +4455,11 @@ export interface components {
             phone_general?: string | null;
             phone_facility?: string | null;
             phone_ticket?: string | null;
+            image_url?: string | null;
+            image_source_url?: (string) | null;
+            image_credit?: string | null;
+            image_credit_url?: (string) | null;
+            image_license_url?: (string) | null;
             /** Format: date-time */
             collected_at: string;
         };
@@ -4455,6 +4506,11 @@ export interface components {
             phone_general?: string | null;
             phone_facility?: string | null;
             phone_ticket?: string | null;
+            image_url?: string | null;
+            image_source_url?: (string) | null;
+            image_credit?: string | null;
+            image_credit_url?: (string) | null;
+            image_license_url?: (string) | null;
             /** Format: date-time */
             collected_at: string;
             /** etag */

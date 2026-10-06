@@ -58,7 +58,7 @@ const roles = [
   { status: "loading", user: null },
 ];
 
-test("account menu exposes feedback only to superusers between reports and profile", () => {
+test("account menu retains feedback for superusers but removes community administration", () => {
   for (const identity of roles) {
     const hooks = harness();
     const { MemberHeaderActions } = load("components/member-header-actions.tsx", {
@@ -72,7 +72,7 @@ test("account menu exposes feedback only to superusers between reports and profi
     assert.equal(links.includes("/mypage?tab=feedback"), allowed);
     if (allowed) {
       const index = links.indexOf("/mypage?tab=feedback");
-      assert.equal(links[index - 1], "/mypage?tab=reports");
+      assert.equal(links.includes("/mypage?tab=reports"), false);
       assert.equal(links[index + 1], "/mypage?tab=profile");
       assert.equal(find(tree, node => node.props?.href === "/mypage?tab=feedback").props.children, "챗봇 답변 평가");
     }
@@ -103,7 +103,7 @@ test("mypage validates feedback deep links and mounts the shared panel only for 
       tab.props.onClick();
       assert.deepEqual(pushes, [["/mypage?tab=feedback", { scroll: false }]]);
       const labels = nodes(tree).filter(node => node.type === "button").map(node => node.props.children);
-      assert.equal(labels[labels.indexOf("챗봇 답변 평가") - 1], "신고 관리");
+      assert.equal(labels.includes("신고 관리"), false);
       assert.equal(labels[labels.indexOf("챗봇 답변 평가") + 1], "회원 정보");
     } else assert.doesNotMatch(text(tree), /평가 상세|질문 스냅샷/);
   }

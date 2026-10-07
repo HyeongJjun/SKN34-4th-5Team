@@ -4206,7 +4206,6 @@ export interface components {
             season: number;
             team_code: string;
         };
-        /** @description 이메일을 검증합니다. */
         PublicStadium: {
             id: number;
             stadium_code: string;

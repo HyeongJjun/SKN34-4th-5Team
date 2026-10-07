@@ -497,6 +497,11 @@ class ClassifierTest(unittest.TestCase):
         self.assertIn("반입", classifier.CAPABILITY_INSTRUCTIONS["carry_in"])
         self.assertIn("되묻지 않는다", classifier.CONTENT_RULES)
 
+    def test_parking_capability_names_concrete_parking_and_transit(self):
+        text = classifier.CAPABILITY_INSTRUCTIONS["parking_transport"]
+        for word in ("주차장 위치", "주차 요금", "지하철", "셔틀"):
+            self.assertIn(word, text)
+
     def test_final_text_flattens_responses_blocks(self):
         msg = AIMessage(content=[{"type": "reasoning", "id": "rs_1", "summary": []},
                                  {"type": "text", "text": "답변"}])

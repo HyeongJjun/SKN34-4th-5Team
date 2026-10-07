@@ -496,6 +496,7 @@ class ClassifierTest(unittest.TestCase):
         self.assertEqual(CAPABILITY_TOOLS["carry_in"], ("get_stadium", "search_kbo_documents"))
         self.assertIn("반입", classifier.CAPABILITY_INSTRUCTIONS["carry_in"])
         self.assertIn("되묻지 않는다", classifier.CONTENT_RULES)
+        self.assertIn("단정하지 않는다", classifier.CONTENT_RULES)
 
     def test_final_text_flattens_responses_blocks(self):
         msg = AIMessage(content=[{"type": "reasoning", "id": "rs_1", "summary": []},

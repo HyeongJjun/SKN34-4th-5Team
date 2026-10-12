@@ -19,6 +19,8 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 from .auth_service import AuthService
 from .models import EmailChangeChallenge
+from .point_policy import SIGNUP, SIGNUP_SOURCE_KEY, grant_definition
+from .point_service import grant_points
 from .serializers import (
     EmailChangeRequestResponseSerializer,
     EmailVerificationRequestSerializer,
@@ -30,6 +32,7 @@ from .serializers import (
     ResetPasswordSerializer,
     SendEmailSerializer,
     SignInRequestSerializer,
+    SignInSerializer,
     SignupSerializer,
     TokenPairSerializer,
     TokenRefreshRequestSerializer,
@@ -42,7 +45,7 @@ User = get_user_model()
 
 @extend_schema(request=SignInRequestSerializer, responses=TokenPairSerializer, auth=[])
 class SignInView(TokenObtainPairView):
-    pass
+    serializer_class = SignInSerializer
 
 
 @extend_schema(request=TokenRefreshRequestSerializer, responses=TokenRefreshResponseSerializer, auth=[])
@@ -60,7 +63,7 @@ class LogoutView(TokenBlacklistView):
 def signup(request):
     """
         회원가입하는 함수입니다.
-        Url : /api/auth/signup/
+        Url : /api/v1/auth/signup/
         Args:
             - username
             - email, first_name, birth_date, gender
@@ -73,7 +76,8 @@ def signup(request):
     serializer.is_valid(raise_exception=True)
     try:
         with transaction.atomic():
-            serializer.save()
+            user = serializer.save()
+            grant_points(user=user, **grant_definition(SIGNUP, SIGNUP_SOURCE_KEY))
     except IntegrityError:
         raise ValidationError({'username': '이미 사용 중인 아이디입니다.'})
 
@@ -86,7 +90,7 @@ def signup(request):
 def change_password(request):
     """
         사용자 비밀번호 재설정 url 을 이메일로 전송합니다.
-        Url: /api/auth/password/request
+        Url: /api/v1/auth/password/request
         Args:
             - email
         Return:
@@ -165,7 +169,7 @@ def set_password(request):
 def get_user(request):
     """
         로그인한 사용자 정보를 조회합니다.
-        Url: GET /auth/user (Nginx 경유: /api/auth/user)
+        Url: GET /api/v1/auth/user
         Headers: Authorization: Bearer <access_token>
         Return:
             - HTTP_200_OK

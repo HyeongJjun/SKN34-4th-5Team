@@ -6,10 +6,12 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createCommunityComment, deleteCommunityComment, fetchCommunityComments, updateCommunityComment, type CommunityComment } from "@/lib/community-api";
 import { useMemberAuth } from "@/lib/member-auth";
 import { getTeamBoard, getTeamBoardHref, type TeamCommunityPost } from "@/lib/team-community";
+import { CommunityMemberLink } from "./community-member-link";
+import { communityCategoryHref } from "@/lib/community-category-filter";
 import styles from "./community-interactions.module.css";
 
 const errorMessage = (error: unknown, fallback: string) => error instanceof Error ? error.message : fallback;
-type Props = { post: TeamCommunityPost; posts: TeamCommunityPost[]; teamCode?: string; isFree?: boolean; writeHref?: string };
+type Props = { post: TeamCommunityPost; posts: TeamCommunityPost[]; teamCode?: string; isFree?: boolean; writeHref?: string; category?: string };
 
 export function CommunityPostBottom(props: Props) {
   const { user } = useMemberAuth();
@@ -17,8 +19,11 @@ export function CommunityPostBottom(props: Props) {
   return <CommunityPostBottomContent key={`${props.post.id}:${actorId ?? "anonymous"}`} {...props} actorId={actorId} />;
 }
 
-function CommunityPostBottomContent({ post, posts, teamCode, isFree = false, writeHref, actorId }: Props & { actorId: number | null }) {
-  const postHref = (item: TeamCommunityPost) => isFree ? `/community?post=${encodeURIComponent(item.id)}` : getTeamBoardHref(item.teamCode, item.id);
+function CommunityPostBottomContent({ post, posts, teamCode, isFree = false, writeHref, actorId, category = "" }: Props & { actorId: number | null }) {
+  const postHref = (item: TeamCommunityPost) => {
+    const href = isFree ? `/community?post=${encodeURIComponent(item.id)}` : getTeamBoardHref(item.teamCode, item.id);
+    return category ? `${href}&category=${encodeURIComponent(category)}` : href;
+  };
   const router = useRouter();
   const mounted = useRef(true);
   const requestRef = useRef(0);
@@ -100,7 +105,7 @@ function CommunityPostBottomContent({ post, posts, teamCode, isFree = false, wri
   return <>
     <section className={styles.authorProfile} aria-label="작성자 프로필">
       <img src="/images/default-avatar.svg" width="56" height="56" alt="작성자 기본 프로필" />
-      <div><strong>{post.author}</strong><p>{!isFree && <>{getTeamBoard(post.teamCode)?.shortName} · </>}작성자</p></div>
+      <div><strong><CommunityMemberLink memberId={post.authorId} nickname={post.author} /></strong><p>{!isFree && <>{getTeamBoard(post.teamCode)?.shortName} · </>}작성자</p></div>
     </section>
     <section className={styles.comments} aria-label="댓글">
       <header><h3>댓글 <b>{loading ? (post.commentCount ?? 0) : comments.length}</b></h3><div><button type="button" aria-pressed={order === "oldest"} onClick={() => { if (order !== "oldest") { setLoading(true); setError(""); setOrder("oldest"); } }}>등록순</button><button type="button" aria-pressed={order === "newest"} onClick={() => { if (order !== "newest") { setLoading(true); setError(""); setOrder("newest"); } }}>최신순</button><button type="button" disabled={loading} onClick={() => { setLoading(true); setError(""); setReload(value => value + 1); }}>↻ 새로고침</button></div></header>
@@ -110,7 +115,7 @@ function CommunityPostBottomContent({ post, posts, teamCode, isFree = false, wri
             <textarea aria-label="수정할 댓글 내용" value={editingContent} onChange={event => setEditingContent(event.target.value)} maxLength={2000} required />
             <div><button type="submit" disabled={saving}>저장</button><button type="button" disabled={saving} onClick={() => setEditingId(null)}>취소</button></div>
           </form> : <>
-            <div className={styles.commentMeta}><strong>{comment.author}</strong><time dateTime={comment.createdAt}>{new Date(comment.createdAt).toLocaleString("ko-KR")}</time></div>
+            <div className={styles.commentMeta}><strong><CommunityMemberLink memberId={comment.authorId} nickname={comment.author} /></strong><time dateTime={comment.createdAt}>{new Date(comment.createdAt).toLocaleString("ko-KR")}</time></div>
             <p>{comment.content}</p>
             {comment.authorId === actorId && <div className={styles.commentActions}><button type="button" disabled={saving} onClick={() => { setEditingId(comment.id); setEditingContent(comment.content); }}>수정</button><button type="button" disabled={saving} onClick={() => void removeComment(comment.id)}>삭제</button></div>}
           </>}
@@ -124,7 +129,7 @@ function CommunityPostBottomContent({ post, posts, teamCode, isFree = false, wri
       {error && <p role="alert" className={styles.errorNote}>{error}</p>}
     </section>
     <nav className={styles.articleNavigation} aria-label="게시글 이동">
-      <div><Link href={isFree ? "/community" : getTeamBoardHref(teamCode)}>목록</Link>{next ? <Link href={postHref(next)}>다음글</Link> : <button disabled>다음글</button>}{previous ? <Link href={postHref(previous)}>이전글</Link> : <button disabled>이전글</button>}</div>
+      <div><Link href={communityCategoryHref(isFree ? "/community" : getTeamBoardHref(teamCode), category)}>목록</Link>{next ? <Link href={postHref(next)}>다음글</Link> : <button disabled>다음글</button>}{previous ? <Link href={postHref(previous)}>이전글</Link> : <button disabled>이전글</button>}</div>
       <div>{writeHref && actorId && <Link className={styles.writeButton} href={writeHref}>글쓰기</Link>}<button type="button" onClick={() => router.back()}>이전페이지</button><button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>맨위로 ↑</button></div>
     </nav>
   </>;

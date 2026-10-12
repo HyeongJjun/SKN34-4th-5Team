@@ -26,7 +26,7 @@ class JWTPasswordRegressionTest(APITestCase):
     password = "InitialSafe9!"
     changed_password = "ChangedSafe8!"
     reset_password = "RecoveredSafe7!"
-    protected_url = "/chat/sessions/"
+    protected_url = "/api/v1/chat/sessions/"
 
     @classmethod
     def setUpTestData(cls):
@@ -272,7 +272,11 @@ class JWTPasswordRegressionTest(APITestCase):
                 user = get_user_model().objects.create_user(
                     username=f"{state}-user", password=self.password
                 )
-                pair = self.login(user)
+                if state == "deleted":
+                    refresh = RefreshToken.for_user(user)
+                    pair = {"access": str(refresh.access_token), "refresh": str(refresh)}
+                else:
+                    pair = self.login(user)
                 if state == "inactive":
                     user.is_active = False
                     user.save(update_fields=["is_active"])

@@ -77,6 +77,7 @@ class CourseAnswerTest(TestCase):
     def test_mixed_or_ambiguous_requests_keep_final_model(self):
         for question, direct, caps in (
             ("코스와 날씨도 알려줘", True, ["day_plan", "weather"]),
+            ("코스와 홈런 영상도 보여줘", True, ["day_plan", "highlight"]),
             ("코스와 볼넷 뜻을 설명해줘", True, ["day_plan"]),
             ("호텔 코스와 구장 주차 요금도", True, ["day_plan"]),
             ("코스를 표로 정리해줘", True, ["day_plan"]),

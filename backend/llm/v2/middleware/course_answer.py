@@ -16,7 +16,7 @@ EXTRA_REQUEST = re.compile(
     r"https?://|왜|이유|근거|설명|비교|분석|번역|영어로|일본어로|중국어로|표로|표\s*형식|json|"
     r"티켓|예매|순위|선수|반입|환불|규정|규칙|날씨|기온|강수|가격|예산|저렴|가성비|예약|빈방|얼마|"
     r"주차\s*(?:요금|비용)", re.I)
-EXTRA_CAPABILITIES = frozenset({"weather", "standings", "players", "baseball_stats", "rules", "community", "courses", "carry_in"})
+EXTRA_CAPABILITIES = frozenset({"weather", "standings", "players", "baseball_stats", "rules", "community", "courses", "carry_in", "highlight"})
 
 
 def course_text(outcome):

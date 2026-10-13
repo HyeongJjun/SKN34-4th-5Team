@@ -5,6 +5,26 @@ from datetime import timedelta
 from functools import cache
 
 import json
+from contextvars import ContextVar
+
+# V2 도구 실행 경계에서만 적용; 기존 V1 호출 계약은 바꾸지 않는다.
+allow_new_source_search = ContextVar("allow_new_source_search", default=True)
+# Transient, server-owned retained attachment identities; never populated from tool arguments.
+attachment_read_results = ContextVar("attachment_read_results", default=None)
+
+
+def shared_body(url):
+    from llm.service.attachments import reference_url
+    url = reference_url(url)
+    return (attachment_read_results.get() or {}).get(url)
+
+
+def shared_reader_result(result):
+    """PublicReader's conservative contract: partial/failed observations are not verified evidence."""
+    ok = result.get("status") == "ok"
+    return {"url": result.get("source_url"), "title": result.get("title", ""),
+            "status": "read" if ok else "paste_body_needed", "body_read": ok,
+            "body_text": result.get("body", ""), "attachment_read_result": result}
 
 from langchain_core.tools import ToolException
 
@@ -50,7 +70,7 @@ async def cancellable_call(awaitable):
     finally:
         if not task.done():
             task.cancel()
-            await asyncio.gather(task, return_exceptions=True)
+        await asyncio.gather(task, return_exceptions=True)
 
 
 # ponytail: one process-wide browser admission, no queue; scale by separate browser services.
@@ -58,8 +78,30 @@ from threading import Lock
 _admission = Lock()
 
 
+def retryable_transport(error):
+    """Retry only known temporary failures, including every member/cause of a group."""
+    import httpx
+    import httpcore
+    import anyio
+    from mcp.shared.exceptions import McpError
+    from mcp.types import CONNECTION_CLOSED
+    cause = error.__cause__ or (None if error.__suppress_context__ else error.__context__)
+    if cause is not None and not retryable_transport(cause):
+        return False
+    if isinstance(error, BaseExceptionGroup):
+        return all(retryable_transport(item) for item in error.exceptions)
+    if isinstance(error, (TimeoutError, ConnectionResetError, ConnectionRefusedError, ConnectionAbortedError,
+                          httpx.TimeoutException, httpx.NetworkError, httpx.RemoteProtocolError,
+                          httpcore.TimeoutException, httpcore.NetworkError, httpcore.RemoteProtocolError,
+                          anyio.BrokenResourceError, anyio.ClosedResourceError, anyio.EndOfStream)):
+        return True
+    if isinstance(error, httpx.HTTPStatusError):
+        return error.response.status_code in {500, 502, 503, 504}
+    return isinstance(error, McpError) and error.error.code in {408, 500, 502, 503, 504, CONNECTION_CLOSED}
+
+
 def transport_status(error):
-    """Only installed transport failures are recoverable; mixed groups still fail closed."""
+    """Known transport/discovery failures are recoverable; mixed groups still fail closed."""
     import httpx
     import anyio
     from mcp.shared.exceptions import McpError
@@ -67,6 +109,8 @@ def transport_status(error):
     if isinstance(error, BaseExceptionGroup):
         statuses = [transport_status(item) for item in error.exceptions]
         return ("timeout" if "timeout" in statuses else "error") if all(statuses) else None
+    if type(error) is RuntimeError and str(error) == "Required JEV MCP tools unavailable":
+        return "error"
     if isinstance(error, (TimeoutError, httpx.TimeoutException)):
         return "timeout"
     if isinstance(error, (httpx.TransportError, anyio.BrokenResourceError, anyio.ClosedResourceError, anyio.EndOfStream)):
@@ -125,23 +169,33 @@ def validate_body_evidence(result, url):
     return result
 
 
-def web_body(url):
+def web_body(url, *, retry=True):
     """Deterministic specialist mode; never ask an LLM whether to fetch or accept generated text."""
     import json
     from llm.service.attachments import reference_url, MAX_TEXT
     from llm.service.chat_runs import check_cancelled
     url = reference_url(url)
     check_cancelled()
+    retained = shared_body(url)
+    if retained is not None:
+        return dict(retained)
     if not _admission.acquire(blocking=False):
         return {"status": "busy", "source_url": url}
     try:
-        try:
-            result = asyncio.run(browse(url, "", body=True))
-        except Exception as error:
-            status = transport_status(error)
-            if status is None:
-                raise
-            return {"status": status, "source_url": url}
+        for attempt in range(2 if retry else 1):
+            try:
+                result = asyncio.run(browse(url, "", body=True))
+                break
+            except Exception as error:
+                status = transport_status(error)
+                if lodging_url(url) and status:
+                    return {"status": status, "source_url": url}
+                if not retryable_transport(error):
+                    raise
+                status = status or "error"
+                if attempt or not retry:
+                    return {"status": status, "source_url": url}
+                check_cancelled()
         check_cancelled()
         try:
             if isinstance(result, list):
@@ -163,6 +217,9 @@ def web_page_analysis(url, question=""):
     from llm.service.chat_runs import check_cancelled, Stopped
     url = reference_url(url)
     check_cancelled()
+    retained = shared_body(url)
+    if retained is not None:
+        return dict(retained)
     if not _admission.acquire(blocking=False):
         return {"status": "busy"}
     try:
@@ -218,6 +275,8 @@ def read_evidence(reader, url, terms):
 
 def structured_search(**kwargs):
     """Domain evidence schemas stay with their validators; external search belongs here."""
+    if not allow_new_source_search.get():
+        raise ToolException("추가 리서치·새 출처 검색은 지원하지 않습니다. 기존 근거로 확인되지 않은 조건은 미확인으로 반환하세요.")
     from openai import OpenAI
     from llm.service import usage
     from llm.service.chat_runs import check_cancelled
@@ -264,7 +323,29 @@ def result_status(value):
     return "ok" if status in {"ok", "done"} else "error"
 
 
+def lodging_url(url):
+    import re
+    return isinstance(url, str) and re.fullmatch(
+        r"https://nol\.yanolja\.com/stay/domestic/[0-9]+/?(?:\?verticalCategory=PRODUCT_CATEGORY_KOREA_ACCOMMODATION)?", url) is not None
+
+
 async def browse(url, goal, *, body=False):
+    if body and lodging_url(url):
+        from travel.chrome_lodging import _remote, _validated
+        page = await asyncio.wait_for(_remote("", 45, url=url), timeout=48)
+        if not isinstance(page, dict):
+            return {"status": "error", "source_url": url}
+        if page.get("status") != "read":
+            return {"status": page.get("status", "error"), "source_url": url}
+        from llm.v1.rag.nearby.lodging import source_url
+        if (source_url(page.get("url")) != source_url(url)
+                or not _validated(page, page)):
+            return {"status": "error", "source_url": url}
+        return {"schema_version": 1, "extractor_version": "jev-dom-v1", "status": "ok",
+                "source_kind": "rendered_dom_snapshot", "requested_url": url,
+                "final_url": page["url"], "source_url": page["url"], "title": page["title"],
+                "body": page["body_text"], "collected_at": page.get("collected_at"),
+                "frames": [], "limitations": ["lodging_detail_snapshot"]}
     tools = await cancellable_call(discover_tools())
     browser = next(t for t in tools if t.name == ("jev_read_body" if body else "jev_browse"))
     return await cancellable_call(browser.ainvoke({"url": url} if body else {"url": url, "goal": goal}))
@@ -280,16 +361,35 @@ def direct_tools():
             from llm.service.chat_runs import check_cancelled
             arguments["url"] = reference_url(arguments["url"])
             check_cancelled()
+            retained = shared_body(arguments["url"])
+            if retained is not None:
+                if retained.get("status") != "ok":
+                    raise ToolException(json.dumps({**retained, "next_action": "paste_body_needed"}, ensure_ascii=False))
+                return ([{"type": "text", "text": json.dumps(retained, ensure_ascii=False)}],
+                        {"structured_content": dict(retained)})
             if not _admission.acquire(blocking=False):
                 raise ToolException(json.dumps({"status": "busy"}))
             try:
-                try:
-                    content, artifact = asyncio.run(cancellable_call(_tool.coroutine(**arguments)))
-                except Exception as exc:
-                    from llm.service.chat_runs import Stopped
-                    if isinstance(exc, Stopped):
-                        raise
-                    raise ToolException(json.dumps({"status": "timeout" if isinstance(exc, TimeoutError) else "error"})) from exc
+                for attempt in range(2):
+                    try:
+                        if _tool.name == "jev_read_body" and lodging_url(arguments["url"]):
+                            result = validate_body_evidence(asyncio.run(browse(arguments["url"], "", body=True)), arguments["url"])
+                            content, artifact = json.dumps(result, ensure_ascii=False), {"structured_content": result}
+                        else:
+                            content, artifact = asyncio.run(cancellable_call(_tool.coroutine(**arguments)))
+                        break
+                    except Exception as exc:
+                        from llm.service.chat_runs import Stopped
+                        if isinstance(exc, Stopped):
+                            raise
+                        status = transport_status(exc)
+                        if status is None and isinstance(exc, RuntimeError) and str(exc) != "JEV_MCP_TOKEN is required":
+                            raise
+                        retryable = _tool.name == "jev_read_body" and not lodging_url(arguments["url"]) and retryable_transport(exc)
+                        if retryable and not attempt:
+                            check_cancelled()
+                            continue
+                        raise ToolException(json.dumps({"status": transport_status(exc) or "error", "retry_exhausted": retryable})) from exc
                 check_cancelled()
                 structured = artifact.get("structured_content") if isinstance(artifact, dict) else None
                 if len(json.dumps(content, ensure_ascii=False).encode()) > MAX_TEXT or (structured is not None and len(json.dumps(structured, ensure_ascii=False).encode()) > MAX_TEXT):

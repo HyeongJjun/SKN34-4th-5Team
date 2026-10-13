@@ -2731,6 +2731,7 @@ export interface components {
             readonly id: number;
             readonly postId: string;
             readonly authorId: number;
+            readonly authorRank: number;
             readonly author: string;
             content: string;
             /** Format: date-time */
@@ -2768,6 +2769,7 @@ export interface components {
             board: components["schemas"]["BoardEnum"];
             teamCode: string;
             readonly authorId: number | null;
+            readonly authorRank: number | null;
             readonly author: string;
             title: string;
             content: string;
@@ -2861,6 +2863,7 @@ export interface components {
             /** Format: double */
             startLng?: number;
             author: string;
+            readonly authorRank: number | null;
             likes: number;
             views: number;
             isSample: boolean;
@@ -2911,6 +2914,7 @@ export interface components {
             /** Format: double */
             startLng?: number;
             author: string;
+            readonly authorRank: number | null;
             likes: number;
             views: number;
             isSample: boolean;
@@ -3434,6 +3438,7 @@ export interface components {
             readonly nickname_changed_at: string | null;
             readonly notifications: components["schemas"]["NotificationSettings"];
             readonly visibility: components["schemas"]["VisibilitySettings"];
+            readonly rank: number;
         };
         MonthData: {
             /** Format: date-time */
@@ -4602,6 +4607,7 @@ export interface components {
         PublicMember: {
             readonly id: number;
             readonly nickname: string;
+            readonly rank: number;
             readonly activityVisible: boolean;
         };
         PublicSeatMap: {

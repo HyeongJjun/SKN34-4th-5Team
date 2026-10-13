@@ -9341,6 +9341,9 @@ components:
         authorId:
           type: integer
           readOnly: true
+        authorRank:
+          type: integer
+          readOnly: true
         author:
           type: string
           readOnly: true
@@ -9364,6 +9367,7 @@ components:
       required:
       - author
       - authorId
+      - authorRank
       - content
       - createdAt
       - id
@@ -9458,6 +9462,10 @@ components:
           type: integer
           readOnly: true
           nullable: true
+        authorRank:
+          type: integer
+          readOnly: true
+          nullable: true
         author:
           type: string
           readOnly: true
@@ -9509,6 +9517,7 @@ components:
       required:
       - author
       - authorId
+      - authorRank
       - board
       - category
       - commentCount
@@ -9709,6 +9718,10 @@ components:
           format: double
         author:
           type: string
+        authorRank:
+          type: integer
+          readOnly: true
+          nullable: true
         likes:
           type: integer
           minimum: 0
@@ -9729,6 +9742,7 @@ components:
             $ref: '#/components/schemas/CourseStop'
       required:
       - author
+      - authorRank
       - content
       - cover
       - createdAt
@@ -9858,6 +9872,10 @@ components:
           format: double
         author:
           type: string
+        authorRank:
+          type: integer
+          readOnly: true
+          nullable: true
         likes:
           type: integer
           minimum: 0
@@ -9880,6 +9898,7 @@ components:
           type: string
       required:
       - author
+      - authorRank
       - content
       - cover
       - createdAt
@@ -11198,6 +11217,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/VisibilitySettings'
           readOnly: true
+        rank:
+          type: integer
+          readOnly: true
       required:
       - avatar
       - birth_date
@@ -11211,6 +11233,7 @@ components:
       - nickname
       - nickname_changed_at
       - notifications
+      - rank
       - team_code
       - username
       - visibility
@@ -13691,6 +13714,9 @@ components:
         nickname:
           type: string
           readOnly: true
+        rank:
+          type: integer
+          readOnly: true
         activityVisible:
           type: boolean
           readOnly: true
@@ -13698,6 +13724,7 @@ components:
       - activityVisible
       - id
       - nickname
+      - rank
     PublicSeatMap:
       type: object
       properties:

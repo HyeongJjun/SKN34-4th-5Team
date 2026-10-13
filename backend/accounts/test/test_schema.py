@@ -27,10 +27,14 @@ class AuthSchemaTests(SimpleTestCase):
 
         member_fields = {
             "id", "username", "email", "first_name", "birth_date", "gender", "is_staff", "is_superuser",
-            "is_active", "nickname", "team_code", "avatar", "nickname_changed_at", "notifications", "visibility",
+            "is_active", "nickname", "team_code", "avatar", "nickname_changed_at", "notifications", "visibility", "rank",
         }
         self.assertEqual(set(schemas["MemberUser"]["properties"]), member_fields)
         self.assertEqual(set(schemas["MemberUser"]["required"]), member_fields)
+        self.assertEqual(
+            schemas["PublicMember"]["properties"]["rank"]["type"],
+            "integer",
+        )
         self.assertEqual(set(schemas["AdminMember"]["properties"]), {"id", "username", "is_active", "is_staff", "is_superuser", "date_joined"})
 
         for component, fields in {

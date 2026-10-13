@@ -70,15 +70,60 @@ jobs:
           script: |
             set -eu
             cd ~/dev
-            git fetch origin
-            git reset --hard origin/develop
-            docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build --renew-anon-volumes backend frontend jev-browser lodging-warmer
-            docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --no-deps --force-recreate nginx
-            docker compose -f docker-compose.yml -f docker-compose.dev.yml exec -T nginx nginx -t
 
-            # 오래된 Docker 이미지와 빌드 캐시 정리
-            docker image prune -af --filter "until=24h"
-            docker builder prune -af --filter "until=24h"
+            # 1. 배포 전 Docker 이미지 및 빌드 캐시 정리
+            echo "===== Docker 리소스 정리 ====="
+            docker image prune -af
+            docker builder prune -af
+
+            # 필요 시 사용하지 않는 볼륨을 별도로 점검
+            # docker volume ls
+            # docker system df -v
+            # docker volume prune -f
+
+            # 2. 디스크 상태 확인
+            echo "===== 배포 전 디스크 상태 ====="
+            df -h
+            df -i
+            docker system df
+
+            # 3. 최신 develop 코드 반영
+            echo "===== Git 업데이트 ====="
+            git fetch origin develop
+            git reset --hard origin/develop
+
+            # 4. 애플리케이션 빌드 및 컨테이너 재생성
+            echo "===== 애플리케이션 배포 ====="
+            docker compose \
+              -f docker-compose.yml \
+              -f docker-compose.dev.yml \
+              up -d --build --renew-anon-volumes \
+              backend frontend jev-browser lodging-warmer
+
+            # 5. Nginx 재생성 및 설정 검증
+            echo "===== Nginx 배포 ====="
+            docker compose \
+              -f docker-compose.yml \
+              -f docker-compose.dev.yml \
+              up -d --no-deps --force-recreate nginx
+
+            docker compose \
+              -f docker-compose.yml \
+              -f docker-compose.dev.yml \
+              exec -T nginx nginx -t
+
+            # 6. 배포 후 리소스 정리
+            echo "===== 배포 후 Docker 정리 ====="
+            docker image prune -af
+            docker builder prune -af
+
+            # 7. 최종 상태 확인
+            echo "===== 최종 디스크 상태 ====="
+            df -h
+            df -i
+            docker system df
+
+            echo "===== 개발 서버 배포 완료 ====="
 
   # 3. Discord 알림!
   notify-discord:

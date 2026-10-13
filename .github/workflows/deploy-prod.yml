@@ -87,6 +87,34 @@ jobs:
           chmod 600 ~/.ssh/prod_ec2
           ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
 
+      - name: Clean up production EC2 before image transfer
+        env:
+          EC2_HOST: ${{ secrets.PROD_EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          set -euo pipefail
+
+          # 이전 배포에서 남은 압축 파일 제거
+          ssh -i ~/.ssh/prod_ec2 \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            "$EC2_USER@$EC2_HOST" \
+            'rm -f ~/production-images.tar.gz'
+
+          # 사용하지 않는 이미지와 빌드 캐시 정리
+          ssh -i ~/.ssh/prod_ec2 \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            "$EC2_USER@$EC2_HOST" \
+            'docker image prune -af && docker builder prune -af'
+
+          # 디스크 상태 확인
+          ssh -i ~/.ssh/prod_ec2 \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            "$EC2_USER@$EC2_HOST" \
+            'df -h && df -i && docker system df'
+
       - name: Transfer production images to EC2
         env:
           EC2_HOST: ${{ secrets.PROD_EC2_HOST }}
@@ -109,16 +137,67 @@ jobs:
           script: |
             set -eu
             cd ~/dev
+
+            # 1. 배포 전 디스크 상태 확인 및 리소스 정리
+            echo "===== 운영 서버 사전 점검 ====="
+            df -h
+            df -i
+            docker system df
+
+            docker image prune -af
+            docker builder prune -af
+
+            # 운영 볼륨은 데이터 손실 방지를 위해 자동 삭제하지 않음
+            # 삭제 전 docker volume ls 및 docker system df -v로 확인할 것
+
+            # 2. 최신 main 코드 반영
+            echo "===== Git 업데이트 ====="
             git fetch origin main
             git merge --ff-only origin/main
+
+            # 3. GitHub Actions에서 전달된 이미지 로드
+            echo "===== 운영 이미지 로드 ====="
             docker load -i ~/production-images.tar.gz
             rm -f ~/production-images.tar.gz
+
+            # 4. 기존 Mailpit 중지
             docker compose stop mailpit || true
-            docker compose -p dev -f docker-compose.prod.yml up -d --no-build backend frontend nginx minio jev-browser lodging-warmer
-            docker compose -p dev -f docker-compose.prod.yml exec -T nginx nginx -t
-            curl --fail --silent --show-error --insecure https://localhost/api/v1/healthz/
-            curl --fail --silent --show-error --insecure https://localhost/
-            docker image prune -af --filter "until=24h"
+
+            # 5. 운영 서비스 배포
+            echo "===== 운영 서비스 배포 ====="
+            docker compose \
+              -p dev \
+              -f docker-compose.prod.yml \
+              up -d --no-build \
+              backend frontend nginx minio jev-browser lodging-warmer
+
+            # 6. Nginx 설정 검증
+            echo "===== Nginx 설정 검증 ====="
+            docker compose \
+              -p dev \
+              -f docker-compose.prod.yml \
+              exec -T nginx nginx -t
+
+            # 7. 헬스 체크
+            echo "===== 운영 헬스 체크 ====="
+            curl --fail --silent --show-error --insecure \
+              https://localhost/api/v1/healthz/
+
+            curl --fail --silent --show-error --insecure \
+              https://localhost/
+
+            # 8. 배포 후 리소스 정리
+            echo "===== 배포 후 Docker 정리 ====="
+            docker image prune -af
+            docker builder prune -af
+
+            # 9. 최종 상태 확인
+            echo "===== 최종 디스크 상태 ====="
+            df -h
+            df -i
+            docker system df
+
+            echo "===== 운영 서버 배포 완료 ====="
 
   notify-discord:
     needs: [ci-test, evaluation-regression, deploy]

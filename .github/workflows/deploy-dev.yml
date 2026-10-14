@@ -80,28 +80,6 @@ jobs:
             --load \
             --provenance=false \
             --sbom=false \
-            --cache-from type=gha,scope=dev-backend \
-            --cache-to type=gha,mode=max,scope=dev-backend \
-            -f backend/Dockerfile \
-            -t dev-backend:latest \
-            backend
-
-          docker tag dev-backend:latest dev-lodging-warmer:latest
-
-          docker buildx build \
-            --load \
-            --provenance=false \
-            --sbom=false \
-            --cache-from type=gha,scope=dev-frontend \
-            --cache-to type=gha,mode=max,scope=dev-frontend \
-            -f frontend/Dockerfile \
-            -t dev-frontend:latest \
-            frontend
-
-          docker buildx build \
-            --load \
-            --provenance=false \
-            --sbom=false \
             --cache-from type=gha,scope=dev-jev-browser \
             --cache-to type=gha,mode=max,scope=dev-jev-browser \
             -f docker/jev-browser/Dockerfile \
@@ -109,9 +87,6 @@ jobs:
             docker/jev-browser
 
           docker save \
-            dev-backend:latest \
-            dev-lodging-warmer:latest \
-            dev-frontend:latest \
             dev-jev-browser:latest \
             | gzip -1 > "$RUNNER_TEMP/development-images.tar.gz"
 
@@ -218,11 +193,11 @@ jobs:
             wait_for_endpoint() {
               endpoint=$1
               attempt=1
-              max_attempts=5
+              max_attempts=6
 
               while [ "$attempt" -le "$max_attempts" ]; do
                 if curl --fail --silent \
-                  --connect-timeout 2 --max-time 3 \
+                  --connect-timeout 2 --max-time 10 \
                   --output /dev/null "$endpoint"; then
                   echo "Healthy: $endpoint"
                   return 0

@@ -44,12 +44,28 @@ Cancelled jobs may be replaced; failed jobs require the existing explicit retry.
     return counts
 
 
+def enqueue_report_locked(post):
+    """Caller holds the post lock. Reuse in-flight report checks and keep prior visibility."""
+    post.is_reviewed = False
+    post.save(update_fields=['is_reviewed'])
+    active = post.moderation_jobs.filter(
+        revision=post.content_revision, state__in=('queued', 'running'), payload__trigger='report',
+    ).first()
+    if active is not None:
+        return active
+    # A report is not a content edit: keep the revision, decisions and other leases.
+    return enqueue_locked(post, enforce_limit=False, mode='openai', trigger='report')
+
+
 @transaction.atomic
-def claim():
+def claim(job_id=None):
     now = timezone.now()
-    job = ModerationJob.objects.select_for_update(skip_locked=True).filter(
+    jobs = ModerationJob.objects.select_for_update(skip_locked=True).filter(
         Q(state='queued', available_at__lte=now) | Q(state='running', lease_until__lte=now)
-    ).order_by('available_at', 'pk').first()
+    )
+    if job_id is not None:
+        jobs = jobs.filter(pk=job_id)
+    job = jobs.order_by('available_at', 'pk').first()
     if job is None:
         return None
     job.state, job.lease_token = 'running', uuid.uuid4()
@@ -95,9 +111,9 @@ def finish(ref, result=None, error=None):
     return True
 
 
-def run_one(checker=None):
+def run_one(checker=None, *, job_id=None):
     from .community_moderation_policy import check
-    job = claim()
+    job = claim(job_id=job_id)
     if job is None:
         return False
     try:

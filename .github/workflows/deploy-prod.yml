@@ -210,8 +210,8 @@ jobs:
             docker compose \
               -p dev \
               -f docker-compose.prod.yml \
-              up -d --no-build \
-              backend frontend nginx minio jev-browser lodging-warmer
+              up -d --no-build --force-recreate --wait --wait-timeout 240 \
+              backend frontend nginx minio jev-browser lodging-warmer community-moderation-worker
 
             # 이미지 교체 중 생성된 이전 레이어를 즉시 제거해 30GiB 디스크를 보호
             docker image prune -af
@@ -230,7 +230,7 @@ jobs:
             wait_for_endpoint() {
               endpoint=$1
               attempt=1
-              max_attempts=6
+              max_attempts=30
 
               while [ "$attempt" -le "$max_attempts" ]; do
                 if curl --fail --silent --show-error --insecure \
@@ -250,6 +250,9 @@ jobs:
               done
 
               echo "Endpoint did not become healthy: $endpoint" >&2
+              docker compose -p dev \
+                -f docker-compose.prod.yml \
+                ps >&2 || true
               return 1
             }
 

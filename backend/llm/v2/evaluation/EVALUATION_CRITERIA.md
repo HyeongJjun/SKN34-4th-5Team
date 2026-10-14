@@ -1,5 +1,27 @@
 # DeepEval 평가 기준 v1.0
 
+## 2026-10-14 신고 재검사의 동일 내용 검토 보존
+
+- 목적/변경 변수: 신고는 내용 수정이 아니므로 content_revision 증가 및 진행 중 내용 검사 취소 없이 별도 report job을 생성한다. 동일 revision 완료 job의 open/confirmed 사유와 검토 이력은 보존하며 공개 예외는 각 원 job의 automatic_check_failed/manual_review 근거에만 적용한다.
+- 기대/합격: 실제 ReportCreateView → enqueue → claim/finish → ModerationList → review_job에서 기존 fallback 검토가 접근 가능하고 정상 후속 검사도 미해결 사유를 지우지 않는다. confirm/dismiss와 여러 완료/진행 job의 순서에 무관하게 현재 사유를 반영한다. 기존 image_review의 새 open 동작, 관리자 숨김, 최초 포인트, 실제 내용 수정의 revision/lease stale 차단을 유지한다.
+- A/B: 먼저 새 회귀를 수정 전 A에서 실행하고 수정 후 B에서 동일 사례를 실행한다. 기존 native/fallback DeepEval·Ragas는 동일 입력/정답/exact=1/cache off/네트워크 차단으로 양쪽 실행한다. 운영 DB/유료 제공자/전체 채팅 성능은 범위 밖이다.
+- CI: community-moderation.yml django-integration의 기존 community 자동 발견 명령에서 새 test_report_moderation 이름과 개수를 실제 확인한다. 오류·누락·미실행은 통과가 아니며 PostgreSQL 동시성은 SQLite 결과로 주장하지 않는다.
+
+## 2026-10-14 로컬 develop 통합 및 검사 워커 배포 연결
+
+- 기준: A는 현재 로컬 변경 포함 코드, B는 upstream/develop c528926 통합과 워커 배포 연결 후 코드. 신고/포인트/공개 정책과 기존 코스 조건은 모두 유지한다. Git 병합 커밋·push·EC2 배포는 하지 않는다.
+- 동일 native/fallback/legacy moderation synthetic 계약을 A/B에서 DeepEval 및 Ragas로 실행한다. 코스 계약은 A의 케이스/정답/채점기를 고정하고 B에서 V2 이동 경로만 대응시킨다. 네트워크 없는 계약 검증이며 실제 제공자 정확도·실시간 코스 지연은 별도 미측정으로 기록한다.
+- 배포 합격 기준: 개발·운영 모두 동일 backend 이미지의 워커를 명시 실행하며 backend 준비 후 시작. CI에 배포 구성 회귀를 포함. Django 통합·전체 프론트 테스트·타입·빌드·마이그레이션 충돌 검사를 통과해야 한다. 실패/미실행은 그대로 기록하고 기준은 완화하지 않는다.
+
+## 2026-10-14 신고 접수 즉시 재검사와 신고 우선 조회
+
+- 목적: 신고 저장만 하던 경로를 기존 OpenAI 기본 검사 서비스에 연결한다. 새 신고 트랜잭션 커밋 직후 해당 job만 즉시 실행하며, 호출 장애 시 영속 큐와 기존 worker가 복구한다. 별도 문맥 모델·정치 임계값은 추가하지 않는다.
+- 신고 재검사는 명시적으로 openai 모드를 사용하며 전역 자동/수동 선택은 변경하지 않는다. 신고 내용은 모델 입력으로 쓰지 않고 게시글 제목·본문을 검사한다. 동일 사용자 중복 신고는 재호출하지 않으며 동일 글 진행 중 신고 검사는 공유한다.
+- 기존 공개 글은 재검사 도중 공개를 유지한다. flagged 정상은 공개, 유해는 비공개 검토, 공급자 오류는 기존 공개·manual_review 정책, 이미지는 기존 image_review를 유지한다. 관리자 숨김·기존 이력·포인트 중복 방지·revision/lease 폐기는 보존한다. 새 신고는 운영진의 수동 확인 표시를 미완료로 바꾼다. 신고 자체는 LLM만으로 기각/삭제하지 않는다.
+- 게시글 관리 기본값은 신고 건수 내림차순 후 최신 글 순이며, 신고 글만/최신순 선택을 제공한다. 검색·페이지네이션과 함께 서버에서 적용한다.
+- A/B: 수정 전·후 동일 고정 native/fallback DeepEval 및 Ragas 사례(네트워크 차단, cache off, exact=1)를 실행한다. 분류 정책은 동일하므로 A/B 모두 전건 통과해야 한다. 신규 신고 트리거·권한·중복·결과 적용·필터는 격리 DB 회귀로 A 실패/B 통과 및 CI 실행을 확인한다. 이는 동작 계약 검증이며 실제 의미 정확도 평가는 아니다.
+- CI: community-moderation.yml django-integration의 community 자동 발견 및 admin-dashboard.test.mjs 명시 실행, provider-contracts의 기존 native/fallback 명령을 사용한다. 유료 제공자 평가와 운영 배포는 범위 밖이다.
+
 ## 최신 develop 통합 검증 (2026-10-14)
 
 - 목적: PR96의 V2 이전 및 기능 보존 커밋 `215fc5d`에 팀 develop `fb4b391`을 통합한다. 문서 충돌은 코스 기준과 커뮤니티 기준을 모두 보존하며 정책·정답·합격 기준은 변경하지 않는다.

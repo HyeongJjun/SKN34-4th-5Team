@@ -123,9 +123,9 @@ jobs:
           $SSH "$EC2_USER@$EC2_HOST" \
             'rm -f ~/production-images.tar.gz'
 
-          # 미사용 이미지와 빌드 캐시 정리
+          # 미사용 이미지 정리
           $SSH "$EC2_USER@$EC2_HOST" \
-            'docker image prune -af && docker builder prune -af'
+            'docker image prune -af'
 
           # 미사용 익명 볼륨 정리
           # 명명된 볼륨은 일반 prune에서 제외됨
@@ -160,7 +160,7 @@ jobs:
           host: ${{ secrets.PROD_EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          command_timeout: 10m
+          command_timeout: 60m
 
           script: |
             set -eu
@@ -215,7 +215,6 @@ jobs:
 
             docker volume prune -f
             docker image prune -af
-            docker builder prune -af
 
             # 최종 상태 확인
             echo "===== 최종 디스크 상태 ====="

@@ -165,11 +165,17 @@ jobs:
 
             # 4. EC2에서 빌드하지 않고 애플리케이션 컨테이너 재생성
             echo "===== 애플리케이션 배포 ====="
+            # 개발 backend/frontend는 호스트 소스를 마운트하므로 이미지를 재생성하지 않고 재시작
             docker compose \
               -f docker-compose.yml \
               -f docker-compose.dev.yml \
               up -d --no-build --force-recreate \
-              backend frontend jev-browser lodging-warmer
+              jev-browser
+
+            docker compose \
+              -f docker-compose.yml \
+              -f docker-compose.dev.yml \
+              restart backend frontend lodging-warmer
 
             # 이미지 교체 중 생성된 이전 레이어를 즉시 제거해 30GiB 디스크를 보호
             docker image prune -af

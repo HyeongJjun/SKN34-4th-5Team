@@ -13,7 +13,6 @@ import { MemberName } from "@/components/member-name";
 import { updateMemberUser, type MemberUserUpdate } from "@/lib/api/auth";
 import { RouteCard } from "@/components/route-card";
 import { MemberPosts } from "@/components/member-posts";
-import { AdminFeedbackPanel } from "@/components/admin-feedback-panel";
 import { logoutMember, memberError, memberFetch } from "@/lib/member-auth-request";
 import styles from "./page.module.css";
 
@@ -75,9 +74,13 @@ function MyPageContent() {
   useEffect(() => {
     if (legacyAdminTab && status === "authenticated") router.replace(`/admin?tab=${legacyAdminTab}`);
   }, [legacyAdminTab, status, router]);
+  useEffect(() => {
+    if (selected === "feedback" && status === "authenticated" && user?.is_superuser === true) {
+      router.replace("/admin/feedback");
+    }
+  }, [selected, status, user?.is_superuser, router]);
   const isAdmin = Boolean(user?.is_staff || user?.is_superuser);
-  const feedbackTabs = status === "authenticated" && user?.is_superuser === true ? [["feedback", "챗봇 답변 평가"]] : [];
-  const tabValues: string[] = ["likes", "posts", "points", ...feedbackTabs.map(([value]) => value), "profile"];
+  const tabValues: string[] = ["likes", "posts", "points", "profile"];
   const tab = selected && tabValues.includes(selected) ? selected : "courses";
   const ready = useRoutesReady();
   const routes = useRoutes();
@@ -157,7 +160,7 @@ function MyPageContent() {
     <p className={styles.note}>계정·프로필 설정은 서버에 저장돼요. 새 코스는 공개되며 편집 권한만 이 브라우저에 저장돼요. 이전 버전 코스는 다시 저장하기 전까지 이 브라우저에만 남아요.</p>
     {loadError && <p className={styles.note} role="alert">{loadError} 이전 버전 코스만 표시될 수 있어요. <button type="button" onClick={() => void retryRoutes()}>다시 불러오기</button></p>}
     <nav className={styles.tabs} aria-label="마이페이지 메뉴">
-      {[["courses",`내 코스 (${own.length})`],["likes",`찜한 코스 (${liked.length})`],["posts","내가 쓴 글"],["points","포인트"], ...feedbackTabs, ["profile","회원 정보"]].map(([value, label]) => <button key={value} type="button" aria-pressed={tab === value} onClick={() => router.push(`/mypage?tab=${value}`, { scroll: false })}>{label}</button>)}
+      {[["courses",`내 코스 (${own.length})`],["likes",`찜한 코스 (${liked.length})`],["posts","내가 쓴 글"],["points","포인트"],["profile","회원 정보"]].map(([value, label]) => <button key={value} type="button" aria-pressed={tab === value} onClick={() => router.push(`/mypage?tab=${value}`, { scroll: false })}>{label}</button>)}
     </nav>
     {tab === "points" ? <section className={styles.points} aria-label="포인트 내역"><h2>보유 포인트</h2>
       {currentPointState.status === "loading" ? <p role="status">포인트 정보를 불러오고 있어요.</p>
@@ -168,7 +171,7 @@ function MyPageContent() {
             <b>{entry.amount > 0 ? "+" : ""}{entry.amount.toLocaleString("ko-KR")}P</b>
           </li>)}</ul> : <p className={styles.note}>아직 포인트 거래 내역이 없어요.</p>}
         </>}
-    </section> : tab === "posts" ? <MemberPosts /> : tab === "feedback" ? <AdminFeedbackPanel key={user.id} /> : tab === "profile" ? <section className={styles.settings}><h2>회원정보 수정</h2>
+    </section> : tab === "posts" ? <MemberPosts /> : tab === "profile" ? <section className={styles.settings}><h2>회원정보 수정</h2>
       <ProfilePhotoEditor avatar={user.avatar} onSaved={async avatar => { const updated = await patchUser({ avatar }); setUser(updated, user.id); }} />
       <form key={`${user.nickname}:${user.team_code}:${user.email}`} onSubmit={async event => {
         event.preventDefault(); if (saveRequest.current) return; const values = new FormData(event.currentTarget), controller = new AbortController(); saveRequest.current = controller; setSaving(true); setMessage("");

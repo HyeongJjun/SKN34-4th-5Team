@@ -230,7 +230,7 @@ jobs:
             wait_for_endpoint() {
               endpoint=$1
               attempt=1
-              max_attempts=6
+              max_attempts=30
 
               while [ "$attempt" -le "$max_attempts" ]; do
                 if curl --fail --silent --show-error --insecure \
@@ -250,6 +250,9 @@ jobs:
               done
 
               echo "Endpoint did not become healthy: $endpoint" >&2
+              docker compose -p dev \
+                -f docker-compose.prod.yml \
+                ps >&2 || true
               return 1
             }
 

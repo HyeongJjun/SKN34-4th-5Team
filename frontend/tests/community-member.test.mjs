@@ -107,15 +107,17 @@ test("activity query parsing is shared and rejects duplicate or invalid values",
   assert.equal(login.searchParams.get("next"), "/community/members/21?tab=comments&page=3");
 });
 
-test("public summaries require explicit boolean visibility", async () => {
+test("public summaries require visibility and accept an absent or null rank", async () => {
   for (const activityVisible of [true, false]) {
-    const member = { id: 21, nickname: "회원", rank: 1, activityVisible };
-    assert.deepEqual(await apiWith(async () => Response.json(member)).fetchCommunityMember(21), member);
+    for (const rank of [1, null, undefined]) {
+      const member = JSON.parse(JSON.stringify({ id: 21, nickname: "회원", rank, activityVisible }));
+      assert.deepEqual(await apiWith(async () => Response.json(member)).fetchCommunityMember(21), member);
+    }
   }
   for (const activityVisible of [undefined, null, "true", 1]) {
     await assert.rejects(apiWith(async () => Response.json({ id: 21, nickname: "회원", rank: 1, activityVisible })).fetchCommunityMember(21), error => error.status === 502);
   }
-  for (const rank of [undefined, null, 0, 6, 1.5, "1"]) {
+  for (const rank of [0, 6, 1.5, "1"]) {
     await assert.rejects(apiWith(async () => Response.json({ id: 21, nickname: "회원", rank, activityVisible: true })).fetchCommunityMember(21), error => error.status === 502);
   }
 });

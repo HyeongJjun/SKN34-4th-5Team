@@ -57,9 +57,20 @@ test("community list is read from the public DB API", async () => {
   assert.deepEqual(result, [post]);
 });
 
-test("community author ranks are required and bounded", async () => {
+test("community posts and comments accept missing ranks and reject invalid ranks", async () => {
   const originalFetch = global.fetch;
-  for (const authorRank of [undefined, 0, 6, 1.5, "1"]) {
+  for (const authorRank of [undefined, null]) {
+    const expectedPost = JSON.parse(JSON.stringify({ ...post, authorRank }));
+    assert.deepEqual(await api.fetchCommunityPosts(async () => Response.json([{ ...post, authorRank }])), [expectedPost]);
+    global.fetch = async () => Response.json([{ ...comment, authorRank }]);
+    try {
+      const expectedComment = JSON.parse(JSON.stringify({ ...comment, authorRank }));
+      assert.deepEqual(await api.fetchCommunityComments(post.id, "newest"), [expectedComment]);
+    } finally {
+      global.fetch = originalFetch;
+    }
+  }
+  for (const authorRank of [0, 6, 1.5, "1"]) {
     await assert.rejects(api.fetchCommunityPosts(async () => Response.json([{ ...post, authorRank }])));
     global.fetch = async () => Response.json([{ ...comment, authorRank }]);
     try {

@@ -12,13 +12,13 @@ class PointRankTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(username="rank-user", nickname="야구팬")
 
-    def test_rank_thresholds_and_unbounded_top_rank(self):
-        cases = ((0, 1), (1, 1), (99, 1), (100, 2), (249, 2), (250, 3),
-                 (499, 3), (500, 4), (749, 4), (750, 5), (1001, 5))
+    def test_rank_thresholds_cover_zero_through_ten_thousand(self):
+        cases = ((0, 1), (999, 1), (1000, 2), (2499, 2), (2500, 3),
+                 (4999, 3), (5000, 4), (7499, 4), (7500, 5), (10000, 5), (10001, 5))
         for points, expected in cases:
             with self.subTest(points=points):
                 self.assertEqual(rank_for_points(points), expected)
-        self.assertEqual(MEMBER_RANK_THRESHOLDS, (100, 250, 500, 750))
+        self.assertEqual(MEMBER_RANK_THRESHOLDS, (1000, 2500, 5000, 7500))
 
     def test_rewards_count_but_spending_refunds_and_admin_adjustments_do_not(self):
         wallet, earned, created = grant_points(
@@ -79,7 +79,7 @@ class PointRankTests(TestCase):
         client = APIClient()
         client.force_authenticate(self.user)
         self.assertEqual(client.get("/api/v1/auth/user").data["rank"], 1)
-        grant_points(user=self.user, amount=100, source_type="activity.post", source_key="rank")
+        grant_points(user=self.user, amount=1000, source_type="activity.post", source_key="rank")
         self.user.refresh_from_db()
 
         member = client.get("/api/v1/auth/user").data

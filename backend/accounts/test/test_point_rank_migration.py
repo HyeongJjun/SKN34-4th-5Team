@@ -18,6 +18,7 @@ class PointRankMigrationTest(TransactionTestCase):
         user = User.objects.create(username="rank-migration-user", password="!")
         wallet = Wallet.objects.create(user=user, balance=70)
         for amount, transaction_type, source in (
+            (100, "ACTIVITY_EARNED", "signup"),
             (100, "ACTIVITY_EARNED", "reward"),
             (25, "FANTASY_SETTLEMENT", "fantasy"),
             (-10, "ACTIVITY_EARNED", "reversal"),
@@ -45,5 +46,5 @@ class PointRankMigrationTest(TransactionTestCase):
         self.assertEqual(wallet.total_earned, 115)
         deltas = dict(Transaction.objects.values_list("source_key", "rank_delta"))
         self.assertEqual(deltas, {
-            "reward": 100, "fantasy": 25, "reversal": -10, "spend": 0, "admin": 0,
+            "signup": 0, "reward": 100, "fantasy": 25, "reversal": -10, "spend": 0, "admin": 0,
         })

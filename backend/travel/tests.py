@@ -102,7 +102,7 @@ class CourseApiTests(TestCase):
         self.assertEqual([stop["position"] for stop in reordered.data["stops"]], [0, 1])
 
     def test_course_author_rank_uses_linked_owner(self):
-        grant_points(user=self.member, amount=250, source_type="test.course", source_key="rank")
+        grant_points(user=self.member, amount=2500, source_type="test.course", source_key="rank")
         created = self.create_course()
         course = Course.objects.get(pk=created.data["id"])
         self.assertEqual(course.owner_id, self.member.pk)

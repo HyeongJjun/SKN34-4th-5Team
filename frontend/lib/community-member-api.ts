@@ -11,7 +11,7 @@ const text = (v: unknown): v is string => typeof v === "string" && v.trim().leng
 const date = (v: unknown): v is string => typeof v === "string" && Number.isFinite(Date.parse(v));
 const nullableText = (v: unknown) => v === null || typeof v === "string";
 const board = (v: Record<string, unknown>) => v.board === "free" ? v.teamCode === "" : v.board === "teams" && typeof v.teamCode === "string" && Boolean(getTeamBoard(v.teamCode));
-const isMember: Validator<CommunityMemberSummaryDto> = (v): v is CommunityMemberSummaryDto => record(v) && positive(v.id) && text(v.nickname) && validRank(v.rank) && typeof v.activityVisible === "boolean";
+const isMember: Validator<CommunityMemberSummaryDto> = (v): v is CommunityMemberSummaryDto => record(v) && positive(v.id) && text(v.nickname) && (v.rank == null || validRank(v.rank)) && typeof v.activityVisible === "boolean";
 const isPost: Validator<CommunityMemberPostDto> = (v): v is CommunityMemberPostDto => record(v) && text(v.id) && text(v.title) && board(v) && (v.createdAt === null || date(v.createdAt));
 const isComment: Validator<CommunityMemberCommentDto> = (v): v is CommunityMemberCommentDto => record(v) && positive(v.id) && typeof v.content === "string" && date(v.createdAt) && text(v.postId) && text(v.postTitle) && board(v);
 

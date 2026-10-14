@@ -8,7 +8,7 @@ POST_READ = ("post_read", 1, "게시글 최초 읽기 보상")
 COMMENT = ("comment", 1, "댓글 작성 보상")
 
 # Minimum cumulative eligible points for ranks 2 through 5.
-MEMBER_RANK_THRESHOLDS = (100, 250, 500, 750)
+MEMBER_RANK_THRESHOLDS = (1000, 2500, 5000, 7500)
 
 
 def grant_definition(rule, source_key):

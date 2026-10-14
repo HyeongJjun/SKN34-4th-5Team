@@ -41,7 +41,7 @@ function isPost(value: unknown): value is TeamCommunityPost {
     && ["author", "title", "content"].every(field => typeof post[field] === "string")
     && typeof post.category === "string" && categories.has(post.category)
     && (post.authorId === undefined || post.authorId === null || isPositiveInteger(post.authorId))
-    && (post.authorRank === null || isRank(post.authorRank))
+    && (post.authorRank == null || isRank(post.authorRank))
     && (post.createdAt === null || typeof post.createdAt === "string")
     && ["views", "recommendations", "commentCount"].every(field => isCount(post[field]))
     && (post.downvotes === undefined || isCount(post.downvotes))
@@ -73,7 +73,7 @@ function isComment(value: unknown): value is CommunityComment {
   const comment = value as Record<string, unknown>;
   return isPositiveInteger(comment.id) && typeof comment.postId === "string"
     && isPositiveInteger(comment.authorId)
-    && isRank(comment.authorRank)
+    && (comment.authorRank == null || isRank(comment.authorRank))
     && typeof comment.moderationStatus === "string"
     && ["pending", "review", "error", "rejected", "approved"].includes(comment.moderationStatus)
     && isCount(comment.revision)

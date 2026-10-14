@@ -12,7 +12,7 @@ def backfill_rank_points(apps, schema_editor):
 
     PointTransaction.objects.using(database).filter(
         transaction_type__in=ELIGIBLE_TRANSACTION_TYPES,
-    ).update(rank_delta=F("amount"))
+    ).exclude(source_type="signup").update(rank_delta=F("amount"))
     totals = dict(
         PointTransaction.objects.using(database)
         .values("wallet_id")

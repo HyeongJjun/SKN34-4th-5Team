@@ -4,12 +4,14 @@ from accounts.models import CustomUser, PointTransaction, PointWallet
 
 
 @transaction.atomic
-def grant_points(*, user=None, user_id=None, amount, source_type, source_key, description=""):
+def grant_points(
+    *, user=None, user_id=None, amount, source_type, source_key, description="", counts_for_rank=True,
+):
     """멱등적으로 포인트를 지급하고 잔액과 원장을 함께 갱신한다."""
     if type(amount) is not int or amount < 0:
         raise ValueError("지급 포인트는 음수일 수 없습니다.")
     return adjust_points(
-        user=user, user_id=user_id, amount=amount, rank_delta=amount,
+        user=user, user_id=user_id, amount=amount, rank_delta=amount if counts_for_rank else 0,
         transaction_type=PointTransaction.FANTASY_SETTLEMENT
         if source_type.startswith("fantasy.") else PointTransaction.ACTIVITY_EARNED,
         source_type=source_type, source_key=source_key, description=description,

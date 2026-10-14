@@ -50,7 +50,7 @@ class CommentListCreateView(APIView):
         if order not in {"oldest", "newest"}:
             raise serializers.ValidationError({"order": "oldest 또는 newest를 입력해 주세요."})
         ordering = ("created_at", "id") if order == "oldest" else ("-created_at", "-id")
-        comments = public_comments(post.comments.select_related("author")).order_by(*ordering)
+        comments = public_comments(post.comments.select_related("author__point_wallet")).order_by(*ordering)
         return Response(CommunityCommentSerializer(comments, many=True).data)
 
     @extend_schema(
@@ -79,7 +79,7 @@ class CommentDetailView(APIView):
         ).post_id
         post = get_object_or_404(CommunityPost.objects.select_for_update(), pk=post_id)
         comment = get_object_or_404(
-            CommunityComment.objects.select_for_update().select_related("author"),
+            CommunityComment.objects.select_for_update(of=("self",)).select_related("author__point_wallet"),
             pk=comment_id,
             post=post,
         )

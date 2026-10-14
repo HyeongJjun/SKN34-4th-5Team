@@ -9,6 +9,7 @@ import { useMemberAuth, type MemberUser } from "@/lib/member-auth";
 import { deleteRoute, retryRoutes, setRouteLike, useRoutes, useLikedRoutes, useRoutesError, useRoutesReady, type TripRoute } from "@/lib/routes";
 import { teamBoards } from "@/lib/team-community";
 import { memberRoleLabel, nextNicknameChangeAt } from "@/lib/member-policy";
+import { MemberName } from "@/components/member-name";
 import { updateMemberUser, type MemberUserUpdate } from "@/lib/api/auth";
 import { RouteCard } from "@/components/route-card";
 import { MemberPosts } from "@/components/member-posts";
@@ -152,7 +153,7 @@ function MyPageContent() {
   const visible = tab === "likes" ? liked : own;
   return <main className={`container ${styles.page}`}>
     <p className="eyebrow">MY PAGE</p><h1>마이페이지</h1>
-    <section className={styles.profile} aria-label="내 프로필"><div className={styles.avatarWrap}><div className={styles.avatar} aria-hidden="true">{user.avatar ? <Image src={user.avatar} alt="" width={60} height={60} unoptimized /> : <Image src="/images/default-avatar.svg" alt="" width={60} height={60} />}</div>{team && <span className={styles.teamBadge} title={team.name}><Image src={`/images/teams/${team.code.toLowerCase()}.svg`} alt={`응원팀 ${team.name}`} width={22} height={22} /></span>}</div><div><h2 className={styles.memberName}>{displayName}님</h2><p>{memberRoleLabel(user)} · {team?.name ?? "응원팀 미설정"}</p></div><Link href="/routes/new" className="button button-primary">코스 만들기</Link></section>
+    <section className={styles.profile} aria-label="내 프로필"><div className={styles.avatarWrap}><div className={styles.avatar} aria-hidden="true">{user.avatar ? <Image src={user.avatar} alt="" width={60} height={60} unoptimized /> : <Image src="/images/default-avatar.svg" alt="" width={60} height={60} />}</div>{team && <span className={styles.teamBadge} title={team.name}><Image src={`/images/teams/${team.code.toLowerCase()}.svg`} alt={`응원팀 ${team.name}`} width={22} height={22} /></span>}</div><div><h2 className={styles.memberName}><MemberName name={displayName} rank={user.rank} suffix="님" /></h2><p>{memberRoleLabel(user)} · {team?.name ?? "응원팀 미설정"}</p></div><Link href="/routes/new" className="button button-primary">코스 만들기</Link></section>
     <p className={styles.note}>계정·프로필 설정은 서버에 저장돼요. 새 코스는 공개되며 편집 권한만 이 브라우저에 저장돼요. 이전 버전 코스는 다시 저장하기 전까지 이 브라우저에만 남아요.</p>
     {loadError && <p className={styles.note} role="alert">{loadError} 이전 버전 코스만 표시될 수 있어요. <button type="button" onClick={() => void retryRoutes()}>다시 불러오기</button></p>}
     <nav className={styles.tabs} aria-label="마이페이지 메뉴">
